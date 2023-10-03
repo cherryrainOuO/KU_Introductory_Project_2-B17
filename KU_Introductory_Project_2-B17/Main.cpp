@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <windows.h>
 #include <conio.h>
 #include <string>
@@ -25,46 +25,46 @@ int main() {
 }
 
 void MainPrompt() {
-	Sleep(100);
-	system("cls");
+	Sleep(100); 
+	system("cls"); // í™”ë©´ ì§€ìš°ê¸°
 
-	cout << "Ä¶¸°´õ È¨\n\n";
+	cout << "ìº˜ë¦°ë” í™ˆ\n\n";
 
-	cout << "1. ÀÏÁ¤ ºĞ·ù\n";
-	cout << "2. °Ë»ö\n";
-	cout << "3. ÀÏÁ¤ °ü¸®\n";
-	cout << "4. Á¾·á\n\n";
+	cout << "1. ì¼ì • ë¶„ë¥˜\n";
+	cout << "2. ê²€ìƒ‰\n";
+	cout << "3. ì¼ì • ê´€ë¦¬\n";
+	cout << "4. ì¢…ë£Œ\n\n";
 
-	cout << "¿øÇÏ´Â ¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä.\n";
+	cout << "ì›í•˜ëŠ” ë²ˆí˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”.\n";
 	cout << "-------------------------------------\n";
 	cout << ">";
 
 	string n;
-	getline(cin, n);
+	getline(cin, n); // ê³µë°±ì„ í¬í•¨ì‹œí‚¤ê¸° ìœ„í•´ì„œ getline ì„ ì‚¬ìš©í–ˆìŠµë‹ˆë‹¤.
 
 	switch (n[0])
 	{
 	case '1':
-		ClassificationPrompt();
+		ClassificationPrompt(); // ì¼ì • ë¶„ë¥˜
 		break;
 	case '2':
-		SearchPrompt();
+		SearchPrompt(); // ê²€ìƒ‰
 		break;
 	case '3':
-		MangementPrompt();
+		MangementPrompt(); // ì¼ì • ê´€ë¦¬
 		break;
 	case '4':
-		ExitPrompt();
+		ExitPrompt(); // ì¢…ë£Œ
 		break;
-	default:
-		system("cls");
+	default: // ì˜¤ë¥˜ ë©”ì„¸ì§€
+		system("cls"); // í™”ë©´ ì§€ìš°ê¸°
 
-		cout << "¿À·ù : 1, 2, 3, 4 Áß ÇÏ³ªÀÇ ¼ıÀÚ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.\n\n";
-		cout << "¾Æ¹« Å°³ª ´­·¯ÁÖ¼¼¿ä.\n";
+		cout << "ì˜¤ë¥˜ : 1, 2, 3, 4 ì¤‘ í•˜ë‚˜ì˜ ìˆ«ìë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.\n\n";
+		cout << "ì•„ë¬´ í‚¤ë‚˜ ëˆŒëŸ¬ì£¼ì„¸ìš”.\n";
 		cout << "-------------------------------------\n";
 		cout << ">";
 		
-		_getch();
+		_getch(); // ì•„ë¬´ í‚¤ë‚˜ ì…ë ¥ ëŒ€ê¸°
 
 		break;
 	}
@@ -85,7 +85,7 @@ void MangementPrompt() {
 
 void ExitPrompt() {
 	system("cls");
-	cout << "Ä¶¸°´õ ¾ÛÀ» Á¾·áÇÕ´Ï´Ù.\n";
+	cout << "ìº˜ë¦°ë” ì•±ì„ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
 	exit(0);
 }
 
