@@ -1,7 +1,8 @@
-﻿#include <iostream>
+#include <iostream>
 #include <windows.h>
 #include <conio.h>
 #include <string>
+#include "KeywordSearch.h"
 
 using namespace std;
 
@@ -11,15 +12,14 @@ void SearchPrompt();
 void MangementPrompt();
 void ExitPrompt();
 
+KeywordSearch ks; //test
+
 int main() {
 	
 	while (true) {
 
 		MainPrompt();
 	}
-
-	
-	
 
 	return 0;
 }
@@ -48,7 +48,8 @@ void MainPrompt() {
 		ClassificationPrompt(); // 일정 분류
 		break;
 	case '2':
-		SearchPrompt(); // 검색
+		//test
+		ks.prompt(); // 검색
 		break;
 	case '3':
 		MangementPrompt(); // 일정 관리
