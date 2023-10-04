@@ -20,18 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calender.cpp" />
+    <ClCompile Include="Category.cpp" />
+    <ClCompile Include="CategoryDataManager.cpp" />
     <ClCompile Include="Classification.cpp" />
     <ClCompile Include="KeywordSearch.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Management.cpp" />
     <ClCompile Include="Schedule.cpp" />
     <ClCompile Include="ScheduleDataManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calender.h" />
+    <ClInclude Include="Category.h" />
+    <ClInclude Include="CategoryDataManager.h" />
     <ClInclude Include="Classification.h" />
     <ClInclude Include="KeywordSearch.h" />
-    <ClInclude Include="Management.h" />
     <ClInclude Include="Schedule.h" />
     <ClInclude Include="ScheduleDataManager.h" />
   </ItemGroup>
