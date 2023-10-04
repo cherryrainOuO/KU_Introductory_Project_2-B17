@@ -44,17 +44,42 @@ int KeywordSearch::isKeyRight()
 
 void KeywordSearch::search()
 {
-    /*...*/
+    string tempKey = kwd;
+    removeSpace(tempKey);
+
+    for (Schedule s : cal.allSchs) {
+        string title = s.getTitle();
+        string memo = s.getMemo();
+        removeSpace(title);
+        removeSpace(memo);
+
+        if (title.find(tempKey) != string::npos || memo.find(tempKey) != string::npos)
+            res.push_back(s);
+    }
     print();
 }
 
 void KeywordSearch::print()
 {
     system("cls");
-    cout << "키워드 \"" << kwd << "\"로 검색한 결과입니다.\n";
+    cout << "키워드 \"" << kwd << "\"(으)로 검색한 결과입니다.\n";
     cout << "---------------------------------------------\n";
-    /*...*/
+    if (res.empty())
+        cout << "해당 키워드를 포함하고 있는 일정이 없습니다.\n";
+    else {
+        for (Schedule s : res) {
+            s.print();
+            cout << "\n";
+        }
+        cout << "---------------------------------------------\n";
+    }
+    cout << "(*메인 화면으로 돌아가려면 아무 키나 입력하세요.)\n";
     Sleep(100);
     _getch();
+}
+
+void KeywordSearch::removeSpace(string& s)
+{
+    s.erase(remove(s.begin(), s.end(), ' '), s.end());
 }
 

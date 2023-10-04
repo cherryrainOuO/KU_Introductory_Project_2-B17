@@ -10,9 +10,11 @@ class KeywordSearch
 private:
 	Calender cal;
 	string kwd;
+	vector<Schedule> res;
 	int isKeyRight();
 	void search();
 	void print();
+	void removeSpace(string& s);
 
 public:
 	/*constructor*/
