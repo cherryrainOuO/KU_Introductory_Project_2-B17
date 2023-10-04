@@ -14,5 +14,5 @@ void Schedule::print()
 	cout << "제목: " << title << "\n";
 	cout << "카테고리: " << category << "\n";
 	cout << "날짜: " << startDate << " ~ " << endDate << "\n";
-	cout << "메모: " << memo << "\n";
+	cout << "메모: " << memo << "\n\n";
 }
