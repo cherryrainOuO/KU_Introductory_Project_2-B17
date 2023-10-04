@@ -117,7 +117,7 @@ void Management::printSchedule(){
 	}
 	// 선택한 날짜의 일정이 0개인 경우
 	else {
-		cout << "<(사용자가 입력한 날짜)의 일정>\n\n";
+		cout << "<" << dateinfo << "의 일정>\n\n";
 		cout << "일정이 없습니다.일정을 추가하세요.\n\n";
 		cout << "1. 일정 추가\n\n";
 		cout << "(^ C 입력 시 이전 화면으로 돌아갑니다)\n\n";
