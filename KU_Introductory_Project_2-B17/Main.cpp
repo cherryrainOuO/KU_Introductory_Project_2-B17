@@ -3,8 +3,9 @@
 #include <conio.h>
 #include <string>
 #include "KeywordSearch.h"
-#include "Calender.h"
 
+#include "Classification.h"
+#include "Calender.h"
 using namespace std;
 
 void MainPrompt();
@@ -15,6 +16,7 @@ void ExitPrompt();
 
 Calender calender;
 KeywordSearch ks; //test
+Classification classification;
 
 int main() {
 
@@ -52,7 +54,7 @@ void MainPrompt() {
 
 	cout << "원하는 번호를 입력하세요.\n";
 	cout << "-------------------------------------\n";
-	cout << ">";
+	cout << "> ";
 
 	string n;
 	getline(cin, n); // 공백을 포함시키기 위해서 getline 을 사용했습니다.
@@ -60,7 +62,7 @@ void MainPrompt() {
 	switch (n[0])
 	{
 	case '1':
-		ClassificationPrompt(); // 일정 분류
+		classification.Prompt(); // 일정 분류
 		break;
 	case '2':
 		//test
@@ -78,7 +80,7 @@ void MainPrompt() {
 		cout << "오류 : 1, 2, 3, 4 중 하나의 숫자를 입력해주세요.\n\n";
 		cout << "아무 키나 눌러주세요.\n";
 		cout << "-------------------------------------\n";
-		cout << ">";
+		cout << "> ";
 		
 		_getch(); // 아무 키나 입력 대기
 
@@ -87,6 +89,7 @@ void MainPrompt() {
 
 }
 
+/*
 void ClassificationPrompt() {
 	system("cls");
 }
@@ -94,6 +97,7 @@ void ClassificationPrompt() {
 void SearchPrompt() {
 	system("cls");
 }
+*/
 
 void ManagementPrompt() {
 	system("cls");
