@@ -78,7 +78,7 @@ void Classification::Prompt_CategoryEdit(int _cateNum)
 	if (kwd == "^C") { // 취소
 		Prompt_CategoryEditOrRemove(_cateNum);
 	}
-	else if (true) {
+	else if (CDM->SyntaxCheck(kwd) == false) { // 문법 체크
 		system("cls"); // 화면 지우기
 
 		cout << "오류 : 해당 입력은 카테고리명으로 사용할 수 없습니다.\n\n";
@@ -90,7 +90,7 @@ void Classification::Prompt_CategoryEdit(int _cateNum)
 
 		Prompt_CategoryEdit(_cateNum);
 	}
-	else if (true) {
+	else if (CDM->DuplicationCheck(kwd) == false) { // 중복 체크
 		system("cls"); // 화면 지우기
 
 		cout << "오류 : 해당 카테고리명이 이미 존재합니다.\n\n";
@@ -163,7 +163,7 @@ void Classification::Prompt_PrintCategoryList_ForEditOrRemove()
 	if (kwd == "^C") { // 취소
 		Prompt_CategoryMenu();
 	}
-	else if (stoi(kwd) >= CDM->GetSize()) { // 오류 메세지
+	else if (stoi(kwd) >= CDM->GetSize() || stoi(kwd) <= 0) { // 오류 메세지
 		system("cls"); // 화면 지우기
 
 		cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";
@@ -205,10 +205,14 @@ void Classification::Prompt_CategoryEditOrRemove(int _cateNum)
 		{
 		case '1':
 			Prompt_CategoryEdit(_cateNum); // 일정 수정
+
+			Prompt_CategoryMenu();
 			break;
 		case '2':
 			//test
 			Prompt_CategoryRemove(_cateNum); // 일정 삭제
+
+			Prompt_CategoryMenu();
 			break;
 		default: // 오류 메세지
 			system("cls"); // 화면 지우기

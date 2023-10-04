@@ -18,7 +18,11 @@ public:
 
 	int GetSize() { return cate->GetCategories()->size(); }
 	string GetValue(int _index) { return cate->GetCategories()->at(_index); }
+
+	bool SyntaxCheck(string _str);
+	bool DuplicationCheck(string _str);
 private:
 	Category* cate;
+
 };
 
