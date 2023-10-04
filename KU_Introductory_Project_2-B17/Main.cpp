@@ -47,7 +47,7 @@ void MainPrompt() {
 	switch (n[0])
 	{
 	case '1':
-		classification.prompt(); // 일정 분류
+		classification.Prompt(); // 일정 분류
 		break;
 	case '2':
 		//test
