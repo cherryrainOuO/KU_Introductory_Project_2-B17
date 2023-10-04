@@ -86,7 +86,7 @@ void ManagementPrompt() {
 	string y, m, d; // 각각 year, month, date
 	bool b = false; // dateinfo가 입력 형식에 맞는지 확인하기 위한 변수
 
-	cout << "\n\n날짜 입력\n\n";
+	cout << "날짜 입력\n\n";
 
 	cout << "입력 형식 : yyyy/mm/dd\n";
 	cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
@@ -117,15 +117,21 @@ void ManagementPrompt() {
 						b = true;
 					break;
 				case 2:
-					if (stoi(d) <= 28)
-						b = true;
+					if (stoi(y) % 4) {
+						if (stoi(d) <= 28)
+							b = true;
+					}
+					else {
+						if (stoi(d) <= 29)
+							b = true;
+					}
 					break;
 				}
 			}
 		}
 		if(!b) {
 			system("cls");
-			cout << "\n오류: 날짜를 형식에 맞게 입력해주세요.\n\n";
+			cout << "오류: 날짜를 형식에 맞게 입력해주세요.\n\n";
 
 			cout << "아무 키나 눌러주세요.\n";
 			cout << "_____________________________\n";
@@ -135,6 +141,7 @@ void ManagementPrompt() {
 		else {
 			system("cls");
 			/******/
+			
 			_getch();
 		}
 	}
