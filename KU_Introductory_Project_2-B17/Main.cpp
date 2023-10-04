@@ -40,7 +40,8 @@ void MainPrompt() {
 	cout << ">";
 
 	string n;
-	getline(cin, n); // 공백을 포함시키기 위해서 getline 을 사용했습니다.
+	//getline(cin, n); // 공백을 포함시키기 위해서 getline 을 사용했습니다.
+	cin >> n;
 
 	switch (n[0])
 	{
