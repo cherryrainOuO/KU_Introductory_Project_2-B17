@@ -16,6 +16,7 @@ private:
 	void PrintSchedule_ByCategory();
 	void CategoryEdit();
 	void CategoryRemove();
+	void CategoryEditOrRemove_Prompt();
 
 public:
 	/*constructor*/
