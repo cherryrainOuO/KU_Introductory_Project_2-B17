@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calender.cpp" />
+    <ClCompile Include="Classification.cpp" />
     <ClCompile Include="KeywordSearch.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Schedule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calender.h" />
+    <ClInclude Include="Classification.h" />
     <ClInclude Include="KeywordSearch.h" />
     <ClInclude Include="Schedule.h" />
   </ItemGroup>
