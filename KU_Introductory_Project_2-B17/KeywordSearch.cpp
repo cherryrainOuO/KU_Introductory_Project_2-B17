@@ -54,7 +54,7 @@ void KeywordSearch::search()
         removeSpace(memo);
 
         if (title.find(tempKey) != string::npos || memo.find(tempKey) != string::npos)
-            res.push_back(s);
+            res.push(s);
     }
     print();
 }
@@ -67,9 +67,10 @@ void KeywordSearch::print()
     if (res.empty())
         cout << "해당 키워드를 포함하고 있는 일정이 없습니다.\n";
     else {
-        for (Schedule s : res) {
-            s.print();
+        while (!res.empty()) {
+            res.front().print();
             cout << "\n";
+            res.pop();
         }
         cout << "---------------------------------------------\n";
     }

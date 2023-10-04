@@ -3,6 +3,7 @@
 #include "Schedule.h"
 #include <windows.h>
 #include <conio.h>
+#include <queue>
 #include <regex>
 
 class KeywordSearch
@@ -10,7 +11,7 @@ class KeywordSearch
 private:
 	Calender* cal;
 	string kwd;
-	vector<Schedule> res;
+	queue<Schedule> res;
 	int isKeyRight();
 	void search();
 	void print();
