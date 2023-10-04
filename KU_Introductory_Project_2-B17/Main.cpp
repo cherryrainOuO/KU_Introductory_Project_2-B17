@@ -6,6 +6,7 @@
 
 #include "Classification.h"
 #include "Calender.h"
+#include "ScheduleDataManager.h"
 using namespace std;
 
 void MainPrompt();
@@ -18,8 +19,10 @@ Calender calender;
 KeywordSearch ks(&calender); //test
 Classification classification;
 
-int main() {
+ScheduleDataManager SDM;
 
+int main() {
+	SDM.loadDataFile(calender);
 	// 임의 데이터 (나중에 지울거임)
 	Schedule s1 = Schedule("s1", "2023/04/28", "2023/05/02","c1", "m1");
 	Schedule s2 = Schedule("s2", "2023/04/29", "2023/04/29", "c2", "m2");
