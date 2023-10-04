@@ -81,6 +81,7 @@ void SearchPrompt() {
 }
 
 void ManagementPrompt() {
+	system("cls");
 	string dateinfo; // yyyy/mm/dd
 	string y, m, d; // 각각 year, month, date
 	bool b = false; // dateinfo가 입력 형식에 맞는지 확인하기 위한 변수
@@ -94,7 +95,9 @@ void ManagementPrompt() {
 	cout << "------------------------------------\n";
 	cout << "> ";
 
-	cin >> dateinfo;
+	//! cin >> dateinfo;
+	getline(cin, dateinfo); // cin 말고 getline을 사용.
+
 	if (dateinfo == "^C") // 취소 명령어
 		MainPrompt();
 	else {
@@ -121,6 +124,7 @@ void ManagementPrompt() {
 			}
 		}
 		if(!b) {
+			system("cls");
 			cout << "\n오류: 날짜를 형식에 맞게 입력해주세요.\n\n";
 
 			cout << "아무 키나 눌러주세요.\n";
@@ -129,6 +133,7 @@ void ManagementPrompt() {
 			_getch();
 		}
 		else {
+			system("cls");
 			/******/
 			_getch();
 		}
