@@ -15,7 +15,7 @@ void ManagementPrompt();
 void ExitPrompt();
 
 Calender calender;
-KeywordSearch ks; //test
+KeywordSearch ks(&calender); //test
 Classification classification;
 
 int main() {

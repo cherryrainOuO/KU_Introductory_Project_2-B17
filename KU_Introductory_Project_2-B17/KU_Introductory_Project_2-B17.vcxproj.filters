@@ -27,9 +27,6 @@
     <ClCompile Include="Schedule.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Classification.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calender.h">
@@ -39,9 +36,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Schedule.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Classification.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

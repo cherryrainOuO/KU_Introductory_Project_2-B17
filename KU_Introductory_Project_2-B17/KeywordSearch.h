@@ -8,7 +8,7 @@
 class KeywordSearch
 {
 private:
-	Calender cal;
+	Calender* cal;
 	string kwd;
 	vector<Schedule> res;
 	int isKeyRight();
@@ -19,7 +19,7 @@ private:
 public:
 	/*constructor*/
 	KeywordSearch() {};
-	KeywordSearch(Calender& c) { cal = c; };
+	KeywordSearch(Calender* c) { cal = c; };
 
 	void prompt();
 };

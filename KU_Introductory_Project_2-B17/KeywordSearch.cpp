@@ -47,7 +47,7 @@ void KeywordSearch::search()
     string tempKey = kwd;
     removeSpace(tempKey);
 
-    for (Schedule s : cal.allSchs) {
+    for (Schedule s : cal->allSchs) {
         string title = s.getTitle();
         string memo = s.getMemo();
         removeSpace(title);
