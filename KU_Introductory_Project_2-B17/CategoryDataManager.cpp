@@ -7,6 +7,12 @@ bool CategoryDataManager::loadDataFile()
 
 void CategoryDataManager::CategoryAdd(string _str)
 {
+	cate->GetCategories()->push_back(_str);
+	//////////////////////////////////////////////////////////////
+
+		/* 파일에도 업데이트 필요 */
+
+	//////////////////////////////////////////////////////////////
 }
 
 void CategoryDataManager::CategoryEdit(int _cateNum, string _newStr)
