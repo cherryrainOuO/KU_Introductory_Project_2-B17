@@ -16,6 +16,7 @@ public:
 
 	void CategoryPrint();
 
+	vector<string>* GetCategory() { return cate->GetCategories(); }
 	int GetSize() { return cate->GetCategories()->size(); }
 	string GetValue(int _index) { return cate->GetCategories()->at(_index); }
 
