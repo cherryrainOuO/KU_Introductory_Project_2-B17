@@ -9,7 +9,7 @@ using namespace std;
 void MainPrompt();
 void ClassificationPrompt();
 void SearchPrompt();
-void MangementPrompt();
+void ManagementPrompt();
 void ExitPrompt();
 
 KeywordSearch ks; //test
@@ -52,7 +52,7 @@ void MainPrompt() {
 		ks.prompt(); // 검색
 		break;
 	case '3':
-		MangementPrompt(); // 일정 관리
+		ManagementPrompt(); // 일정 관리
 		break;
 	case '4':
 		ExitPrompt(); // 종료
@@ -80,8 +80,59 @@ void SearchPrompt() {
 	system("cls");
 }
 
-void MangementPrompt() {
-	system("cls");
+void ManagementPrompt() {
+	string dateinfo; // yyyy/mm/dd
+	string y, m, d; // 각각 year, month, date
+	bool b = false; // dateinfo가 입력 형식에 맞는지 확인하기 위한 변수
+
+	cout << "\n\n날짜 입력\n\n";
+
+	cout << "입력 형식 : yyyy/mm/dd\n";
+	cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
+
+	cout << "원하는 날짜를 입력하세요.\n";
+	cout << "------------------------------------\n";
+	cout << "> ";
+
+	cin >> dateinfo;
+	if (dateinfo == "^C") // 취소 명령어
+		MainPrompt();
+	else {
+		if (dateinfo.length() == 10 && dateinfo[4] == '/' && dateinfo[7] == '/'){ 
+			y = dateinfo.substr(0, 4);
+			m = dateinfo.substr(5, 2);
+			d = dateinfo.substr(8, 2);
+			if (stoi(y) >= 2000 && stoi(y) <= 2030
+				&& stoi(m)>=1&& stoi(m)<=12&&stoi(d)>=1) {
+				switch (stoi(m)) {
+				case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+					if (stoi(d) <= 31)
+						b = true;
+					break;
+				case 4: case 6: case 9: case 11: 
+					if (stoi(d) <= 30)
+						b = true;
+					break;
+				case 2:
+					if (stoi(d) <= 28)
+						b = true;
+					break;
+				}
+			}
+		}
+		if(!b) {
+			cout << "\n오류: 날짜를 형식에 맞게 입력해주세요.\n\n";
+
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> ";
+			_getch();
+		}
+		else {
+			/******/
+			_getch();
+		}
+	}
 }
 
 void ExitPrompt() {
