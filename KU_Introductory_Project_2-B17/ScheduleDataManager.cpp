@@ -55,14 +55,17 @@ bool ScheduleDataManager::loadDataFile(Calender& c)
             //wcout << token;
             string temptkn;
             temptkn = ws2s(token);
-            cout << temptkn << " ";
+            trim(temptkn); // tkn의 앞 뒤 공백 제거
+            cout << temptkn;
             if (!temptkn.empty()) record.push_back(temptkn); //연속된 tab 무시
         }
         if (record.size() != 5 || !isRight(record)) {
+            cout << record.size(); //test
             cerr << "오류: 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
             return false;
         }
-        Schedule s(record[0], record[1], record[2], record[3], record[4]);
+        //title, sd, ed, cate, memo 순서
+        Schedule s(record[0], record[2], record[3], record[1], record[4]);
         c.allSchs.push_back(s);
         record.clear();
     }
@@ -74,6 +77,16 @@ string ScheduleDataManager::ws2s(const std::wstring& wstr) {
     static std::locale loc("");
     auto& facet = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
     return std::wstring_convert<std::remove_reference<decltype(facet)>::type, wchar_t>(&facet).to_bytes(wstr);
+}
+
+void ScheduleDataManager::trim(string& str) {
+    int npos;
+    //left
+    npos = str.find_first_not_of(' ');
+    str.erase(0, npos);
+    //right
+    npos = str.find_last_not_of(' ');
+    str.erase(npos + 1);
 }
 
 bool ScheduleDataManager::isRight(vector<string> record)
@@ -146,6 +159,7 @@ bool ScheduleDataManager::checkD(string s)
             return false;
         }
     }
+    cout << "날짜 o";
     return false;
 }
 
