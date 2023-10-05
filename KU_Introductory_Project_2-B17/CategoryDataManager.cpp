@@ -103,7 +103,7 @@ bool CategoryDataManager::SyntaxCheck(string _str)
 	regex re("[\\^\\n\\t]");
 
 	if (_str.empty() || // 비어 있거나
-		_str.find_first_not_of(' ') == string::npos ||  // 공백으로 시작하지 않고
+		_str.find_first_not_of(' ') ||  // 공백으로 시작하지 않고
 		regex_search(_str, re) || // ^ \n \t 안들어 있고
 		!(_str.size() >= 1 && _str.size() <= 30)) // 길이 1 이상 30 이하여야 한다.
 	{
