@@ -113,8 +113,8 @@ void Management::printSchedule(){
 		getline(cin, m);
 		system("cls");
 		if (m == "^C") {
-			// ## 캘린더 홈이 아니라 날짜 입력으로 돌아가야 함
-			return;
+			system("cls");
+			Prompt();
 		}
 		else if (m[0] == '1')
 			addSchedule();
