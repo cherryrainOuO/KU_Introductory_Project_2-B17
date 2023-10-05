@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include "Calender.h"
+#include <regex>
 
 class ScheduleDataManager
 {
@@ -13,7 +14,7 @@ private:
 	bool isRight(vector<string> record);
 	bool checkT(string data); //title
 	bool checkC(string data); // category
-	bool checkD(string s, string e); //date
+	bool checkD(string s); //date
 	bool checkM(string data); //memo
 };
 
