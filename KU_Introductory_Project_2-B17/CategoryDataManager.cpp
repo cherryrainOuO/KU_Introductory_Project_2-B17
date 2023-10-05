@@ -1,13 +1,58 @@
 #include "CategoryDataManager.h"
 
-bool CategoryDataManager::loadDataFile()
+bool CategoryDataManager::loadDataFile(Category& _cate)
 {
-	return false;
+	//파일 경로 사용자 지정?
+	string filePath;
+	string fileName = "testCate.txt";
+	ifstream file;
+	file.open(fileName, ios::in | ios::binary);
+	if (!file) {
+		//파일이 존재하지 않음
+		cout << "경고: 데이터 파일이 존재하지 않습니다. 빈 데이터 파일을 생성합니다.\n";
+		ofstream fout;
+		fout.open(fileName, ios::out | ios::binary);
+		if (!fout.is_open()) {
+			cout << "오류: 데이터 파일 생성을 실패하였습니다. 프로그램을 종료합니다.\n";
+			return false; //false가 리턴되면 프로그램이 종료되도록
+		}
+		else {
+			fout.close();
+			return true;
+		}
+	}
+
+	//파일이 존재하는 경우
+	vector<string> record;
+	string line;
+	int idx = 0;
+	while (getline(file, line)) {
+		cout << line << "\n";
+
+		if (SyntaxCheck(line) == false) { 
+			//////////////////////////////////////////////////////////////
+			//! 왜 \t \n ' ' 은 인식을 못할까요? ㅎㅎ
+			//! 
+			//! 
+			//////////////////////////////////////////////////////////////
+			cout << "오류 : 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
+
+			return false;
+		}
+		
+		record.push_back(line);
+	}
+	_cate.SetCategories(record);
+
+	file.close();
+	cout << "데이터 로드 성공";
+	return true;
 }
 
 void CategoryDataManager::CategoryAdd(string _str)
 {
 	cate->GetCategories()->push_back(_str);
+
 	//////////////////////////////////////////////////////////////
 
 		/* 파일에도 업데이트 필요 */

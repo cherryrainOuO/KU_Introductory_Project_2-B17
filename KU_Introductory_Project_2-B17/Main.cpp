@@ -19,7 +19,7 @@ Calender calender;
 Category category;
 
 ScheduleDataManager SDM;
-CategoryDataManager CDM(&category);
+CategoryDataManager CDM(&category, &calender);
 
 Management mng(&calender);
 KeywordSearch ks(&calender); //test
@@ -28,6 +28,7 @@ Classification classification(&calender, &CDM);
 
 int main() {
 	SDM.loadDataFile(calender);
+	CDM.loadDataFile(category);
 
 	Sleep(2000);
 	// 임의 데이터 (나중에 지울거임)

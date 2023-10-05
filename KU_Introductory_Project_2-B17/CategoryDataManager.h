@@ -7,8 +7,8 @@
 class CategoryDataManager
 {
 public:
-	CategoryDataManager(Category* _cate) { cate = _cate; }
-	bool loadDataFile();
+	CategoryDataManager(Category* _cate, Calender* _cale) { cate = _cate; cale = _cale; }
+	bool loadDataFile(Category& _cate);
 
 	void CategoryAdd(string _str);
 	void CategoryEdit(int _cateNum, string _newStr);
@@ -24,6 +24,7 @@ public:
 	bool DuplicationCheck(string _str);
 private:
 	Category* cate;
+	Calender* cale;
 
 };
 
