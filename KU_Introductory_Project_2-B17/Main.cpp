@@ -29,11 +29,11 @@ Classification classification(&calender, &CDM);
 int main() {
 	SDM.loadDataFile(calender);
 	// 임의 데이터 (나중에 지울거임)
-	Schedule s1 = Schedule("s1", "2023/04/28", "2023/05/02","c1", "m1");
-	Schedule s2 = Schedule("s2", "2023/04/29", "2023/04/29", "c2", "m2");
-	Schedule s3 = Schedule("s3", "2023/04/29", "2023/04/29", "c3", "m3");
-	Schedule s4 = Schedule("s4", "2023/04/30", "2023/05/06", "c4", "m4");
-	Schedule s5 = Schedule("s5", "2023/04/30", "2023/04/30", "c5", "m5");
+	Schedule s1 = Schedule("s1", "2023/04/28", "2023/05/02","기본", "m1");
+	Schedule s2 = Schedule("s2", "2023/04/29", "2023/04/29", "기본", "m2");
+	Schedule s3 = Schedule("s3", "2023/04/29", "2023/04/29", "카테1", "m3");
+	Schedule s4 = Schedule("s4", "2023/04/30", "2023/05/06", "카테2", "m4");
+	Schedule s5 = Schedule("s5", "2023/04/30", "2023/04/30", "카테3", "m5");
 
 	calender.allSchs.push_back(s1);
 	calender.allSchs.push_back(s2);

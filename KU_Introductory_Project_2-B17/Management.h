@@ -5,6 +5,8 @@
 #include <conio.h>
 #include <regex>
 
+/* ## : 수정 필요, ctrl + f로 찾기 바람 */
+
 class Management
 {
 private:
@@ -14,7 +16,7 @@ private:
 	void printSchedule();
 	void addSchedule();
 	void modifySchedule();
-	bool isValidDate();
+	int isValidDate();
 
 public:
 	Management(Calender* c) { cal = c; };
