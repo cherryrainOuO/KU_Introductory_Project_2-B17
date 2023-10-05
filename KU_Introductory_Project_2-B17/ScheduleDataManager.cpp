@@ -47,20 +47,21 @@ bool ScheduleDataManager::loadDataFile(Calender& c)
 
 bool ScheduleDataManager::isRight(vector<string> record)
 {
-    bool c1, c2, c3, c4;
+    bool c1, c2, c3, c4, c5;
     try
     {
         c1 = checkT(record[0]);
         c2 = checkC(record[1]);
-        c3 = checkD(record[2], record[3]);
-        c4 = checkM(record[4]);
+        c3 = checkD(record[2]);
+        c4 = checkD(record[3]);
+        c5 = checkM(record[4]);
     }
     catch (const exception& e)
     {
         //nullpointerException
         return false;
     }
-    return (c1 && c2 && c3 && c4);
+    return (c1 && c2 && c3 && c4 && c5);
 }
 
 bool ScheduleDataManager::checkT(string data)
@@ -76,10 +77,45 @@ bool ScheduleDataManager::checkC(string data)
     return true;
 }
 
-bool ScheduleDataManager::checkD(string s, string e)
+bool ScheduleDataManager::checkD(string s)
 {
-    /*날짜 체크...*/
-    return true;
+    string y, m, d; // 각각 year, month, date{
+    regex re("[0-9]{4}/[0-9]{2}/[0-9]{2}");	// 날짜 문법 형식
+
+    if (regex_match(s, re)) {
+        y = s.substr(0, 4);
+        m = s.substr(5, 2);
+        d = s.substr(8, 2);
+
+        if (stoi(y) >= 2000 && stoi(y) <= 2030
+            && stoi(m) >= 1 && stoi(m) <= 12 && stoi(d) >= 1) {
+
+            switch (stoi(m)) {
+
+            case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                if (stoi(d) <= 31)
+                    return true;
+
+            case 4: case 6: case 9: case 11:
+                if (stoi(d) <= 30)
+                    return true;
+
+            case 2:
+                if (stoi(y) % 4) {
+                    if (stoi(d) <= 28)
+                        return true;
+                }
+                else {
+                    if (stoi(d) <= 29)
+                        return true;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    return false;
 }
 
 bool ScheduleDataManager::checkM(string data)
