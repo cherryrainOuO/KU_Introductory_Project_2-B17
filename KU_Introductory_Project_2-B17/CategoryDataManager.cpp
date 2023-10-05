@@ -55,22 +55,26 @@ void CategoryDataManager::CategoryPrint()
 
 bool CategoryDataManager::SyntaxCheck(string _str)
 {
-	//////////////////////////////////////////////////////////////
+	regex re("[\\^\\n\\t]");
 
-	/* 카테고리 문법 규칙 체크 : 통과하면 true 틀리면 false*/
-
-	//////////////////////////////////////////////////////////////
-
-	return false;
+	if (_str.empty() || // 비어 있거나
+		_str.find_first_not_of(' ') == string::npos ||  // 공백으로 시작하지 않고
+		regex_search(_str, re) || // ^ \n \t 안들어 있고
+		!(_str.size() >= 1 && _str.size() <= 30)) // 길이 1 이상 30 이하여야 한다.
+	{
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 
 bool CategoryDataManager::DuplicationCheck(string _str)
 {
-	//////////////////////////////////////////////////////////////
-
-	/* 카테고리 중복 체크 : 통과하면 true 틀리면 false*/
-
-	//////////////////////////////////////////////////////////////
-
-	return false;
+	if (find(cate->GetCategories()->begin(), cate->GetCategories()->end(), _str) != cate->GetCategories()->end()) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }

@@ -28,6 +28,8 @@ Classification classification(&calender, &CDM);
 
 int main() {
 	SDM.loadDataFile(calender);
+
+	Sleep(2000);
 	// 임의 데이터 (나중에 지울거임)
 	Schedule s1 = Schedule("s1", "2023/04/28", "2023/05/02","기본", "m1");
 	Schedule s2 = Schedule("s2", "2023/04/29", "2023/04/29", "기본", "m2");
