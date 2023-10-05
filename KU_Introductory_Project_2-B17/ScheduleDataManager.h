@@ -5,6 +5,8 @@
 #include <regex>
 #include <Windows.h>
 #include <atlconv.h>
+#include <locale>
+#include <codecvt>
 
 class ScheduleDataManager
 {
@@ -12,6 +14,7 @@ public:
 	ScheduleDataManager() {};
 	bool loadDataFile(Calender& c);
 private:
+	string ws2s(const std::wstring& wstr);
 	//검사
 	bool isRight(vector<string> record);
 	bool checkT(string data); //title
