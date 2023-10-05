@@ -2,7 +2,7 @@
 
 bool ScheduleDataManager::loadDataFile(Calender& c)
 {
-    // 파일 경로 (잘 돌아감)
+    // 파일 절대경로 (필요여부? )
     /*
     int a;
     wchar_t path[MAX_PATH] = { 0 };
@@ -15,7 +15,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c)
     string fileName = "testSch.txt";
     
     cout << "****filePath**** : " << filePath << "\n\n";
-    // cin >> a; filepath 확인
+    cin >> a; filepath 확인
     */
 
     string fileName = "testSch.txt";
