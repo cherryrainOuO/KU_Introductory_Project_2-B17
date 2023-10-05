@@ -2,9 +2,23 @@
 
 bool ScheduleDataManager::loadDataFile(Calender& c)
 {
-    //파일 경로 사용자 지정?
-    string filePath;
+    // 파일 경로 (잘 돌아감)
+    /*
+    int a;
+    wchar_t path[MAX_PATH] = { 0 };
+    GetModuleFileName(NULL, path, MAX_PATH);
+
+    USES_CONVERSION;
+    string filePath = W2A(path);
+    filePath = filePath.substr(0, filePath.find_last_of("\\/"));
+
     string fileName = "testSch.txt";
+    
+    cout << "****filePath**** : " << filePath << "\n\n";
+    // cin >> a; filepath 확인
+    */
+
+    string fileName;
     ifstream file;
     file.open(fileName, ios::in | ios::binary);
     if (!file) {

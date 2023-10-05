@@ -3,6 +3,8 @@
 #include <sstream>
 #include "Calender.h"
 #include <regex>
+#include <Windows.h>
+#include <atlconv.h>
 
 class ScheduleDataManager
 {
