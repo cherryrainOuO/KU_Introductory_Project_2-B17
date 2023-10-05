@@ -15,6 +15,7 @@ void Management::Prompt(){
 	//! cin >> dateinfo;
 	getline(cin, dateinfo); // cin 말고 getline을 사용.
 	if (dateinfo == "^C") {	// 취소 명령어
+		system("cls");
 		return;
 	}
 	else {
