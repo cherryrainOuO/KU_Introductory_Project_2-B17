@@ -131,7 +131,7 @@ void Classification::PrintSchedule_ByCategory()
 		Prompt_CategoryMenu();
 	}
 
-	else if (stoi(kwd) > CDM->GetSize() || stoi(kwd) < 0) { // 오류 메세지
+	else if (stoi(kwd) > CDM->GetSize() || stoi(kwd) <= 0) { // 오류 메세지
 		system("cls"); // 화면 지우기
 
 		cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";

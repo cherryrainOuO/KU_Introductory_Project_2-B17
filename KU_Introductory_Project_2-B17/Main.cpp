@@ -44,12 +44,6 @@ int main() {
 	calender.allSchs.push_back(s4);
 	calender.allSchs.push_back(s5);
 	
-	vector<string> tempCate;
-	tempCate.push_back("카테1");
-	tempCate.push_back("카테2");
-	tempCate.push_back("카테3");
-	tempCate.push_back("카테4");
-	category.SetCategories(tempCate);
 
 	while (true) {
 
