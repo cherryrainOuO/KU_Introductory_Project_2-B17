@@ -19,7 +19,7 @@ Calender calender;
 Category category;
 
 ScheduleDataManager SDM;
-CategoryDataManager CDM(&category);
+CategoryDataManager CDM(&category, &calender);
 
 Management mng(&calender);
 KeywordSearch ks(&calender); //test
@@ -28,25 +28,9 @@ Classification classification(&calender, &CDM);
 
 int main() {
 	SDM.loadDataFile(calender);
-	// 임의 데이터 (나중에 지울거임)
-	Schedule s1 = Schedule("s1", "2023/04/28", "2023/05/02","기본", "m1");
-	Schedule s2 = Schedule("s2", "2023/04/29", "2023/04/29", "기본", "m2");
-	Schedule s3 = Schedule("s3", "2023/04/29", "2023/04/29", "카테1", "m3");
-	Schedule s4 = Schedule("s4", "2023/04/30", "2023/05/06", "카테2", "m4");
-	Schedule s5 = Schedule("s5", "2023/04/30", "2023/04/30", "카테3", "m5");
+	CDM.loadDataFile(category);
 
-	calender.allSchs.push_back(s1);
-	calender.allSchs.push_back(s2);
-	calender.allSchs.push_back(s3);
-	calender.allSchs.push_back(s4);
-	calender.allSchs.push_back(s5);
-
-	vector<string> tempCate;
-	tempCate.push_back("카테1");
-	tempCate.push_back("카테2");
-	tempCate.push_back("카테3");
-	tempCate.push_back("카테4");
-	category.SetCategories(tempCate);
+	Sleep(2000);
 
 	while (true) {
 

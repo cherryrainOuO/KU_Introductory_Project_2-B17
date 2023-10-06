@@ -69,7 +69,7 @@ void Classification::CategoryAdd()
 	if (kwd == "^C") {
 		return;
 	}
-	else if (kwd.length() < 1 || kwd.length() > 30) {
+	else if (!(CDM->SyntaxCheck(kwd))) {
 		system("cls"); // 화면 지우기
 
 		cout << "오류 : 해당 입력은 카테고리명으로 사용할 수 없습니다." << endl << endl;
@@ -80,7 +80,7 @@ void Classification::CategoryAdd()
 		_getch();
 		CategoryAdd();
 	}
-	else if (find(CDM->GetCategory()->begin(), CDM->GetCategory()->end(), kwd) != CDM->GetCategory()->end()) {	//벡터 내에 kwd가 존재하지 않을 경우
+	else if (!(CDM->DuplicationCheck(kwd))) {	//벡터 내에 kwd가 존재하지 않을 경우
 		system("cls"); // 화면 지우기
 
 		cout << "오류 : 해당 카테고리명이 이미 존재합니다." << endl << endl;
@@ -131,7 +131,7 @@ void Classification::PrintSchedule_ByCategory()
 		Prompt_CategoryMenu();
 	}
 
-	else if (stoi(kwd) >= CDM->GetSize() || stoi(kwd) < 0) { // 오류 메세지
+	else if (stoi(kwd) > CDM->GetSize() || stoi(kwd) <= 0) { // 오류 메세지
 		system("cls"); // 화면 지우기
 
 		cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";
@@ -288,7 +288,7 @@ void Classification::Prompt_PrintCategoryList_ForEditOrRemove()
 	if (kwd == "^C") { // 취소
 		Prompt_CategoryMenu();
 	}
-	else if (stoi(kwd) >= CDM->GetSize() || stoi(kwd) < 0) { // 오류 메세지
+	else if (stoi(kwd) > CDM->GetSize() || stoi(kwd) < 0) { // 오류 메세지
 		system("cls"); // 화면 지우기
 
 		cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";
