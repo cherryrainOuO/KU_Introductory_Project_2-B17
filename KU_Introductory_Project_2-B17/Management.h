@@ -15,8 +15,9 @@ private:
 
 	void printSchedule();
 	void addSchedule();
-	void modifySchedule();
+	void mod_or_delSchedule();
 	int isValidDate();
+	bool is_digit(string str);
 
 public:
 	Management(Calender* c) { cal = c; };
