@@ -25,6 +25,7 @@ private:
 	bool checkT(string data); //title
 	bool checkC(string data); // category
 	bool checkD(string s); //date
+	bool checkD2(string sd, string ed);
 	bool checkM(string data); //memo
 };
 

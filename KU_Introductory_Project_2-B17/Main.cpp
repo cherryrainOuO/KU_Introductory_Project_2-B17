@@ -32,7 +32,7 @@ int main() {
 	SDM.saveDataFile(calender); //test
 	Sleep(2000);
 
-	CDM.SaveDataFile();
+	CDM.SaveDataFile(); //test
 	while (true) {
 
 		MainPrompt();

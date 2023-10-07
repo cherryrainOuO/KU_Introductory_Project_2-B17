@@ -63,7 +63,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
     string fileName = "testSch.txt";
     wofstream file;
 
-    file.open(fileName, ios::app);
+    file.open(fileName, ios::out);
     file.imbue(locale(file.getloc(), new codecvt_utf8<wchar_t>));
 
     for (Schedule s : c.allSchs) {
@@ -88,6 +88,8 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
     return true;
 }
 
+/*---------보조 기능---------*/
+
 wstring ScheduleDataManager::s2ws(const string& str)
 {
     static std::locale loc("");
@@ -111,23 +113,26 @@ void ScheduleDataManager::trim(string& str) {
     str.erase(npos + 1);
 }
 
+
+/*--------파일 무결성 검사----------*/
+
 bool ScheduleDataManager::isRight(vector<string> record)
 {
-    bool c1, c2, c3, c4, c5;
     try
     {
-        c1 = checkT(record[0]);
-        c2 = checkC(record[1]);
-        c3 = checkD(record[2]);
-        c4 = checkD(record[3]);
-        c5 = checkM(record[4]);
+        if(!checkT(record[0])) return false; //title
+        if(!checkC(record[1])) return false; //category
+        if(!checkD(record[2])) return false; //startDate
+        if(!checkD(record[3])) return false; //endDate
+        if (!checkD2(record[2], record[3])) return false; //startDate <= endDate
+        if(!checkM(record[4])) return false; // memo
     }
     catch (const exception& e)
     {
         //nullpointerException
         return false;
     }
-    return (c1 && c2 && c3 && c4 && c5);
+    return true;
 }
 
 bool ScheduleDataManager::checkT(string data)
@@ -139,7 +144,10 @@ bool ScheduleDataManager::checkT(string data)
 
 bool ScheduleDataManager::checkC(string data)
 {
-    /*카테고리 규칙*/
+    regex re("[\\^\\n\\t]");
+
+    if (regex_search(data, re) || data.length() < 1 || data.length() > 30) return false;
+
     return true;
 }
 
@@ -181,12 +189,27 @@ bool ScheduleDataManager::checkD(string s)
             return false;
         }
     }
-    cout << "날짜 o";
     return false;
+}
+
+bool ScheduleDataManager::checkD2(string sdt, string edt) {
+    //형식 검사는 checkD에서 선행되기 때문에 검사 x
+    string sy = sdt.substr(0, 4), sm = sdt.substr(5, 2), sd = sdt.substr(8, 2); //startDate
+    string ey = edt.substr(0, 4), em = edt.substr(5, 2), ed = edt.substr(8, 2); //endDate
+
+    int start = stoi(sy) * 10000 + stoi(sm) * 100 + stoi(sd); //2xxxxxxx
+    int end = stoi(ey) * 10000 + stoi(em) * 100 + stoi(ed);
+
+    if (start > end) return false;
+
+    return true;
 }
 
 bool ScheduleDataManager::checkM(string data)
 {
-    /*메모 체크...*/
+    regex re("[\\^\\n\\t]");
+
+    if (regex_search(data, re)) return false;
+
     return true;
 }
