@@ -57,7 +57,45 @@ bool ScheduleDataManager::loadDataFile(Calender& c)
     return true;
 }
 
-string ScheduleDataManager::ws2s(const std::wstring& wstr) {
+bool ScheduleDataManager::saveDataFile(Calender& c)
+{
+    //이 함수를 호출하기 전 일정 추가 프롬프트에서 모든 문법 검사를 마치기 때문에 따로 검사를 하지 않습니다
+    string fileName = "testSch.txt";
+    wofstream file;
+
+    file.open(fileName, ios::app);
+    file.imbue(locale(file.getloc(), new codecvt_utf8<wchar_t>));
+
+    for (Schedule s : c.allSchs) {
+        wstring t = s2ws(s.getTitle());
+        wstring c = s2ws(s.getCategory());
+        wstring sD = s2ws(s.getStartDate());
+        wstring eD = s2ws(s.getEndDate());
+        wstring m = s2ws(s.getMemo());
+        file << t << L"\t" << c << L"\t" << sD << L"\t" << eD << L"\t" << m << L"\n";
+        //string s = "감자\t감자\t2022/12/12\t2022/12/12\tㅋㅋㅋ\n";
+        //wstring ws = s2ws(s);
+        //file << ws;
+    }
+
+    file.close();
+
+    if (file.fail()) {
+        cerr << "파일 저장에 실패했습니다.";
+        return false;
+    }
+
+    return true;
+}
+
+wstring ScheduleDataManager::s2ws(const string& str)
+{
+    static std::locale loc("");
+    auto& facet = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
+    return std::wstring_convert<std::remove_reference<decltype(facet)>::type, wchar_t>(&facet).from_bytes(str);
+}
+
+string ScheduleDataManager::ws2s(const wstring& wstr) {
     static std::locale loc("");
     auto& facet = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
     return std::wstring_convert<std::remove_reference<decltype(facet)>::type, wchar_t>(&facet).to_bytes(wstr);

@@ -29,9 +29,10 @@ Classification classification(&calender, &CDM);
 int main() {
 	SDM.loadDataFile(calender);
 	CDM.loadDataFile(category);
-
+	SDM.saveDataFile(calender); //test
 	Sleep(2000);
 
+	CDM.SaveDataFile();
 	while (true) {
 
 		MainPrompt();

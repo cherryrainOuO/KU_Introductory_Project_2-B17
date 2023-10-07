@@ -7,14 +7,18 @@
 #include <atlconv.h>
 #include <locale>
 #include <codecvt>
+#include <atlstr.h>
 
 class ScheduleDataManager
 {
 public:
 	ScheduleDataManager() {};
 	bool loadDataFile(Calender& c);
+	bool saveDataFile(Calender& c);
+
 private:
-	string ws2s(const std::wstring& wstr);
+	wstring s2ws(const string& str);
+	string ws2s(const wstring& wstr);
 	void trim(string& str);
 	//검사
 	bool isRight(vector<string> record);
