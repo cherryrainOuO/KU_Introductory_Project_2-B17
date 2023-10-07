@@ -80,7 +80,21 @@ bool CategoryDataManager::SaveDataFile()
 
 	//////////////////////////////////////////////////////////////
 
-	return false;
+	string fileName = "testCate.txt";
+	ofstream file(fileName);
+
+	if (file.fail()) {
+		cout << "Error" << endl;
+		return false;
+	}
+	else {
+		for (int i = 0; i < GetSize(); i++) {
+			//file << GetValue(i) << endl;	//개행으로 구분
+			file << GetValue(i) << "\t";	//\t으로 구분
+		}
+	}
+
+	return true;
 }
 
 string CategoryDataManager::ws2s(const std::wstring& wstr) {
