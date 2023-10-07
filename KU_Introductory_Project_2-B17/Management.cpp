@@ -294,6 +294,8 @@ void Management::addSchedule()
 			break;
 		case 3:
 			// ## 카테고리 진행 이후
+			category = "hi";
+
 			flag = 4;
 			break;
 		case 4:
@@ -328,7 +330,9 @@ void Management::addSchedule()
 		}
 	}
 	Schedule* newDate = new Schedule(title, startDate, endDate, category, memo);
-	// ## 데이터 파일에 해당 스케줄 추가
+	cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+	SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+	
 	system("cls");
 	printSchedule();
 }

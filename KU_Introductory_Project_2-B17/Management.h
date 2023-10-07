@@ -1,6 +1,7 @@
 #pragma once
 #include "Calender.h"
 #include "Schedule.h"
+#include "ScheduleDataManager.h"
 #include <windows.h>
 #include <conio.h>
 #include <regex>
@@ -12,6 +13,7 @@ class Management
 private:
 	Calender* cal;
 	string dateinfo;
+	ScheduleDataManager SDM;
 
 	void printSchedule();
 	void addSchedule();
