@@ -8,6 +8,7 @@
 #include <atlconv.h>
 #include "Calender.h"
 #include "Category.h"
+#include "ScheduleDataManager.h"
 
 class CategoryDataManager
 {
@@ -16,9 +17,10 @@ public:
 	bool loadDataFile(Category& _cate);
 	bool SaveDataFile(); ///////////////////////////////////////////////////////////////////////////// 구현 필요!
 	string ws2s(const std::wstring& wstr);
+	wstring s2ws(const string& str);
 	void trim(string& str);
 
-	bool UpdateCategoryToCalender(); ///////////////////////////////////////////////////////////////// 구현 필요!
+	bool UpdateCategoryToCalender(int _cateNum, string _newStr); ///////////////////////////////////////////////////////////////// 구현 필요!
 
 	void CategoryAdd(string _str);
 	void CategoryEdit(int _cateNum, string _newStr);
@@ -36,6 +38,6 @@ public:
 private:
 	Category* cate;
 	Calender* cale;
-
+	ScheduleDataManager* SDM;
 };
 

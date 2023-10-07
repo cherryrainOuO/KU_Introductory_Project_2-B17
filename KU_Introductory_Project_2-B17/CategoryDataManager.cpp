@@ -59,7 +59,7 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 			}
 
 		}
-		
+
 	}
 
 	_cate.SetCategories(record);
@@ -80,21 +80,40 @@ bool CategoryDataManager::SaveDataFile()
 
 	//////////////////////////////////////////////////////////////
 
-	string fileName = "testCate.txt";
-	ofstream file(fileName);
+	try {
+		string fileName = "testCate.txt";
+		wofstream file;
 
-	if (file.fail()) {
-		cout << "Error" << endl;
-		return false;
-	}
-	else {
-		for (int i = 0; i < GetSize(); i++) {
-			//file << GetValue(i) << endl;	//개행으로 구분
-			file << GetValue(i) << "\t";	//\t으로 구분
+		file.open(fileName, ios::out);
+		file.imbue(locale(file.getloc(), new codecvt_utf8<wchar_t>));
+
+		if (file.fail()) {
+			cout << "파일 저장에 실패했습니다." << endl;
+			return false;
 		}
+		else {
+			for (int i = 0; i < GetSize(); i++) {
+				wstring c = s2ws(GetValue(i));
+				file << L"\t" << c;	//\t으로 구분
+			}
+		}
+
+		file.close();
+
+	}
+	catch (exception e) {
+		cout << "Save Data File" << endl;
+		e.what();
 	}
 
 	return true;
+}
+
+wstring CategoryDataManager::s2ws(const string& str)
+{
+	static std::locale loc("");
+	auto& facet = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
+	return std::wstring_convert<std::remove_reference<decltype(facet)>::type, wchar_t>(&facet).from_bytes(str);
 }
 
 string CategoryDataManager::ws2s(const std::wstring& wstr) {
@@ -113,14 +132,14 @@ void CategoryDataManager::trim(string& str) {
 	str.erase(npos + 1);
 }
 
-bool CategoryDataManager::UpdateCategoryToCalender()
+bool CategoryDataManager::UpdateCategoryToCalender(int _cateNum, string _newStr)
 {
 
 	//////////////////////////////////////////////////////////////
 
 		/* 캘린더의 스케줄들의 카테고리에도 바뀐내용 업데이트 해주세요 ~ ~ */
 
-	
+
 		/* 캘린더 파일에도 바뀐 카테고리 명으로 업데이트 필요 */
 	// 캘린더 :: 세이브 데이터 파일?
 
@@ -128,7 +147,22 @@ bool CategoryDataManager::UpdateCategoryToCalender()
 
 	//////////////////////////////////////////////////////////////
 
-	return false;
+	string oldCate = GetValue(_cateNum);
+
+
+	for (int i = 0; i < cale->allSchs.size(); i++) {
+		if (cale->allSchs.at(i).getCategory().compare(oldCate) == 0) {
+			cale->allSchs.at(i).setCategory(_newStr);
+			cale->allSchs.at(i).print();
+		}
+	}
+	SDM->saveDataFile(*cale);
+
+
+
+
+
+	return true;
 }
 
 void CategoryDataManager::CategoryAdd(string _str)
@@ -145,35 +179,24 @@ void CategoryDataManager::CategoryAdd(string _str)
 
 void CategoryDataManager::CategoryEdit(int _cateNum, string _newStr)
 {
-	cate->GetCategories()->at(_cateNum) = _newStr; // 수정
-
-
-	//////////////////////////////////////////////////////////////
-
-		/* 카테고리 파일에도 업데이트 필요 */
+	UpdateCategoryToCalender(_cateNum, _newStr); // 수정
+	cate->GetCategories()->at(_cateNum) = _newStr;
 	SaveDataFile();
-
-		/* 스케줄에도 바뀐 카테고리 명으로 업데이트 필요 */
-	UpdateCategoryToCalender();
-
-		/* 캘린더 파일에도 바뀐 카테고리 명으로 업데이트 필요 */
-	// 캘린더 :: 세이브 데이터 파일?
-
-	//////////////////////////////////////////////////////////////
 }
 
 void CategoryDataManager::CategoryRemove(int _cateNum)
 {
-	cate->GetCategories()->erase(cate->GetCategories()->begin() + _cateNum - 1); // 삭제
+
+
 
 	//////////////////////////////////////////////////////////////
 
 		/* 카테고리 파일에도 업데이트 필요 */
 	SaveDataFile();
 
-		/* 스케줄에도 바뀐 카테고리 명으로 업데이트 필요 */
-	UpdateCategoryToCalender();
-
+	//	/* 스케줄에도 바뀐 카테고리 명으로 업데이트 필요 */
+	UpdateCategoryToCalender(_cateNum - 1, "기본");
+	cate->GetCategories()->erase(cate->GetCategories()->begin() + _cateNum - 1); // 삭제
 
 	//////////////////////////////////////////////////////////////
 }
