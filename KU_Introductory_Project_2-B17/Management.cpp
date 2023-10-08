@@ -145,8 +145,10 @@ void Management::printSchedule(){
 		cout << "> ";
 		getline(cin, m);
 		system("cls");
-		if (m == "^C")
-			return;
+		if (m == "^C"){
+			system("cls");
+			Prompt();
+		}
 		else if (m[0] == '1')
 			addSchedule();
 		else {
