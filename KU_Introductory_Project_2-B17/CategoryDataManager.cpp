@@ -210,17 +210,15 @@ void CategoryDataManager::CategoryPrint()
 
 bool CategoryDataManager::SyntaxCheck(string _str)
 {
-	regex re("[\\^\\n\\t]");
-
-	if (_str.empty() || // 비어 있거나
-		_str.find_first_not_of(' ') == string::npos ||  // 공백으로 시작하지 않고
-		regex_search(_str, re) || // ^ \n \t 안들어 있고
-		!(_str.size() >= 1 && _str.size() <= 30)) // 길이 1 이상 30 이하여야 한다.
-	{
-		return false;
+	wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]{1,30})");
+	wsmatch wideMatch;
+	wstring wstr = SDM->s2ws(_str);
+	if (regex_match(wstr.cbegin(), wstr.cend(), wideMatch, wrx) &&
+		_str[0] != ' ' && _str.back() != ' ') {
+		return true;
 	}
 	else {
-		return true;
+		return false;
 	}
 }
 

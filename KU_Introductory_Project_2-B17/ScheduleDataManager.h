@@ -16,6 +16,7 @@ public:
 	bool loadDataFile(Calender& c);
 	bool saveDataFile(Calender& c);
 	friend class Management;
+	friend class CategoryDataManager;
 
 private:
 	wstring s2ws(const string& str);
