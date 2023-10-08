@@ -21,10 +21,9 @@ Category category;
 ScheduleDataManager SDM;
 CategoryDataManager CDM(&category, &calender);
 
-Management mng(&calender);
 KeywordSearch ks(&calender); //test
 Classification classification(&calender, &CDM);
-
+Management mng(&calender, &CDM, &classification);
 
 int main() {
 	SDM.loadDataFile(calender);
