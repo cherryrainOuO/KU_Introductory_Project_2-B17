@@ -530,6 +530,7 @@ void Management::mod_or_delSchedule()
 				switch (isValidDate()) {
 				case 0:
 					sche[selectedNum]->setStartDate(startDate);
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					break;
 				case -1:
@@ -591,6 +592,7 @@ void Management::mod_or_delSchedule()
 					}
 					else {
 						sche[selectedNum]->setEndDate(endDate);
+						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					break;
@@ -635,6 +637,7 @@ void Management::mod_or_delSchedule()
 				if (regex_match(wtitle.cbegin(), wtitle.cend(), wideMatch, wrx) &&
 					title[0] != ' ' && title.back() != ' ') {
 					sche[selectedNum]->setTitle(title);
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else {
@@ -668,16 +671,19 @@ void Management::mod_or_delSchedule()
 			}
 			else if (is_digit(menu) && 0 == stoi(menu)) {
 				sche[selectedNum]->setCategory("기본"); // 기본 카테고리
+				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
 				sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
+				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
 				CLS->CategoryAdd(); // 카테고리 추가
 				if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
 					sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else {
@@ -706,6 +712,7 @@ void Management::mod_or_delSchedule()
 					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
 						memo[0] != ' ' && memo.back() != ' ') {
 						sche[selectedNum]->setMemo(memo);
+						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					else {
@@ -737,7 +744,7 @@ void Management::mod_or_delSchedule()
 			}
 			else if (is_digit(menu) && stoi(menu) == 1) {
 				cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
-				//delete &sche[selectedNum];
+				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 			}
 			else {
 				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
