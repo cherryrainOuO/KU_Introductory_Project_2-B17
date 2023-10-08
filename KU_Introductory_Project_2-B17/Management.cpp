@@ -277,9 +277,11 @@ void Management::addSchedule()
 				flag = 1;
 			}
 			else {
-				// ## 정규 표현식 수정해야 함
-				regex re("[ㄱ-ㅣ가-힣a-zA-Z0-9]");
-				if (regex_match(title, re)) {
+				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]{1,30})");
+				wsmatch wideMatch;
+				wstring wtitle = SDM.s2ws(title);
+				if (regex_match(wtitle.cbegin(), wtitle.cend(), wideMatch, wrx) &&
+					title[0] != ' ' && title.back() != ' ') {
 					flag = 3;
 				}
 				else {
@@ -309,21 +311,28 @@ void Management::addSchedule()
 
 			getline(cin, memo);
 			if (memo == "^C") {
-				flag = 3;
+				flag = 3;	
 			}
 			else {
-				// ## 정규 표현식 수정해야 함
-				regex re("[ㄱ-ㅣ가-힣a-zA-Z0-9]");
-				if (regex_match(memo, re)) {
-					flag = 5;
+				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+				wsmatch wideMatch;
+				wstring wmemo = SDM.s2ws(memo);
+				if (memo.size() != 0) {
+					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
+						memo[0] != ' ' && memo.back() != ' ') {
+						flag = 5;
+					}
+					else {
+						system("cls");
+						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+					}
 				}
 				else {
-					system("cls");
-					cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
-					cout << "아무 키나 눌러주세요.\n";
-					cout << "_____________________________\n";
-					cout << "> ";
-					_getch();
+					flag = 5;
 				}
 			}
 			break;
@@ -586,10 +595,11 @@ void Management::mod_or_delSchedule()
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
-				// ## 정규 표현식 수정해야 함
-				regex re("[ㄱ-ㅣ가-힣a-zA-Z0-9]");
-				//if (regex_match(title, re)) {
-				if (true) {
+				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]{1,30})");
+				wsmatch wideMatch;
+				wstring wtitle = SDM.s2ws(title);
+				if (regex_match(wtitle.cbegin(), wtitle.cend(), wideMatch, wrx) &&
+					title[0] != ' ' && title.back() != ' ') {
 					sche[selectedNum]->setTitle(title);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
@@ -621,21 +631,24 @@ void Management::mod_or_delSchedule()
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
-				// ## 정규 표현식 수정해야 함
-				regex re("[ㄱ-ㅣ가-힣a-zA-Z0-9]");
-				//if (regex_match(memo, re)) {
-				if (true) {
-					sche[selectedNum]->setMemo(memo);
-					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-				}
-				else {
-					system("cls");
-					cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
-					cout << "아무 키나 눌러주세요.\n";
-					cout << "_____________________________\n";
-					cout << "> ";
-					_getch();
-					flag = 7; // 현재 프롬프트 반복
+				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+				wsmatch wideMatch;
+				wstring wmemo = SDM.s2ws(memo);
+				if (memo.size() != 0) {
+					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
+						memo[0] != ' ' && memo.back() != ' ') {
+						sche[selectedNum]->setMemo(memo);
+						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+					}
+					else {
+						system("cls");
+						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+						flag = 7; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;

@@ -15,6 +15,7 @@ public:
 	ScheduleDataManager() {};
 	bool loadDataFile(Calender& c);
 	bool saveDataFile(Calender& c);
+	friend class Management;
 
 private:
 	wstring s2ws(const string& str);
