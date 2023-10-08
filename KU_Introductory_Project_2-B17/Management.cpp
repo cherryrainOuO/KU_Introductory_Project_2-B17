@@ -163,6 +163,8 @@ void Management::addSchedule()
 {
 	string startDate, endDate, title, category, memo;
 	string y, m, d;
+	int cateCount = 0;
+	string menu;
 	
 	int flag = 0;	// 부 프롬프트 간 이동을 위한 변수
 	while (flag < 5) {
@@ -295,10 +297,41 @@ void Management::addSchedule()
 			}
 			break;
 		case 3:
-			// ## 카테고리 진행 이후
-			category = "hi";
+			cout << "<일정 추가(4/5)>\n\n";
+			cout << "카테고리 선택\n\n";
+			cout << "0. 기본\n";
+			CDM->CategoryPrint();
+			cateCount = CDM->GetSize();
+			cout << cateCount + 1 << ". 새 카테고리 추가\n\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
+			cout << "일정의 새로운 카테고리를 선택하세요.\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
 
-			flag = 4;
+			getline(cin, menu);
+			system("cls");
+			if (menu == "^C") {
+				system("cls");
+				flag = 2; // 이전 프롬프트(제목 입력 프롬프트)로 이동
+			}
+			else if (is_digit(menu) && 0 == stoi(menu)) {
+				category = "기본"; // 기본 카테고리
+				flag = 4; // 메모 입력 프롬프트로 이동
+			}
+			else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
+				category = CDM->GetCategory()->at(stoi(menu) - 1); // 사용자 지정 카테고리
+				flag = 4; // 메모 입력 프롬프트로 이동
+			}
+			else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
+				CLS->CategoryAdd(); // 카테고리 추가
+				if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
+					category = CDM->GetCategory()->at(CDM->GetSize() - 1); // 새로 추가한 카테고리
+					flag = 4; // 메모 입력 프롬프트로 이동
+				}
+				else {
+					flag = 3;//현재 프롬프트 반복
+				}
+			}
 			break;
 		case 4:
 			cout << "<일정 추가(5/5)>\n\n";
@@ -356,6 +389,7 @@ void Management::mod_or_delSchedule()
 	string y, m, d;
 	string menu; // 메뉴 선택
 	int selectedNum = 0; // 사용자가 선택한 일정의 번호
+	int cateCount = 0;
 
 
 	int flag = 0;// 부 프롬프트 간 이동을 위한 변수
@@ -615,7 +649,41 @@ void Management::mod_or_delSchedule()
 			}
 			break;
 		case 6:
-			// ## 카테고리 진행 이후
+			cout << "<일정 수정>\n\n";
+			cout << "카테고리 선택\n\n";
+			cout << "0. 기본\n";
+			CDM->CategoryPrint();
+			cateCount = CDM->GetSize();
+			cout << cateCount + 1 << ". 새 카테고리 추가\n\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
+			cout << "일정의 새로운 카테고리를 선택하세요.\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
+
+			getline(cin, menu);
+			system("cls");
+			if (menu == "^C") {
+				system("cls");
+				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+			}
+			else if (is_digit(menu) && 0 == stoi(menu)) {
+				sche[selectedNum]->setCategory("기본"); // 기본 카테고리
+				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+			}
+			else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
+				sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
+				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+			}
+			else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
+				CLS->CategoryAdd(); // 카테고리 추가
+				if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
+					sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
+					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+				}
+				else {
+					flag = 6; // 현재 프롬프트 반복
+				}
+			}
 			break;
 		case 7:
 			cout << "<일정 수정>\n\n";

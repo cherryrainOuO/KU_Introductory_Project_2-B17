@@ -26,6 +26,8 @@ private:
 	void Prompt_PrintCategoryList_ForEditOrRemove();
 	void Prompt_CategoryEditOrRemove(int _cateNum);
 
+	friend class Management;
+
 public:
 	/*constructor*/
 	Classification() {};

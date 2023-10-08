@@ -1,7 +1,9 @@
 #pragma once
 #include "Calender.h"
 #include "Schedule.h"
+#include "Classification.h"
 #include "ScheduleDataManager.h"
+#include "CategoryDataManager.h"
 #include <windows.h>
 #include <conio.h>
 #include <regex>
@@ -14,6 +16,8 @@ private:
 	Calender* cal;
 	string dateinfo;
 	ScheduleDataManager SDM;
+	CategoryDataManager* CDM;
+	Classification* CLS;
 
 	void printSchedule();
 	void addSchedule();
@@ -22,7 +26,7 @@ private:
 	bool is_digit(string str);
 
 public:
-	Management(Calender* c) { cal = c; };
+	Management(Calender* c, CategoryDataManager* _cateManager, Classification* _class) { cal = c; CDM = _cateManager; CLS = _class; };
 	void Prompt();
 };
 
