@@ -179,8 +179,8 @@ void CategoryDataManager::CategoryAdd(string _str)
 
 void CategoryDataManager::CategoryEdit(int _cateNum, string _newStr)
 {
-	UpdateCategoryToCalender(_cateNum, _newStr); // 수정
 	cate->GetCategories()->at(_cateNum) = _newStr;
+	UpdateCategoryToCalender(_cateNum, _newStr); // 수정
 	SaveDataFile();
 }
 
@@ -191,13 +191,13 @@ void CategoryDataManager::CategoryRemove(int _cateNum)
 
 	//////////////////////////////////////////////////////////////
 
-		/* 카테고리 파일에도 업데이트 필요 */
-	SaveDataFile();
-
+		
 	//	/* 스케줄에도 바뀐 카테고리 명으로 업데이트 필요 */
 	UpdateCategoryToCalender(_cateNum - 1, "기본");
 	cate->GetCategories()->erase(cate->GetCategories()->begin() + _cateNum - 1); // 삭제
 
+	/* 카테고리 파일에도 업데이트 필요 */
+	SaveDataFile();
 	//////////////////////////////////////////////////////////////
 }
 
@@ -224,10 +224,5 @@ bool CategoryDataManager::SyntaxCheck(string _str)
 
 bool CategoryDataManager::DuplicationCheck(string _str)
 {
-	if (find(cate->GetCategories()->begin(), cate->GetCategories()->end(), _str) != cate->GetCategories()->end()) {
-		return false;
-	}
-	else {
-		return true;
-	}
+	return !(find(cate->GetCategories()->begin(), cate->GetCategories()->end(), _str) != cate->GetCategories()->end());
 }

@@ -288,21 +288,38 @@ void Classification::Prompt_PrintCategoryList_ForEditOrRemove()
 	if (kwd == "^C") { // 취소
 		Prompt_CategoryMenu();
 	}
-	else if (stoi(kwd) > CDM->GetSize() || stoi(kwd) <= 0) { // 오류 메세지
-		system("cls"); // 화면 지우기
-
-		cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";
-		cout << "아무 키나 눌러주세요.\n";
-		cout << "-------------------------------------\n";
-		cout << "> ";
-
-		_getch(); // 아무 키나 입력 대기
-
-		Prompt_PrintCategoryList_ForEditOrRemove();
-	}
 	else {
-		Prompt_CategoryEditOrRemove(stoi(kwd));
+		try {
+			if (stoi(kwd) > CDM->GetSize() || stoi(kwd) <= 0) { // 오류 메세지
+				system("cls"); // 화면 지우기
+
+				cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "-------------------------------------\n";
+				cout << "> ";
+
+				_getch(); // 아무 키나 입력 대기
+
+				Prompt_PrintCategoryList_ForEditOrRemove();
+			}
+			else {
+				Prompt_CategoryEditOrRemove(stoi(kwd));
+			}
+		}
+		catch (const std::exception& expn) {
+			system("cls"); // 화면 지우기
+
+			cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "-------------------------------------\n";
+			cout << "> ";
+
+			_getch(); // 아무 키나 입력 대기
+
+			Prompt_PrintCategoryList_ForEditOrRemove();
+		}
 	}
+
 }
 
 void Classification::Prompt_CategoryEditOrRemove(int _cateNum)

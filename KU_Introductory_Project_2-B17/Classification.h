@@ -32,7 +32,7 @@ public:
 	/*constructor*/
 	Classification() {};
 	Classification(Calender* _caln, CategoryDataManager* _cateManager) { cal = _caln; CDM = _cateManager;};
-
+	
 	void Prompt_CategoryMenu();
 };
 
