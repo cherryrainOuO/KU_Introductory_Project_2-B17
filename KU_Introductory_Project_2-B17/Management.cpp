@@ -335,7 +335,7 @@ void Management::addSchedule()
 				}
 			}
 			else {
-				cout << "오류: 1부터" << cateCount + 1 << "중 하나의 숫자를 입력해주세요.\n";
+				cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
 				if (_getch()) {
 					system("cls");
 					flag = 3; // 현재 프롬프트 반복
@@ -700,7 +700,7 @@ void Management::mod_or_delSchedule()
 				}
 			}
 			else {
-				cout << "오류: 1부터" << cateCount + 1 << "중 하나의 숫자를 입력해주세요.\n";
+				cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
 				if (_getch()) {
 					system("cls");
 					flag = 6; // 현재 프롬프트 반복
