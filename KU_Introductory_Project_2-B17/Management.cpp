@@ -334,6 +334,13 @@ void Management::addSchedule()
 					flag = 3;//현재 프롬프트 반복
 				}
 			}
+			else {
+				cout << "오류: 1부터" << cateCount + 1 << "중 하나의 숫자를 입력해주세요.\n";
+				if (_getch()) {
+					system("cls");
+					flag = 3; // 현재 프롬프트 반복
+				}
+			}
 			break;
 		case 4:
 			cout << "<일정 추가(5/5)>\n\n";
@@ -689,6 +696,13 @@ void Management::mod_or_delSchedule()
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else {
+					flag = 6; // 현재 프롬프트 반복
+				}
+			}
+			else {
+				cout << "오류: 1부터" << cateCount + 1 << "중 하나의 숫자를 입력해주세요.\n";
+				if (_getch()) {
+					system("cls");
 					flag = 6; // 현재 프롬프트 반복
 				}
 			}
