@@ -40,14 +40,7 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 			//wcout << token;
 			string temptkn;
 			temptkn = ws2s(token);
-			trim(temptkn); // tkn의 앞 뒤 공백 제거
 			cout << temptkn << "\n";
-
-			//////////////////////////////////////////////////////////////
-			// 
-			//! 왜 ' ' 은 인식을 못할까요? ㅎㅎ
-			//! 
-			//////////////////////////////////////////////////////////////
 
 			if (!temptkn.empty()) {
 				if (SyntaxCheck(temptkn) == false) {
