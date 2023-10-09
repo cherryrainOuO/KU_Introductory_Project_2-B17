@@ -22,7 +22,7 @@ private:
 	void printSchedule();
 	void addSchedule();
 	void mod_or_delSchedule();
-	int isValidDate();
+	int isValidDate(string dateStr);
 	bool is_digit(string str);
 
 public:

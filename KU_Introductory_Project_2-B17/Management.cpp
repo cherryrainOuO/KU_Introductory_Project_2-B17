@@ -19,7 +19,7 @@ void Management::Prompt(){
 		return;
 	}
 	else {
-		if (isValidDate() < 0) {
+		if (isValidDate(dateinfo) < 0) {
 			Sleep(1000);
 			system("cls");
 			cout << "오류: 날짜를 형식에 맞게 입력해주세요.\n\n";
@@ -36,17 +36,17 @@ void Management::Prompt(){
 		}
 	}
 }
-int Management::isValidDate() {
+int Management::isValidDate(string dateStr) {
 
 	string y, m, d; // 각각 year, month, date{
 	regex re("[0-9]{4}/[0-9]{2}/[0-9]{2}");	// 날짜 문법 형식
 
 
 	// 문법 형식에 맞지 않을 때 -1 반환
-	if (regex_match(dateinfo, re)) {
-		y = dateinfo.substr(0, 4);
-		m = dateinfo.substr(5, 2);
-		d = dateinfo.substr(8, 2);
+	if (regex_match(dateStr, re)) {
+		y = dateStr.substr(0, 4);
+		m = dateStr.substr(5, 2);
+		d = dateStr.substr(8, 2);
 
 		// 의미 규칙에 맞지 않을 때 -2 반환
 		if (stoi(y) >= 2000 && stoi(y) <= 2030
@@ -187,7 +187,7 @@ void Management::addSchedule()
 				printSchedule();
 			}
 			else {
-				switch (isValidDate()) {
+				switch (isValidDate(startDate)) {
 				case 0:
 					flag = 1;
 					break;
@@ -224,7 +224,7 @@ void Management::addSchedule()
 				flag = 0;
 			}
 			else {
-				switch (isValidDate()) {
+				switch (isValidDate(endDate)) {
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -332,6 +332,13 @@ void Management::addSchedule()
 				}
 				else {
 					flag = 3;//현재 프롬프트 반복
+				}
+			}
+			else {
+				cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
+				if (_getch()) {
+					system("cls");
+					flag = 3; // 현재 프롬프트 반복
 				}
 			}
 			break;
@@ -529,7 +536,7 @@ void Management::mod_or_delSchedule()
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
-				switch (isValidDate()) {
+				switch (isValidDate(startDate)) {
 				case 0:
 					sche[selectedNum]->setStartDate(startDate);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
@@ -571,7 +578,7 @@ void Management::mod_or_delSchedule()
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
-				switch (isValidDate()) {
+				switch (isValidDate(endDate)) {
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -692,6 +699,13 @@ void Management::mod_or_delSchedule()
 					flag = 6; // 현재 프롬프트 반복
 				}
 			}
+			else {
+				cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
+				if (_getch()) {
+					system("cls");
+					flag = 6; // 현재 프롬프트 반복
+				}
+			}
 			break;
 		case 7:
 			cout << "<일정 수정>\n\n";
@@ -742,11 +756,16 @@ void Management::mod_or_delSchedule()
 			getline(cin, menu);
 			system("cls");
 			if (menu == "^C") {
+				flag = 0; // 일정 선택 프롬프트로 이동
 				system("cls");
 			}
 			else if (is_digit(menu) && stoi(menu) == 1) {
 				cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
 				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+				flag = 0; // 일정 선택 프롬프트로 이동
+			}
+			else if (is_digit(menu) && stoi(menu) == 2) {
+				flag = 0; // 일정 선택 프롬프트로 이동
 			}
 			else {
 				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
@@ -755,7 +774,6 @@ void Management::mod_or_delSchedule()
 					flag = 8; // 현재 프롬프트 반복
 				}
 			}
-			flag = 0; // 일정 선택 프롬프트로 이동
 			break;
 		}
 	}

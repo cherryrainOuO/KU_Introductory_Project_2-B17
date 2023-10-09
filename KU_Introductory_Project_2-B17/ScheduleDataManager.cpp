@@ -1,6 +1,6 @@
 #include "ScheduleDataManager.h"
 
-bool ScheduleDataManager::loadDataFile(Calender& c)
+bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 {
     string fileName = "testSch.txt";
     wifstream file;
@@ -27,6 +27,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c)
     }
 
     //파일이 존재하는 경우
+    vector<string>* categories = cat.GetCategories();
     vector<string> record;
     wstring line;
     int idx = 0;
@@ -43,7 +44,9 @@ bool ScheduleDataManager::loadDataFile(Calender& c)
             cout << temptkn;
             if (!temptkn.empty()) record.push_back(temptkn); //연속된 tab 무시
         }
-        if (record.size() != 5 || !isRight(record)) {
+        //메모가 비워진 경우
+        if (record.size() == 4) record.push_back("");
+        if (record.size() != 5 || !isRight(record, categories)) {
             cout << record.size(); //test
             cerr << "오류: 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
             return false;
@@ -116,12 +119,12 @@ void ScheduleDataManager::trim(string& str) {
 
 /*--------파일 무결성 검사----------*/
 
-bool ScheduleDataManager::isRight(vector<string> record)
+bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
 {
     try
     {
         if(!checkT(record[0])) return false; //title
-        if(!checkC(record[1])) return false; //category
+        if(!checkC(record[1], cates)) return false; //category
         if(!checkD(record[2])) return false; //startDate
         if(!checkD(record[3])) return false; //endDate
         if (!checkD2(record[2], record[3])) return false; //startDate <= endDate
@@ -137,16 +140,28 @@ bool ScheduleDataManager::isRight(vector<string> record)
 
 bool ScheduleDataManager::checkT(string data)
 {
-    if(data.length() <= 0 || data.length() > 30)
+    wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]{1,30})");
+    wsmatch wideMatch;
+    wstring wstr = s2ws(data);
+    if (!regex_match(wstr.cbegin(), wstr.cend(), wideMatch, wrx)) {
         return false;
+    }
+
     return true;
 }
 
-bool ScheduleDataManager::checkC(string data)
+bool ScheduleDataManager::checkC(string data, vector<string>* cates)
 {
-    regex re("[\\^\\n\\t]");
-
-    if (regex_search(data, re) || data.length() < 1 || data.length() > 30) return false;
+    //카테고리 데이터 파일에 해당 카테고리가 존재하는지
+    if (data.compare("기본") != 0 && find(cates->begin(), cates->end(), data) == cates->end())
+        return false;
+    //문법 형식
+    wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]{1,30})");
+    wsmatch wideMatch;
+    wstring wstr = s2ws(data);
+    if (!regex_match(wstr.cbegin(), wstr.cend(), wideMatch, wrx)) {
+        return false;
+    }
 
     return true;
 }
@@ -207,9 +222,12 @@ bool ScheduleDataManager::checkD2(string sdt, string edt) {
 
 bool ScheduleDataManager::checkM(string data)
 {
-    regex re("[\\^\\n\\t]");
-
-    if (regex_search(data, re)) return false;
-
+    wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+    wsmatch wideMatch;
+    wstring wmemo = s2ws(data);
+    if (!data.empty()) {
+        if (!regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx))
+            return false;
+    }
     return true;
 }
