@@ -19,7 +19,6 @@ private:
 
 public:
 	/*constructor*/
-	KeywordSearch() {};
 	KeywordSearch(Calender* c) { cal = c; };
 
 	void prompt();
