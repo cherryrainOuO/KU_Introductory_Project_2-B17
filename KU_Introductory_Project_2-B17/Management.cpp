@@ -756,11 +756,16 @@ void Management::mod_or_delSchedule()
 			getline(cin, menu);
 			system("cls");
 			if (menu == "^C") {
+				flag = 0; // 일정 선택 프롬프트로 이동
 				system("cls");
 			}
 			else if (is_digit(menu) && stoi(menu) == 1) {
 				cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
 				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+				flag = 0; // 일정 선택 프롬프트로 이동
+			}
+			else if (is_digit(menu) && stoi(menu) == 2) {
+				flag = 0; // 일정 선택 프롬프트로 이동
 			}
 			else {
 				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
@@ -769,7 +774,6 @@ void Management::mod_or_delSchedule()
 					flag = 8; // 현재 프롬프트 반복
 				}
 			}
-			flag = 0; // 일정 선택 프롬프트로 이동
 			break;
 		}
 	}
