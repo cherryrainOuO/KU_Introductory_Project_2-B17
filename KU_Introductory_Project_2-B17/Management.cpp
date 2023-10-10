@@ -139,7 +139,7 @@ void Management::printSchedule(){
 		cout << "<" << dateinfo << "의 일정>\n\n";
 		cout << "일정이 없습니다.일정을 추가하세요.\n\n";
 		cout << "1. 일정 추가\n\n";
-		cout << "(^ C 입력 시 이전 화면으로 돌아갑니다)\n\n";
+		cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
 		cout << "원하는 메뉴를 입력하세요\n";
 		cout << "-------------------------------\n";
 		cout << "> ";
@@ -185,6 +185,7 @@ void Management::addSchedule()
 			if (startDate == "^C") {
 				system("cls");
 				printSchedule();
+				return;
 			}
 			else {
 				switch (isValidDate(startDate)) {
@@ -201,7 +202,7 @@ void Management::addSchedule()
 					break;
 				case -2:
 					system("cls");
-					cout << "오류: " << dateinfo << "(은)는 존재하지 않는 날짜입니다.\n\n";
+					cout << "오류: " << startDate << "(은)는 존재하지 않는 날짜입니다.\n\n";
 					cout << "아무 키나 눌러주세요.\n";
 					cout << "_____________________________\n";
 					cout << "> ";
