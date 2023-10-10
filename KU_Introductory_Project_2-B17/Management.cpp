@@ -201,7 +201,7 @@ void Management::addSchedule()
 					break;
 				case -2:
 					system("cls");
-					cout << "오류: " << dateinfo << "(은)는 존재하지 않는 날짜입니다.\n\n";
+					cout << "오류: " << startDate << "(은)는 존재하지 않는 날짜입니다.\n\n";
 					cout << "아무 키나 눌러주세요.\n";
 					cout << "_____________________________\n";
 					cout << "> ";
@@ -258,7 +258,7 @@ void Management::addSchedule()
 					break;
 				case -2:
 					system("cls");
-					cout << "오류: " << dateinfo << "(은)는 존재하지 않는 날짜입니다.\n\n";
+					cout << "오류: " << endDate << "(은)는 존재하지 않는 날짜입니다.\n\n";
 					cout << "아무 키나 눌러주세요.\n";
 					cout << "_____________________________\n";
 					cout << "> ";
@@ -581,7 +581,7 @@ void Management::mod_or_delSchedule()
 					break;
 				case -2:
 					system("cls");
-					cout << "오류: " << dateinfo << "(은)는 존재하지 않는 날짜입니다.\n\n";
+					cout << "오류: " << startDate << "(은)는 존재하지 않는 날짜입니다.\n\n";
 					cout << "아무 키나 눌러주세요.\n";
 					cout << "_____________________________\n";
 					cout << "> ";
@@ -645,7 +645,7 @@ void Management::mod_or_delSchedule()
 					break;
 				case -2:
 					system("cls");
-					cout << "오류: " << dateinfo << "(은)는 존재하지 않는 날짜입니다.\n\n";
+					cout << "오류: " << endDate << "(은)는 존재하지 않는 날짜입니다.\n\n";
 					cout << "아무 키나 눌러주세요.\n";
 					cout << "_____________________________\n";
 					cout << "> ";
