@@ -23,33 +23,41 @@ void Classification::Prompt_CategoryMenu()
 		return;
 	}
 	else {
-		switch (kwd[0])
-		{
-		case '1':
-			CategoryAdd(); // 일정 추가
-			break;
-		case '2':
-			//test
-			PrintSchedule_ByCategory(); // 일정 보기
-			break;
-		case '3':
-			Prompt_PrintCategoryList_ForEditOrRemove(); // 수정/삭제
-			break;
-		default: // 오류 메세지
-			system("cls"); // 화면 지우기
+		if (kwd.size() == 1) {
+			switch (kwd[0])
+			{
+			case '1':
+				CategoryAdd(); // 일정 추가
+				break;
+			case '2':
+				//test
+				PrintSchedule_ByCategory(); // 일정 보기
+				break;
+			case '3':
+				Prompt_PrintCategoryList_ForEditOrRemove(); // 수정/삭제
+				break;
+			default: // 오류 메세지
+				system("cls"); // 화면 지우기
 
+				cout << "오류 : 1, 2, 3 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "-------------------------------------\n";
+				cout << "> ";
+
+				_getch(); // 아무 키나 입력 대기
+
+				Prompt_CategoryMenu();
+				break;
+			}
+		}
+		else {
 			cout << "오류 : 1, 2, 3 중 하나의 숫자를 입력해주세요.\n\n";
 			cout << "아무 키나 눌러주세요.\n";
 			cout << "-------------------------------------\n";
 			cout << "> ";
-
-			_getch(); // 아무 키나 입력 대기
-			
-			Prompt_CategoryMenu();
-			break;
 		}
 	}
-	
+
 
 }
 
@@ -105,7 +113,7 @@ void Classification::CategoryAdd()
 
 		_getch(); // 아무 키나 입력 대기
 
-		return;
+		Prompt_CategoryMenu();
 	}
 
 
@@ -130,51 +138,71 @@ void Classification::PrintSchedule_ByCategory()
 	if (kwd == "^C") { // 취소
 		Prompt_CategoryMenu();
 	}
-
-	else if (stoi(kwd) > CDM->GetSize() || stoi(kwd) < 0) { // 오류 메세지
-		system("cls"); // 화면 지우기
-
-		cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";
-		cout << "아무 키나 눌러주세요.\n";
-		cout << "-------------------------------------\n";
-		cout << "> ";
-
-		_getch(); // 아무 키나 입력 대기
-
-		PrintSchedule_ByCategory();
-	}
 	else {
-		Sleep(100);
-		system("cls");
+		try {
+			int ikwd = stoi(kwd);
+		}
+		catch (exception e) {
+			system("cls"); // 화면 지우기
 
-		string cateKwd;
+			cout << "오류 : 잘못된 입력입니다. 숫자를 입력하세요.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "-------------------------------------\n";
+			cout << "> ";
 
-		if (stoi(kwd) == 0) {
-			cateKwd = "기본";
+			_getch(); // 아무 키나 입력 대기
+
+			PrintSchedule_ByCategory();
+
+		}
+
+		if (stoi(kwd) > CDM->GetSize() || stoi(kwd) < 0) { // 오류 메세지
+			system("cls"); // 화면 지우기
+
+			cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "-------------------------------------\n";
+			cout << "> ";
+
+			_getch(); // 아무 키나 입력 대기
+
+			PrintSchedule_ByCategory();
 		}
 		else {
-			cateKwd = CDM->GetValue(stoi(kwd) - 1);
-		}
-		
-		makeQueueForPrint(cateKwd);
+			Sleep(100);
+			system("cls");
 
-		if (res.empty())
-			cout << "\"" << cateKwd << "\" 카테고리를 포함하고 있는 일정이 없습니다." << endl << endl;
-		else {
-			cout << "카테고리 \"" << cateKwd << "\"에 해당되는 일정들입니다." << endl << endl;
-			while (!res.empty()) {
-				res.front().print();
-				res.pop();
+			string cateKwd;
+
+			if (stoi(kwd) == 0) {
+				cateKwd = "기본";
 			}
-		}
-		
-		cout << "아무 키나 눌러주세요.\n";
-		cout << "-------------------------------------\n";
-		cout << "> ";
-		_getch(); // 아무 키나 입력 대기
+			else {
+				cateKwd = CDM->GetValue(stoi(kwd) - 1);
+			}
 
-		Prompt_CategoryMenu();
+			makeQueueForPrint(cateKwd);
+
+			if (res.empty())
+				cout << "\"" << cateKwd << "\" 카테고리를 포함하고 있는 일정이 없습니다." << endl << endl;
+			else {
+				cout << "카테고리 \"" << cateKwd << "\"에 해당되는 일정들입니다." << endl << endl;
+				while (!res.empty()) {
+					res.front().print();
+					res.pop();
+				}
+			}
+
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "-------------------------------------\n";
+			cout << "> ";
+			_getch(); // 아무 키나 입력 대기
+
+			Prompt_CategoryMenu();
+		}
 	}
+
+	
 
 }
 
@@ -355,20 +383,36 @@ void Classification::Prompt_CategoryEditOrRemove(int _cateNum)
 		Prompt_PrintCategoryList_ForEditOrRemove();
 	}
 	else {
-		switch (kwd[0])
-		{
-		case '1':
-			Prompt_CategoryEdit(_cateNum); // 일정 수정
+		if (kwd.size() == 1) {
 
-			Prompt_CategoryMenu();
-			break;
-		case '2':
-			//test
-			Prompt_CategoryRemove(_cateNum); // 일정 삭제
+			switch (kwd[0])
+			{
+			case '1':
+				Prompt_CategoryEdit(_cateNum); // 일정 수정
 
-			Prompt_CategoryMenu();
-			break;
-		default: // 오류 메세지
+				Prompt_CategoryMenu();
+				break;
+			case '2':
+				//test
+				Prompt_CategoryRemove(_cateNum); // 일정 삭제
+
+				Prompt_CategoryMenu();
+				break;
+			default: // 오류 메세지
+				system("cls"); // 화면 지우기
+
+				cout << "오류 : 1, 2 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "-------------------------------------\n";
+				cout << "> ";
+
+				_getch(); // 아무 키나 입력 대기
+
+				Prompt_CategoryEditOrRemove(_cateNum);
+				break;
+			}
+		}
+		else {
 			system("cls"); // 화면 지우기
 
 			cout << "오류 : 1, 2 중 하나의 숫자를 입력해주세요.\n\n";
@@ -379,7 +423,6 @@ void Classification::Prompt_CategoryEditOrRemove(int _cateNum)
 			_getch(); // 아무 키나 입력 대기
 
 			Prompt_CategoryEditOrRemove(_cateNum);
-			break;
 		}
 	}
 }
