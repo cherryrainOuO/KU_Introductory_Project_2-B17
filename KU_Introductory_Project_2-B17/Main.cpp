@@ -26,8 +26,8 @@ Classification classification(&calender, &CDM);
 Management mng(&calender, &CDM, &classification);
 
 int main() {
-	CDM.loadDataFile(category);
-	SDM.loadDataFile(calender, category);
+	if(!CDM.loadDataFile(category)) exit(0);
+	if(!SDM.loadDataFile(calender, category)) exit(0);
 	SDM.saveDataFile(calender); //test
 	Sleep(2000);
 
