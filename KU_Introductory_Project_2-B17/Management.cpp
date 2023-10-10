@@ -723,32 +723,34 @@ void Management::mod_or_delSchedule()
 				system("cls");
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
-			else if (is_digit(menu) && 0 == stoi(menu)) {
-				sche[selectedNum]->setCategory("기본"); // 기본 카테고리
-				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-			}
-			else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
-				sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
-				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-			}
-			else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
-				CLS->CategoryAdd(); // 카테고리 추가
-				if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
-					sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && 0 == stoi(menu)) {
+					sche[selectedNum]->setCategory("기본"); // 기본 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
-				else {
-					flag = 6; // 현재 프롬프트 반복
+				else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
+					sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
-			}
-			else {
-				cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 6; // 현재 프롬프트 반복
+				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
+					CLS->CategoryAdd(); // 카테고리 추가
+					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
+						sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
+						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+					}
+					else {
+						flag = 6; // 현재 프롬프트 반복
+					}
+				}
+				else {
+					cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 6; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;
