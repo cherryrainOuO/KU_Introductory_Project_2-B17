@@ -530,6 +530,7 @@ void Management::mod_or_delSchedule()
 			cout << "------------------------------------\n";
 			cout << "> ";
 
+			endDate = sche[selectedNum]->getEndDate();
 			getline(cin, startDate);
 			if (startDate == "^C") {
 				system("cls");
@@ -538,8 +539,8 @@ void Management::mod_or_delSchedule()
 			else {
 				switch (isValidDate(startDate)) {
 				case 0:
+					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
-					endDate = sche[selectedNum]->getEndDate();
 					y1 = stoi(startDate.substr(0, 4));
 					m1 = stoi(startDate.substr(5, 2));
 					d1 = stoi(startDate.substr(8, 2));
@@ -555,14 +556,15 @@ void Management::mod_or_delSchedule()
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
-						flag = 3;
+						flag = 3; // 현재 프롬프트 반복
 					}
 					else {
 						sche[selectedNum]->setStartDate(startDate);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-						break;
 					}
+					break;
+
 				case -1:
 					system("cls");
 					cout << "오류: 시작일의 날짜를 형식에 맞게 입력해주세요.\n\n";
