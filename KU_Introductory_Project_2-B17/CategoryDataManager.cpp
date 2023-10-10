@@ -40,6 +40,7 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 			//wcout << token;
 			string temptkn;
 			temptkn = ws2s(token);
+			trim(temptkn); // tkn의 앞 뒤 공백 제거
 			cout << temptkn << "\n";
 
 			if (!temptkn.empty()) {
