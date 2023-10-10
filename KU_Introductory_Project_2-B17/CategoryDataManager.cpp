@@ -218,5 +218,7 @@ bool CategoryDataManager::SyntaxCheck(string _str)
 
 bool CategoryDataManager::DuplicationCheck(string _str)
 {
+	if (_str == "기본") { return false; }
+
 	return !(find(cate->GetCategories()->begin(), cate->GetCategories()->end(), _str) != cate->GetCategories()->end());
 }
