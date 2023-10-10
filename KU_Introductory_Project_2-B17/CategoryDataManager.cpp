@@ -2,7 +2,7 @@
 
 bool CategoryDataManager::loadDataFile(Category& _cate)
 {
-	string fileName = "testCate.txt";
+	string fileName = "Calendar-category.txt";
 	wifstream file;
 
 	//setting locale handling UTF-8
@@ -75,7 +75,7 @@ bool CategoryDataManager::SaveDataFile()
 	//////////////////////////////////////////////////////////////
 
 	try {
-		string fileName = "testCate.txt";
+		string fileName = "Calendar-category.txt";
 		wofstream file;
 
 		file.open(fileName, ios::out);

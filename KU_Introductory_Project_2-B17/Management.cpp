@@ -593,6 +593,7 @@ void Management::mod_or_delSchedule()
 			cout << "------------------------------------\n";
 			cout << "> ";
 
+			startDate = sche[selectedNum]->getStartDate();
 			getline(cin, endDate);
 			if (endDate == "^C") {
 				system("cls");
