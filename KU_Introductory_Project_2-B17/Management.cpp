@@ -122,18 +122,20 @@ void Management::printSchedule(){
 			system("cls");
 			Prompt();
 		}
-		else if (m[0] == '1')
-			addSchedule();
-		else if (m[0] == '2')
-			mod_or_delSchedule();
-		else {
-			cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-			if (_getch()) {
-				system("cls");
-				printSchedule();
+		else if (m.size() == 1) {
+			if (m[0] == '1')
+				addSchedule();
+			else if (m[0] == '2')
+				mod_or_delSchedule();
+			else {
+				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+				if (_getch()) {
+					system("cls");
+					printSchedule();
+				}
 			}
 		}
-
+	}
 	}
 	// 선택한 날짜의 일정이 0개인 경우
 	else {
