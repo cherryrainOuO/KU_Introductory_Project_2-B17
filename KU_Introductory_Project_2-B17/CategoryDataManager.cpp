@@ -17,7 +17,15 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 		ofstream fout;
 		fout.open(fileName);
 		if (!fout.is_open()) {
-			cout << "오류: 데이터 파일 생성을 실패하였습니다. 프로그램을 종료합니다.\n";
+			cout << "오류: 데이터 파일 생성을 실패하였습니다. 프로그램을 종료합니다.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "-------------------------------------\n";
+			cout << "> ";
+
+			_getch(); // 아무 키나 입력 대기
+
+			exit(0);
+
 			return false; //false가 리턴되면 프로그램이 종료되도록
 		}
 		else {
@@ -45,7 +53,20 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 
 			if (!temptkn.empty()) {
 				if (SyntaxCheck(temptkn) == false) {
-					cout << "오류 : 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
+					cout << "오류 : 데이터 파일의 형식이 잘못되었습니다.\n";
+					cout << "-------------------------------------\n";
+					cout << ws2s(line) << "\n";
+					cout << "-------------------------------------\n\n";
+
+					cout << "프로그램을 종료합니다.\n\n";
+
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "-------------------------------------\n";
+					cout << "> ";
+
+					_getch(); // 아무 키나 입력 대기
+
+					exit(0);
 
 					return false;
 				}
