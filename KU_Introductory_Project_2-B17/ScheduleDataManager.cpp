@@ -2,7 +2,7 @@
 
 bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 {
-    string fileName = "testSch.txt";
+    string fileName = "Calendar-schedule.txt";
     wifstream file;
 
     //setting locale handling UTF-8
@@ -63,7 +63,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 bool ScheduleDataManager::saveDataFile(Calender& c)
 {
     //이 함수를 호출하기 전 일정 추가 프롬프트에서 모든 문법 검사를 마치기 때문에 따로 검사를 하지 않습니다
-    string fileName = "testSch.txt";
+    string fileName = "Calendar-schedule.txt";
     wofstream file;
 
     file.open(fileName, ios::out);
