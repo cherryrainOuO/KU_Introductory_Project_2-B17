@@ -324,29 +324,31 @@ void Management::addSchedule()
 				system("cls");
 				flag = 2; // 이전 프롬프트(제목 입력 프롬프트)로 이동
 			}
-			else if (is_digit(menu) && 0 == stoi(menu)) {
-				category = "기본"; // 기본 카테고리
-				flag = 4; // 메모 입력 프롬프트로 이동
-			}
-			else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
-				category = CDM->GetCategory()->at(stoi(menu) - 1); // 사용자 지정 카테고리
-				flag = 4; // 메모 입력 프롬프트로 이동
-			}
-			else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
-				CLS->CategoryAdd(); // 카테고리 추가
-				if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
-					category = CDM->GetCategory()->at(CDM->GetSize() - 1); // 새로 추가한 카테고리
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && 0 == stoi(menu)) {
+					category = "기본"; // 기본 카테고리
 					flag = 4; // 메모 입력 프롬프트로 이동
 				}
-				else {
-					flag = 3;//현재 프롬프트 반복
+				else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
+					category = CDM->GetCategory()->at(stoi(menu) - 1); // 사용자 지정 카테고리
+					flag = 4; // 메모 입력 프롬프트로 이동
 				}
-			}
-			else {
-				cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 3; // 현재 프롬프트 반복
+				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
+					CLS->CategoryAdd(); // 카테고리 추가
+					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
+						category = CDM->GetCategory()->at(CDM->GetSize() - 1); // 새로 추가한 카테고리
+						flag = 4; // 메모 입력 프롬프트로 이동
+					}
+					else {
+						flag = 3;//현재 프롬프트 반복
+					}
+				}
+				else {
+					cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 3; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;
