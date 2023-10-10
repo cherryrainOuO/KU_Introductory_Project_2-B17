@@ -538,10 +538,31 @@ void Management::mod_or_delSchedule()
 			else {
 				switch (isValidDate(startDate)) {
 				case 0:
-					sche[selectedNum]->setStartDate(startDate);
-					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-					break;
+					int y1, m1, d1, y2, m2, d2;
+					endDate = sche[selectedNum]->getEndDate();
+					y1 = stoi(startDate.substr(0, 4));
+					m1 = stoi(startDate.substr(5, 2));
+					d1 = stoi(startDate.substr(8, 2));
+					y2 = stoi(endDate.substr(0, 4));
+					m2 = stoi(endDate.substr(5, 2));
+					d2 = stoi(endDate.substr(8, 2));
+
+					if ((y1 > y2) || ((y1 == y2) && (m1 > m2))
+						|| ((y1 == y2) && (m1 == m2) && (d1 > d2))) {
+						system("cls");
+						cout << "오류: 시작일은 종료일과 같거나, 그 이전이어야 합니다.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+						flag = 3;
+					}
+					else {
+						sche[selectedNum]->setStartDate(startDate);
+						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+						break;
+					}
 				case -1:
 					system("cls");
 					cout << "오류: 시작일의 날짜를 형식에 맞게 입력해주세요.\n\n";
@@ -582,6 +603,7 @@ void Management::mod_or_delSchedule()
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
+
 					y1 = stoi(startDate.substr(0, 4));
 					m1 = stoi(startDate.substr(5, 2));
 					d1 = stoi(startDate.substr(8, 2));
