@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-	밥	감자	a	밥밥	enene
-=======
-	밥	감자	a	당근	밥밥	enene	aaaaaaaaaaaaa
->>>>>>> ba33637fab8712f67249e71fffd7644c66ed3c54
