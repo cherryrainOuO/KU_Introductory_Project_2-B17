@@ -105,7 +105,7 @@ void Classification::CategoryAdd()
 
 		_getch(); // 아무 키나 입력 대기
 
-		return;
+		Prompt_CategoryMenu();
 	}
 
 
