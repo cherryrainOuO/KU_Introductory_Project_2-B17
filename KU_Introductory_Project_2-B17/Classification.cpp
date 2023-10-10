@@ -28,6 +28,7 @@ void Classification::Prompt_CategoryMenu()
 			{
 			case '1':
 				CategoryAdd(); // 일정 추가
+				Prompt_CategoryMenu();
 				break;
 			case '2':
 				//test
@@ -113,7 +114,7 @@ void Classification::CategoryAdd()
 
 		_getch(); // 아무 키나 입력 대기
 
-		Prompt_CategoryMenu();
+		
 	}
 
 
