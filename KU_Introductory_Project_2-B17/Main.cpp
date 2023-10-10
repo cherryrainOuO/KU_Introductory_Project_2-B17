@@ -58,33 +58,48 @@ void MainPrompt() {
 	string n;
 	getline(cin, n); // 공백을 포함시키기 위해서 getline 을 사용했습니다.
 
-	switch (n[0])
-	{
-	case '1':
-		classification.Prompt_CategoryMenu(); // 일정 분류
-		break;
-	case '2':
-		//test
-		ks.prompt(); // 검색
-		break;
-	case '3':
-		mng.Prompt(); // 일정 관리
-		break;
-	case '4':
-		ExitPrompt(); // 종료
-		break;
-	default: // 오류 메세지
+	if (n.size() == 1) {
+
+		switch (n[0])
+		{
+		case '1':
+			classification.Prompt_CategoryMenu(); // 일정 분류
+			break;
+		case '2':
+			//test
+			ks.prompt(); // 검색
+			break;
+		case '3':
+			mng.Prompt(); // 일정 관리
+			break;
+		case '4':
+			ExitPrompt(); // 종료
+			break;
+		default: // 오류 메세지
+			system("cls"); // 화면 지우기
+
+			cout << "오류 : 1, 2, 3, 4 중 하나의 숫자를 입력해주세요.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "-------------------------------------\n";
+			cout << "> ";
+
+			_getch(); // 아무 키나 입력 대기
+
+			break;
+		}
+	}
+	else {
 		system("cls"); // 화면 지우기
 
 		cout << "오류 : 1, 2, 3, 4 중 하나의 숫자를 입력해주세요.\n\n";
 		cout << "아무 키나 눌러주세요.\n";
 		cout << "-------------------------------------\n";
 		cout << "> ";
-		
+
 		_getch(); // 아무 키나 입력 대기
 
-		break;
 	}
+
 
 }
 
