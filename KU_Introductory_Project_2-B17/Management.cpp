@@ -28,6 +28,7 @@ void Management::Prompt(){
 			cout << "_____________________________\n";
 			cout << "> ";
 			_getch();
+			Prompt();
 			return;
 		}
 		else {
