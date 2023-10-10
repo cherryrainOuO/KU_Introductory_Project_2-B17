@@ -149,7 +149,7 @@ void Management::printSchedule(){
 			system("cls");
 			Prompt();
 		}
-		else if (m[0] == '1')
+		else if(m.size()==1&& m[0] == '1')
 			addSchedule();
 		else {
 			cout << "오류: 1을 입력해주세요.\n";
@@ -158,6 +158,7 @@ void Management::printSchedule(){
 				printSchedule();
 			}
 		}
+
 	}
 }
 
@@ -475,17 +476,19 @@ void Management::mod_or_delSchedule()
 				system("cls");
 				flag = 0; // 이전 프롬프트 (일정 선택 프롬프트)
 			}
-			else if (is_digit(menu) && stoi(menu) == 1)
-				flag = 2; // 수정 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 2)
-				flag = 8; // 삭제 프롬프트로 이동
-			else {
-				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 1; // 현재 프롬프트 반복
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && stoi(menu) == 1)
+					flag = 2; // 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 2)
+					flag = 8; // 삭제 프롬프트로 이동
+				else {
+					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 1; // 현재 프롬프트 반복
+					}
 				}
-			}	
+			}
 			break;
 		case 2:
 			cout << "<일정 수정>\n\n";
@@ -510,21 +513,23 @@ void Management::mod_or_delSchedule()
 				system("cls");
 				flag = 1; // 이전 프롬프트 (수정/삭제 여부 선택 프롬프트)
 			}
-			else if (is_digit(menu) && stoi(menu) == 1)
-				flag = 3; // 시작일 수젇 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 2)
-				flag = 4; // 종료일 수정 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 3)
-				flag = 5; // 제목 수정 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 4)
-				flag = 6; // 카테고리 수정 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 5)
-				flag = 7; // 메모 수정 프롬프트로 이동
-			else {
-				cout << "오류: 1,2,3,4,5 중 하나의 숫자를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 2; // 현재 프롬프트 반복
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && stoi(menu) == 1)
+					flag = 3; // 시작일 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 2)
+					flag = 4; // 종료일 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 3)
+					flag = 5; // 제목 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 4)
+					flag = 6; // 카테고리 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 5)
+					flag = 7; // 메모 수정 프롬프트로 이동
+				else {
+					cout << "오류: 1,2,3,4,5 중 하나의 숫자를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 2; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;
@@ -797,19 +802,21 @@ void Management::mod_or_delSchedule()
 				flag = 0; // 일정 선택 프롬프트로 이동
 				system("cls");
 			}
-			else if (is_digit(menu) && stoi(menu) == 1) {
-				cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
-				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-				flag = 0; // 일정 선택 프롬프트로 이동
-			}
-			else if (is_digit(menu) && stoi(menu) == 2) {
-				flag = 0; // 일정 선택 프롬프트로 이동
-			}
-			else {
-				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 8; // 현재 프롬프트 반복
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && stoi(menu) == 1) {
+					cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					flag = 0; // 일정 선택 프롬프트로 이동
+				}
+				else if (is_digit(menu) && stoi(menu) == 2) {
+					flag = 0; // 일정 선택 프롬프트로 이동
+				}
+				else {
+					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 8; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;
