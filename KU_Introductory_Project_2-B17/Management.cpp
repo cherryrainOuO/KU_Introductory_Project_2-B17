@@ -37,6 +37,7 @@ void Management::Prompt(){
 		}
 	}
 }
+
 int Management::isValidDate(string dateStr) {
 
 	string y, m, d; // 각각 year, month, date{
@@ -136,7 +137,7 @@ void Management::printSchedule(){
 			}
 		}
 	}
-	}
+	
 	// 선택한 날짜의 일정이 0개인 경우
 	else {
 		cout << "<" << dateinfo << "의 일정>\n\n";
@@ -401,8 +402,7 @@ void Management::addSchedule()
 	printSchedule();
 }
 
-void Management::mod_or_delSchedule()
-{
+void Management::mod_or_delSchedule(){
 	vector<Schedule*> sche; // 현재 날짜에 해당하는 스케줄
 	vector<int> scheNum; // 현재 날짜에 해당하는 스케줄의 번호
 
@@ -430,9 +430,9 @@ void Management::mod_or_delSchedule()
 					sche.push_back(&(cal->allSchs[i]));
 					scheNum.push_back(i);
 				}
-					
+
 			}
-			
+
 			cout << "<일정 수정/삭제>\n\n";
 
 			// 사용자가 입력한 날짜의 일정 목록
@@ -498,7 +498,7 @@ void Management::mod_or_delSchedule()
 		case 2:
 			cout << "<일정 수정>\n\n";
 			cout << "변경할 요소 선택\n\n";
-			
+
 			sche[selectedNum]->print();
 
 			cout << "1. 시작일\n";
