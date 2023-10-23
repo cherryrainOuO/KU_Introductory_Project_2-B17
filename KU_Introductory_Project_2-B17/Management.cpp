@@ -122,18 +122,20 @@ void Management::printSchedule(){
 			system("cls");
 			Prompt();
 		}
-		else if (m[0] == '1')
-			addSchedule();
-		else if (m[0] == '2')
-			mod_or_delSchedule();
-		else {
-			cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-			if (_getch()) {
-				system("cls");
-				printSchedule();
+		else if (m.size() == 1) {
+			if (m[0] == '1')
+				addSchedule();
+			else if (m[0] == '2')
+				mod_or_delSchedule();
+			else {
+				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+				if (_getch()) {
+					system("cls");
+					printSchedule();
+				}
 			}
 		}
-
+	}
 	}
 	// 선택한 날짜의 일정이 0개인 경우
 	else {
@@ -150,7 +152,7 @@ void Management::printSchedule(){
 			system("cls");
 			Prompt();
 		}
-		else if (m[0] == '1')
+		else if(m.size()==1&& m[0] == '1')
 			addSchedule();
 		else {
 			cout << "오류: 1을 입력해주세요.\n";
@@ -159,6 +161,7 @@ void Management::printSchedule(){
 				printSchedule();
 			}
 		}
+
 	}
 }
 
@@ -321,29 +324,31 @@ void Management::addSchedule()
 				system("cls");
 				flag = 2; // 이전 프롬프트(제목 입력 프롬프트)로 이동
 			}
-			else if (is_digit(menu) && 0 == stoi(menu)) {
-				category = "기본"; // 기본 카테고리
-				flag = 4; // 메모 입력 프롬프트로 이동
-			}
-			else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
-				category = CDM->GetCategory()->at(stoi(menu) - 1); // 사용자 지정 카테고리
-				flag = 4; // 메모 입력 프롬프트로 이동
-			}
-			else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
-				CLS->CategoryAdd(); // 카테고리 추가
-				if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
-					category = CDM->GetCategory()->at(CDM->GetSize() - 1); // 새로 추가한 카테고리
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && 0 == stoi(menu)) {
+					category = "기본"; // 기본 카테고리
 					flag = 4; // 메모 입력 프롬프트로 이동
 				}
-				else {
-					flag = 3;//현재 프롬프트 반복
+				else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
+					category = CDM->GetCategory()->at(stoi(menu) - 1); // 사용자 지정 카테고리
+					flag = 4; // 메모 입력 프롬프트로 이동
 				}
-			}
-			else {
-				cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 3; // 현재 프롬프트 반복
+				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
+					CLS->CategoryAdd(); // 카테고리 추가
+					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
+						category = CDM->GetCategory()->at(CDM->GetSize() - 1); // 새로 추가한 카테고리
+						flag = 4; // 메모 입력 프롬프트로 이동
+					}
+					else {
+						flag = 3;//현재 프롬프트 반복
+					}
+				}
+				else {
+					cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 3; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;
@@ -476,17 +481,19 @@ void Management::mod_or_delSchedule()
 				system("cls");
 				flag = 0; // 이전 프롬프트 (일정 선택 프롬프트)
 			}
-			else if (is_digit(menu) && stoi(menu) == 1)
-				flag = 2; // 수정 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 2)
-				flag = 8; // 삭제 프롬프트로 이동
-			else {
-				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 1; // 현재 프롬프트 반복
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && stoi(menu) == 1)
+					flag = 2; // 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 2)
+					flag = 8; // 삭제 프롬프트로 이동
+				else {
+					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 1; // 현재 프롬프트 반복
+					}
 				}
-			}	
+			}
 			break;
 		case 2:
 			cout << "<일정 수정>\n\n";
@@ -511,21 +518,23 @@ void Management::mod_or_delSchedule()
 				system("cls");
 				flag = 1; // 이전 프롬프트 (수정/삭제 여부 선택 프롬프트)
 			}
-			else if (is_digit(menu) && stoi(menu) == 1)
-				flag = 3; // 시작일 수젇 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 2)
-				flag = 4; // 종료일 수정 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 3)
-				flag = 5; // 제목 수정 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 4)
-				flag = 6; // 카테고리 수정 프롬프트로 이동
-			else if (is_digit(menu) && stoi(menu) == 5)
-				flag = 7; // 메모 수정 프롬프트로 이동
-			else {
-				cout << "오류: 1,2,3,4,5 중 하나의 숫자를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 2; // 현재 프롬프트 반복
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && stoi(menu) == 1)
+					flag = 3; // 시작일 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 2)
+					flag = 4; // 종료일 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 3)
+					flag = 5; // 제목 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 4)
+					flag = 6; // 카테고리 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 5)
+					flag = 7; // 메모 수정 프롬프트로 이동
+				else {
+					cout << "오류: 1,2,3,4,5 중 하나의 숫자를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 2; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;
@@ -572,6 +581,7 @@ void Management::mod_or_delSchedule()
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					break;
+
 				case -1:
 					system("cls");
 					cout << "오류: 시작일의 날짜를 형식에 맞게 입력해주세요.\n\n";
@@ -613,6 +623,7 @@ void Management::mod_or_delSchedule()
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
+
 					y1 = stoi(startDate.substr(0, 4));
 					m1 = stoi(startDate.substr(5, 2));
 					d1 = stoi(startDate.substr(8, 2));
@@ -712,32 +723,34 @@ void Management::mod_or_delSchedule()
 				system("cls");
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
-			else if (is_digit(menu) && 0 == stoi(menu)) {
-				sche[selectedNum]->setCategory("기본"); // 기본 카테고리
-				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-			}
-			else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
-				sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
-				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-			}
-			else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
-				CLS->CategoryAdd(); // 카테고리 추가
-				if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
-					sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && 0 == stoi(menu)) {
+					sche[selectedNum]->setCategory("기본"); // 기본 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
-				else {
-					flag = 6; // 현재 프롬프트 반복
+				else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
+					sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
-			}
-			else {
-				cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 6; // 현재 프롬프트 반복
+				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
+					CLS->CategoryAdd(); // 카테고리 추가
+					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
+						sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
+						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+					}
+					else {
+						flag = 6; // 현재 프롬프트 반복
+					}
+				}
+				else {
+					cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 6; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;
@@ -796,19 +809,21 @@ void Management::mod_or_delSchedule()
 				flag = 0; // 일정 선택 프롬프트로 이동
 				system("cls");
 			}
-			else if (is_digit(menu) && stoi(menu) == 1) {
-				cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
-				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-				flag = 0; // 일정 선택 프롬프트로 이동
-			}
-			else if (is_digit(menu) && stoi(menu) == 2) {
-				flag = 0; // 일정 선택 프롬프트로 이동
-			}
-			else {
-				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					flag = 8; // 현재 프롬프트 반복
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && stoi(menu) == 1) {
+					cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					flag = 0; // 일정 선택 프롬프트로 이동
+				}
+				else if (is_digit(menu) && stoi(menu) == 2) {
+					flag = 0; // 일정 선택 프롬프트로 이동
+				}
+				else {
+					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 8; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;
