@@ -166,9 +166,29 @@ void Management::printSchedule(){
 	}
 }
 
+/* Zeller의 함수를 이용하여 year년 month월 day일의 요일을 계산한다. */
+/* 일요일은 1,월요일은 2와 같은 식으로 리턴된다.                   */
+int zeller(int year, int month, int day) {
+	int year_of_century, century, day_of_week;
+
+	/* Zeller의 함수에 사용될 수 있도록 year와 month를 보정 */
+	if (month == 1 || month == 2) year--;
+	month = (month + 9) % 12 + 1;        /* Jan=11, Feb=12, Mar=1, ... */
+	year_of_century = year % 100;    /* 예 : 91 of 1991            */
+	century = year / 100;            /* 예 : 19 of 1991            */
+
+	day_of_week = ((13 * month - 1) / 5 + day + year_of_century +
+		year_of_century / 4 + century / 4 - 2 * century) % 7;
+	if (day_of_week < 0) day_of_week = (day_of_week + 7) % 7;
+	return(day_of_week + 1);
+}
+
 void Management::addSchedule()
 {
 	string startDate, endDate, title, category, memo, rptEndDate;
+	string yRptStr, mRptStr, wRptStr; //년, 월, 주별로 반복날짜 정보를 입력받을 문자열
+	vector<string> yRptVec; //연도 별로 반복날짜 정보를 저장할 벡터
+	vector<int> mRptVec, wRptVec;	//월, 주별로 반복날짜 정보를 저장할 벡터
 	int cycle, key;
 	string y, m, d;
 	int cateCount = 0;
@@ -405,30 +425,33 @@ void Management::addSchedule()
 			cout << "------------------------------------\n";
 			cout << "> ";
 
-			getline(cin, memo);
-			if (memo == "^C") {
+			getline(cin, menu);
+			if (menu == "^C") {
 				flag = 4;
 			}
-			else {
-				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
-				wsmatch wideMatch;
-				wstring wmemo = SDM.s2ws(memo);
-				if (memo.size() != 0) {
-					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
-						memo[0] != ' ' && memo.back() != ' ') {
-						flag = 5;
-					}
-					else {
-						system("cls");
-						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
-						cout << "아무 키나 눌러주세요.\n";
-						cout << "_____________________________\n";
-						cout << "> ";
-						_getch();
-					}
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && stoi(menu) == 0) {
+					cycle = stoi(menu);
+					flag = 10; // 프롬프트 종료, 일정 추가/저장
+				}
+				else if (is_digit(menu) && stoi(menu) == 1) {
+					cycle = stoi(menu);
+					flag = 6; // 년 입력 프롬프트로 이동
+				}
+				else if (is_digit(menu) && stoi(menu) == 2) {
+					cycle = stoi(menu);
+					flag = 7; // 월 입력 프롬프트로 이동
+				}
+				else if (is_digit(menu) && stoi(menu) == 3) {
+					cycle = stoi(menu);
+					flag = 8; // 주 입력 프롬프트로 이동
 				}
 				else {
-					flag = 5;
+					cout << "오류: 0,1,2,3 중 하나의 숫자를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 5; // 현재 프롬프트 반복
+					}
 				}
 			}
 			break;
@@ -472,37 +495,76 @@ void Management::addSchedule()
 		case 7:
 			cout << "<일정 추가>\n\n";
 			cout << "월 입력\n\n";
-			cout << "반복할 날짜를 형식에 맞게 입력해주세요.\n";
+			cout << "반복할 날짜를 숫자만 입력해주세요.\n";
 			cout << "(여러 날짜의 입력은 공백류로 구분합니다.)\n";
-			cout << "에: 1 11 21 (매달 1일, 11일, 21일 반복)\n\n";
+			cout << "예: 1 11 21 (매달 1일, 11일, 21일 반복)\n\n";
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n";
 			cout << "------------------------------------\n";
 			cout << "> ";
 
-			getline(cin, memo);
-			if (memo == "^C") {
-				flag = 3;
+			getline(cin, mRptStr);
+			if (mRptStr == "^C") {
+				flag = 5;
 			}
 			else {
-				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+				// 00 입력 불가, 01~09 == 1~9
+				wregex wrx(L"(([0]?[1-9] | [1-9][0-9]?) ([ ]+[0-9][0-9]?)*)");
 				wsmatch wideMatch;
-				wstring wmemo = SDM.s2ws(memo);
-				if (memo.size() != 0) {
-					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
-						memo[0] != ' ' && memo.back() != ' ') {
-						flag = 5;
+				wstring wmRptStr = SDM.s2ws(mRptStr);
+				if (regex_match(wmRptStr.cbegin(), wmRptStr.cend(), wideMatch, wrx)) { 
+					mRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
+
+					istringstream iss(mRptStr);
+					string word;
+					while (getline(iss, word, ' ')) {
+						mRptVec.push_back(stoi(word));
 					}
-					else {
+					sort(mRptVec.begin(), mRptVec.end());
+					mRptVec.erase(unique(mRptVec.begin(), mRptVec.end()), mRptVec.end());
+
+					vector<int>::iterator ptr;
+					bool isExistDate = true;
+					for (ptr = mRptVec.begin(); ptr != mRptVec.end(); ++ptr) {
+						if (*ptr > 31) {
+							isExistDate = false;
+							break;
+						}
+					}
+					if (!isExistDate) {
 						system("cls");
-						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+						cout << "오류: 공백류로 구분되는 \"1부터 31까지의 자연수 숫자\" 1개 이상을 입력해주셔야 합니다.\n\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
 					}
+
+					bool hasEndDate = false;
+					int ed = stoi(endDate.substr(8, 2));
+					for (ptr = mRptVec.begin(); ptr != mRptVec.end(); ++ptr) {
+						if (*ptr == ed) {
+							hasEndDate = true;
+							break;
+						}
+					}
+					if (!hasEndDate) {
+						system("cls");
+						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+					}
+
+					flag = 9;
 				}
 				else {
-					flag = 5;
+					system("cls");
+					cout << "오류: 반복할 날짜를 형식에 맞게 입력해주세요.\n\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "_____________________________\n";
+					cout << "> ";
+					_getch();
 				}
 			}
 			break;
@@ -523,30 +585,56 @@ void Management::addSchedule()
 			cout << "------------------------------------\n";
 			cout << "> ";
 
-			getline(cin, memo);
-			if (memo == "^C") {
-				flag = 3;
+			getline(cin, wRptStr);
+			if (wRptStr == "^C") {
+				flag = 5;
 			}
 			else {
-				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+				wregex wrx(L"([1-7] ([ ]+[1-7]?)*)");
 				wsmatch wideMatch;
-				wstring wmemo = SDM.s2ws(memo);
-				if (memo.size() != 0) {
-					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
-						memo[0] != ' ' && memo.back() != ' ') {
-						flag = 5;
+				wstring wwRptStr = SDM.s2ws(wRptStr);
+				if (regex_match(wwRptStr.cbegin(), wwRptStr.cend(), wideMatch, wrx)) {
+					wRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
+
+					istringstream iss(wRptStr);
+					string word;
+					while (getline(iss, word, ' ')) {
+						wRptVec.push_back(stoi(word));
 					}
-					else {
+					sort(wRptVec.begin(), wRptVec.end());
+					mRptVec.erase(unique(wRptVec.begin(), wRptVec.end()), wRptVec.end());
+
+					bool hasEndDate = false;
+					int y = stoi(endDate.substr(0, 4));
+					int m = stoi(endDate.substr(5, 2));
+					int d = stoi(endDate.substr(8, 2));
+					int edWhatday = zeller(y, m, d);	// 종료일이 무슨 요일인지
+
+					vector<int>::iterator ptr;
+					for (ptr = wRptVec.begin(); ptr != wRptVec.end(); ++ptr) {
+						if (*ptr == edWhatday) {
+							hasEndDate = true;
+							break;
+						}
+					}
+					if (!hasEndDate) {
 						system("cls");
-						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
 					}
+
+					flag = 9;
 				}
 				else {
-					flag = 5;
+					system("cls");
+					cout << "오류: 공백류로 구분되는 \"1부터 7까지의 자연수 숫자\" 1개 이상을 입력해주셔야 합니다.\n\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "_____________________________\n";
+					cout << "> ";
+					_getch();
 				}
 			}
 			break;
@@ -589,10 +677,32 @@ void Management::addSchedule()
 			break;
 		}
 	}
-	Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
-	cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+	switch (cycle) {
+	case 0:	// 반복 x
+		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
+		cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+		break;
+	case 1:	// 매년 반복
+		// 1. startDate와 endDate의 날짜 차이를 알아야 함.
+		// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
+		// 3. 알아낸 시작일과 yRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
+		// 4. 2와 3을 yRptVec의 모든 객체에 대하여 반복
+		break;
+	case 2:	// 매월 반복
+		// 1. startDate와 endDate의 날짜 차이를 알아야 함.
+		// 2. mRptVec에서 종료일(11)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
+		// 3. 알아낸 시작일과 mRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
+		// 4. 2와 3을 mRptVec의 모든 객체에 대하여 반복
+		break;
+	case 3:	// 매주 반복
+		// 1. startDate와 endDate의 날짜 차이를 알아야 함.
+		// 2. wRptVec에서 종료일(5)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
+		// 3. 알아낸 시작일과 wRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
+		// 4. 2와 3을 wRptVec의 모든 객체에 대하여 반복
+		break;
+	}
+
 	SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-	
 	system("cls");
 	printSchedule();
 }
