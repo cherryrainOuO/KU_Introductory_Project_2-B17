@@ -18,6 +18,7 @@ private:
 
 
 public:
+	Schedule();
 	Schedule(string t, string sd, string ed, string ca, string me, string rED, int cy, int k);
 	void print();
 	//getter & setter

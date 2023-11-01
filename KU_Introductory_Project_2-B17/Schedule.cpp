@@ -1,5 +1,9 @@
 #include "Schedule.h"
 
+Schedule::Schedule() {
+	// 깡통이 없으면 실행이 안돼요
+}
+
 Schedule::Schedule(string t, string sd, string ed, string ca, string me, string rED, int cy, int k)
 {
 	title = t;

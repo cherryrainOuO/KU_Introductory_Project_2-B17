@@ -168,7 +168,7 @@ void Management::printSchedule(){
 
 /* Zeller의 함수를 이용하여 year년 month월 day일의 요일을 계산한다. */
 /* 일요일은 1,월요일은 2와 같은 식으로 리턴된다.                   */
-int zeller(int year, int month, int day) {
+int Management::zeller(int year, int month, int day) {
 	int year_of_century, century, day_of_week;
 
 	/* Zeller의 함수에 사용될 수 있도록 year와 month를 보정 */
@@ -758,27 +758,28 @@ void Management::addSchedule()
 	}
 	switch (cycle) {
 	case 0:	// 반복 x
+		key = 1102;	// 테스트 키
 		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
 		cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 		break;
-	case 1:	// 매년 반복
-		// 1. startDate와 endDate의 날짜 차이를 알아야 함.
-		// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
-		// 3. 알아낸 시작일과 yRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
-		// 4. 2와 3을 yRptVec의 모든 객체에 대하여 반복
-		break;
-	case 2:	// 매월 반복
-		// 1. startDate와 endDate의 날짜 차이를 알아야 함.
-		// 2. mRptVec에서 종료일(11)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
-		// 3. 알아낸 시작일과 mRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
-		// 4. 2와 3을 mRptVec의 모든 객체에 대하여 반복
-		break;
-	case 3:	// 매주 반복
-		// 1. startDate와 endDate의 날짜 차이를 알아야 함.
-		// 2. wRptVec에서 종료일(5)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
-		// 3. 알아낸 시작일과 wRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
-		// 4. 2와 3을 wRptVec의 모든 객체에 대하여 반복
-		break;
+	//case 1:	// 매년 반복
+	//	// 1. startDate와 endDate의 날짜 차이를 알아야 함.
+	//	// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
+	//	// 3. 알아낸 시작일과 yRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
+	//	// 4. 2와 3을 yRptVec의 모든 객체에 대하여 반복
+	//	break;
+	//case 2:	// 매월 반복
+	//	// 1. startDate와 endDate의 날짜 차이를 알아야 함.
+	//	// 2. mRptVec에서 종료일(11)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
+	//	// 3. 알아낸 시작일과 mRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
+	//	// 4. 2와 3을 mRptVec의 모든 객체에 대하여 반복
+	//	break;
+	//case 3:	// 매주 반복
+	//	// 1. startDate와 endDate의 날짜 차이를 알아야 함.
+	//	// 2. wRptVec에서 종료일(5)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
+	//	// 3. 알아낸 시작일과 wRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
+	//	// 4. 2와 3을 wRptVec의 모든 객체에 대하여 반복
+	//	break;
 	}
 
 	SDM.saveDataFile(*cal);	// 데이터 파일에 저장
