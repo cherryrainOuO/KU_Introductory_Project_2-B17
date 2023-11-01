@@ -12,9 +12,13 @@ private:
 	string endDate;
 	string category;
 	string memo;
+	int key; 
+	int cycle; //0: x, 1: 매년, 2: 매달, 3: 매주
+	string rptEndDate; //반복종료일
+
 
 public:
-	Schedule(string t, string sd, string ed, string ca, string me);
+	Schedule(string t, string sd, string ed, string ca, string me, string rED, int cy, int k);
 	void print();
 	//getter & setter
 	string getTitle() { return title; };
@@ -27,5 +31,11 @@ public:
 	void setCategory(string cat) { category = cat; };
 	string getMemo() { return memo; };
 	void setMemo(string mm) { memo = mm; };
+	int getKey() { return key; };
+	void setKey(int k) { key = k; };
+	int getCycle() { return cycle; };
+	void setCycle(int c) { cycle = c; };
+	string getRptEndDate() { return rptEndDate; };
+	void setRptEndDate(string rd) { rptEndDate = rd; };
 };
 

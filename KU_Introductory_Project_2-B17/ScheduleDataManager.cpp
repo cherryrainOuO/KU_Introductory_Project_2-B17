@@ -44,18 +44,46 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
             cout << temptkn;
             if (!temptkn.empty()) record.push_back(temptkn); //연속된 tab 무시
         }
-        //메모가 비워진 경우
-        if (record.size() == 4) record.push_back("");
-        if (record.size() != 5 || !isRight(record, categories)) {
-            cout << record.size(); //test
+        //메모가 비워진 경우 4번 인덱스에 빈 문자열 삽입
+        if (record.size() == SIZE - 1) record.insert(record.begin() + 4, "");
+
+        if (record.size() != SIZE || !isRight(record, categories)) {
+            //cout << record.size(); //test
             cerr << "오류: 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
             return false;
         }
-        //title, sd, ed, cate, memo 순서
-        Schedule s(record[0], record[2], record[3], record[1], record[4]);
-        c.allSchs.push_back(s);
+
+        //title, sd, ed, cate, memo, rED, cy, k 순서
+        string ti = record[0];
+        string sd = record[2];
+        string ed = record[3];
+        string cat = record[1];
+        string me = record[4];
+        string rED = record[5];
+        int cy = stoi(record[6]);
+        int k = stoi(record[7]);
+
+        Schedule s(ti, sd, ed, cat, me, rED, cy, k);
+
+        if (!checkCont(s)) {
+            cerr << "오류: 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
+            return false;
+        }
+        dupKeySches[k] = s; //키가 중복될 때 검사하기 위해
+
+        int period = calcPeriod(sd, ed); //일정의 기간
+
+        //반복 종료일까지 추가
+        while (checkD2(ed, rED)) {
+            Schedule s(ti, sd, ed, cat, me, rED, cy, k);
+            c.allSchs.push_back(s);
+            ed = addDate(ed, cy);
+            sd = calcSD(ed, period);
+        }
+
         record.clear();
     }
+    dupKeySches.clear();
     file.close();
     return true;
 }
@@ -63,6 +91,8 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 bool ScheduleDataManager::saveDataFile(Calender& c)
 {
     //이 함수를 호출하기 전 일정 추가 프롬프트에서 모든 문법 검사를 마치기 때문에 따로 검사를 하지 않습니다
+    //함수 호출 전 일정 시작일 순으로 정렬 필요
+
     string fileName = "Calendar-schedule.txt";
     wofstream file;
 
@@ -70,15 +100,30 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
     file.imbue(locale(file.getloc(), new codecvt_utf8<wchar_t>));
 
     for (Schedule s : c.allSchs) {
+
+        int key = s.getKey();
+        if (dupKeySches.find(key) != dupKeySches.end()) {
+            //key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
+            Schedule earliest = dupKeySches[key];
+            string standard = addDate(earliest.getEndDate(), earliest.getCycle());
+            if (!checkD2(s.getEndDate(), standard))
+                continue;
+        }
+        else {
+            dupKeySches[key] = s;
+        }
+
         wstring t = s2ws(s.getTitle());
         wstring c = s2ws(s.getCategory());
         wstring sD = s2ws(s.getStartDate());
         wstring eD = s2ws(s.getEndDate());
         wstring m = s2ws(s.getMemo());
-        file << t << L"\t" << c << L"\t" << sD << L"\t" << eD << L"\t" << m << L"\n";
-        //string s = "감자\t감자\t2022/12/12\t2022/12/12\tㅋㅋㅋ\n";
-        //wstring ws = s2ws(s);
-        //file << ws;
+        wstring rED = s2ws(s.getRptEndDate());
+        wstring cy = s2ws(to_string(s.getCycle()));
+        wstring k = s2ws(to_string(s.getKey()));
+        
+        file << t << L"\t" << c << L"\t" << sD << L"\t" << eD << L"\t" << m << L"\t" << rED << L"\t" << cy << L"\t"<< k << L"\n";
+        
     }
 
     file.close();
@@ -121,6 +166,7 @@ void ScheduleDataManager::trim(string& str) {
 
 bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
 {
+    //파일 순서: 제목 카테고리 시작일 종료일 메모 반복종료일 반복주기 키
     try
     {
         if(!checkT(record[0])) return false; //title
@@ -129,6 +175,11 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         if(!checkD(record[3])) return false; //endDate
         if (!checkD2(record[2], record[3])) return false; //startDate <= endDate
         if(!checkM(record[4])) return false; // memo
+        if (!checkD(record[5])) return false; //repeat end Date
+        if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
+        int period = calcPeriod(record[2], record[3]);
+        if (!checkCy(record[6], record[2], record[3])) return false; // cycle
+        if (!checkKey(record[7])) return false; //key
     }
     catch (const exception& e)
     {
@@ -231,3 +282,142 @@ bool ScheduleDataManager::checkM(string data)
     }
     return true;
 }
+
+bool ScheduleDataManager::checkCy(string data, string sd, string ed)
+{
+    int cycle = stoi(data);
+    if (cycle < 0 || cycle > CYMAX)
+        return false;
+    return true;
+}
+
+bool ScheduleDataManager::checkKey(string data)
+{
+    if (stoi(data) < 0)
+        return false;
+    return true;
+}
+
+bool ScheduleDataManager::checkCont(Schedule s)
+{
+    //key값이 같은 경우 동일해야하는 요소: 제목, 카테고리, 메모, 시작일~종료일 간격, 주기, 반복 종료일
+    int key = s.getKey();
+    if (dupKeySches.find(key) != dupKeySches.end()) {
+        Schedule s2(dupKeySches[key]);
+        if (s2.getTitle().compare(s.getTitle()) != 0)
+            return false;
+        if (s2.getCategory().compare(s.getCategory()) != 0)
+            return false;
+        if (s2.getMemo().compare(s.getMemo()) != 0)
+            return false;
+        if (calcPeriod(s.getStartDate(), s.getEndDate()) != calcPeriod(s2.getStartDate(), s2.getEndDate()))
+            return false;
+        if (s2.getCycle() != s.getCycle())
+            return false;
+        if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
+            return false;
+    }
+    return true;
+}
+
+void ScheduleDataManager::initTime(tm& date, int y, int m, int d)
+{
+    date.tm_year = y - 1900;
+    date.tm_mon = m - 1;
+    date.tm_mday = d;
+    date.tm_hour = 0;
+    date.tm_min = 0;
+    date.tm_sec = 0;
+    date.tm_isdst = 0;
+}
+
+int ScheduleDataManager::calcPeriod(string d1, string d2)
+{
+    int sy = stoi(d1.substr(0, 4)), sm = stoi(d1.substr(5, 2)), sd = stoi(d1.substr(8, 2)); //startDate
+    int ey = stoi(d2.substr(0, 4)), em = stoi(d2.substr(5, 2)), ed = stoi(d2.substr(8, 2)); //end
+
+    struct tm start_date = {};
+    struct tm end_date = {};
+
+    initTime(start_date, sy, sm, sd);
+    initTime(end_date, ey, em, ed);
+
+    time_t start_time = mktime(&start_date);
+    time_t end_time = mktime(&end_date);
+    double diff_seconds = difftime(end_time, start_time);
+
+    int period = static_cast<int>(diff_seconds / (60 * 60 * 24));
+
+    return period;
+}
+
+//주기 별 종료일 계산
+string ScheduleDataManager::addDate(string date, int cy)
+{
+    int year = stoi(date.substr(0, 4)), month = stoi(date.substr(5, 2)), day = stoi(date.substr(8, 2));
+    int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    string res;
+
+    if (cy == 1) {
+        //year
+        year += 1;
+        if (year % 4 && month == 2 && day == 29)
+            day = 28;
+    }
+    else if (cy == 2) {
+        //month
+        month += 1;
+        if (month > 12) {
+            year += 1;
+            month = 1;
+        }
+        if (year % 4 == 0 && year % 100 != 0) days[1] = 29;
+
+        if (day > days[month - 1]) day = days[month - 1];
+    }
+    else if (cy == 3) {
+        //week
+        if (year % 4 == 0 && year % 100 != 0) days[1] = 29;
+
+        day += 7;
+        if (day > days[month - 1]) {
+            day = day - days[month - 1];
+            month += 1;
+        }
+        if (month > 12) {
+            year += 1;
+            month = 1;
+        }
+    }
+
+    //format
+    string y = to_string(year);
+    string m = to_string(month);
+    string d = to_string(day);
+
+    if (month <= 9) {
+        m = "0" + m;
+    }
+    if (day <= 9) {
+        d = "0" + d;
+    }
+    res = year + "/" + m + "/" + d;
+    return res;
+}
+
+//종료일로 시작일 계산
+string ScheduleDataManager::calcSD(string ed, int pe)
+{
+    int year = stoi(ed.substr(0, 4)), month = stoi(ed.substr(5, 2)), day = stoi(ed.substr(8, 2));
+    struct tm date = {};
+    initTime(date, year, month, day);
+
+    date.tm_mday -= pe;
+    mktime(&date);
+
+    char result[11];
+    strftime(result, sizeof(result), "%Y/%m/%d", &date);
+
+    return result;
+}
+
