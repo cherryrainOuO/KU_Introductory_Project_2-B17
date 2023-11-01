@@ -168,17 +168,18 @@ void Management::printSchedule(){
 
 void Management::addSchedule()
 {
-	string startDate, endDate, title, category, memo;
+	string startDate, endDate, title, category, memo, rptEndDate;
+	int cycle, key;
 	string y, m, d;
 	int cateCount = 0;
 	string menu;
 	
 	int flag = 0;	// 부 프롬프트 간 이동을 위한 변수
-	while (flag < 5) {
+	while (flag < 10) {
 		system("cls");
 		switch (flag) {
 		case 0:
-			cout << "<일정 추가(1/5)>\n\n";
+			cout << "<일정 추가>\n\n";
 			cout << "시작일 입력\n\n";
 			cout << "시작일 입력 형식 : yyyy/mm/dd\n";
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
@@ -217,7 +218,7 @@ void Management::addSchedule()
 			}
 			break;
 		case 1:
-			cout << "<일정 추가(2/5)>\n\n";
+			cout << "<일정 추가>\n\n";
 			cout << "종료일 입력\n\n";
 			cout << "종료일 입력 형식 : yyyy/mm/dd\n";
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
@@ -274,7 +275,7 @@ void Management::addSchedule()
 			}
 			break;
 		case 2:
-			cout << "<일정 추가(3/5)>\n\n";
+			cout << "<일정 추가>\n\n";
 			cout << "제목 입력\n\n";
 			cout << "제목 형식:\n";
 			cout << "길이가 1 이상 30 이하이며 한글/영어/숫자와 공백의 조합\n";
@@ -308,7 +309,7 @@ void Management::addSchedule()
 			}
 			break;
 		case 3:
-			cout << "<일정 추가(4/5)>\n\n";
+			cout << "<일정 추가>\n\n";
 			cout << "카테고리 선택\n\n";
 			cout << "0. 기본\n";
 			CDM->CategoryPrint();
@@ -354,7 +355,7 @@ void Management::addSchedule()
 			}
 			break;
 		case 4:
-			cout << "<일정 추가(5/5)>\n\n";
+			cout << "<일정 추가>\n\n";
 			cout << "메모 입력\n\n";
 			cout << "메모 형식:\n";
 			cout << "길이가 1 이상 30 이하이며 한글/영어/숫자와 공백의 조합\n";
@@ -392,9 +393,203 @@ void Management::addSchedule()
 				}
 			}
 			break;
+		case 5:
+			cout << "<일정 추가>\n\n";
+			cout << "반복 여부 및 단위 선택\n\n";
+			cout << "0. 반복하지 않음\n";
+			cout << "1. 매년\n";
+			cout << "2. 매월\n";
+			cout << "3. 매주\n\n";
+			cout << "원하는 반복 단위를 입력하세요.\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
+
+			getline(cin, memo);
+			if (memo == "^C") {
+				flag = 4;
+			}
+			else {
+				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+				wsmatch wideMatch;
+				wstring wmemo = SDM.s2ws(memo);
+				if (memo.size() != 0) {
+					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
+						memo[0] != ' ' && memo.back() != ' ') {
+						flag = 5;
+					}
+					else {
+						system("cls");
+						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+					}
+				}
+				else {
+					flag = 5;
+				}
+			}
+			break;
+		case 6:
+			cout << "<일정 추가>\n\n";
+			cout << "년 입력\n\n";
+			cout << "반복할 날짜를 형식에 맞게 입력해주세요.\n";
+			cout << "(mm/dd, 여러 날짜의 입력은 공백류로 구분합니다.)\n";
+			cout << "예:  01/02 10/04 12/31  (매년 1월 2일, 10월 4일, 12월 31일 반복)\n\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
+
+			getline(cin, memo);
+			if (memo == "^C") {
+				flag = 3;
+			}
+			else {
+				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+				wsmatch wideMatch;
+				wstring wmemo = SDM.s2ws(memo);
+				if (memo.size() != 0) {
+					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
+						memo[0] != ' ' && memo.back() != ' ') {
+						flag = 5;
+					}
+					else {
+						system("cls");
+						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+					}
+				}
+				else {
+					flag = 5;
+				}
+			}
+			break;
+		case 7:
+			cout << "<일정 추가>\n\n";
+			cout << "월 입력\n\n";
+			cout << "반복할 날짜를 형식에 맞게 입력해주세요.\n";
+			cout << "(여러 날짜의 입력은 공백류로 구분합니다.)\n";
+			cout << "에: 1 11 21 (매달 1일, 11일, 21일 반복)\n\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
+
+			getline(cin, memo);
+			if (memo == "^C") {
+				flag = 3;
+			}
+			else {
+				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+				wsmatch wideMatch;
+				wstring wmemo = SDM.s2ws(memo);
+				if (memo.size() != 0) {
+					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
+						memo[0] != ' ' && memo.back() != ' ') {
+						flag = 5;
+					}
+					else {
+						system("cls");
+						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+					}
+				}
+				else {
+					flag = 5;
+				}
+			}
+			break;
+		case 8:
+			cout << "<일정 추가>\n\n";
+			cout << "주 입력\n\n";
+			cout << "1. 일\n";
+			cout << "2. 월\n";
+			cout << "3. 화\n";
+			cout << "4. 수\n";
+			cout << "5. 목\n";
+			cout << "6. 금\n";
+			cout << "7. 토\n\n";
+			cout << "반복할 요일의 번호를 입력하세요.\n";
+			cout << "(여러 요일의 입력은 공백류로 구분합니다.)\n";
+			cout << "예 : 1 2 3\n\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
+
+			getline(cin, memo);
+			if (memo == "^C") {
+				flag = 3;
+			}
+			else {
+				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+				wsmatch wideMatch;
+				wstring wmemo = SDM.s2ws(memo);
+				if (memo.size() != 0) {
+					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
+						memo[0] != ' ' && memo.back() != ' ') {
+						flag = 5;
+					}
+					else {
+						system("cls");
+						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+					}
+				}
+				else {
+					flag = 5;
+				}
+			}
+			break;
+		case 9:
+			cout << "<일정 추가>\n\n";
+			cout << "반복 종료일 입력\n\n";
+			cout << "반복 종료일을 입력해주세요.\n\n";
+			cout << "반복 종료일 입력 형식 : yyyy/mm/dd\n";
+			cout << "(지정하지 않을 경우 -1 을 입력해주세요.)\n\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
+
+			getline(cin, memo);
+			if (memo == "^C") {
+				flag = 3;
+			}
+			else {
+				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
+				wsmatch wideMatch;
+				wstring wmemo = SDM.s2ws(memo);
+				if (memo.size() != 0) {
+					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
+						memo[0] != ' ' && memo.back() != ' ') {
+						flag = 5;
+					}
+					else {
+						system("cls");
+						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+					}
+				}
+				else {
+					flag = 5;
+				}
+			}
+			break;
 		}
 	}
-	Schedule* newDate = new Schedule(title, startDate, endDate, category, memo);
+	Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
 	cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 	SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 	
