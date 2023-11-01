@@ -694,7 +694,7 @@ void Management::mod_or_delSchedule(){
 
 
 	int flag = 0;// 부 프롬프트 간 이동을 위한 변수
-	while (flag < 9) {
+	while (flag < 14) {
 		system("cls");
 		switch (flag) {
 		case 0:
@@ -728,7 +728,7 @@ void Management::mod_or_delSchedule(){
 			system("cls");
 			if (menu == "^C") {
 				system("cls");
-				flag = 9;
+				flag = 14;
 				printSchedule(); // 이전 프롬프트 (일정목록/메뉴선택)
 			}
 			else if (is_digit(menu) && (stoi(menu) >= 1 && stoi(menu) <= sche.size())) {
@@ -764,7 +764,7 @@ void Management::mod_or_delSchedule(){
 				if (is_digit(menu) && stoi(menu) == 1)
 					flag = 2; // 수정 프롬프트로 이동
 				else if (is_digit(menu) && stoi(menu) == 2)
-					flag = 8; // 삭제 프롬프트로 이동
+					flag = 13; // 삭제 프롬프트로 이동
 				else {
 					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
 					if (_getch()) {
@@ -784,10 +784,12 @@ void Management::mod_or_delSchedule(){
 			cout << "2. 종료일\n";
 			cout << "3. 제목\n";
 			cout << "4. 카테고리\n";
-			cout << "5. 메모\n\n";
-
+			cout << "5. 메모\n"; 
+			cout << "6. 반복 여부 / 반복 일자 / 반복 종료일\n\n";
+	
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
 			cout << "선택한 일정에서 정보를 변경할 요소를 선택해주세요.\n";
+			cout << "(반복되는 일정일 시, “일괄 수정” 됩니다.)\n";
 			cout << "------------------------------------\n";
 			cout << "> ";
 
@@ -808,8 +810,10 @@ void Management::mod_or_delSchedule(){
 					flag = 6; // 카테고리 수정 프롬프트로 이동
 				else if (is_digit(menu) && stoi(menu) == 5)
 					flag = 7; // 메모 수정 프롬프트로 이동
+				else if (is_digit(menu) && stoi(menu) == 6)
+					flag = 8; // 반복 관련 수정 프롬프트로 이동 
 				else {
-					cout << "오류: 1,2,3,4,5 중 하나의 숫자를 입력해주세요.\n";
+					cout << "오류: 1,2,3,4,5,6 중 하나의 숫자를 입력해주세요.\n";
 					if (_getch()) {
 						system("cls");
 						flag = 2; // 현재 프롬프트 반복
@@ -1073,6 +1077,74 @@ void Management::mod_or_delSchedule(){
 			}
 			break;
 		case 8:
+			cout << "<일정 수정>\n\n";
+			cout << "반복 여부 및 단위 선택\n\n";
+			cout << "0. 반복하지 않음\n";
+			cout << "1. 매년 \n";
+			cout << "2. 매월 \n";
+			cout << "3. 매주 \n\n";
+			cout << "원하는 반복 단위를 입력하세요.\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
+
+			getline(cin, menu);
+			system("cls");
+			if (menu == "^C") {
+				system("cls");
+				flag = 2; // 이전 프롬프트 (변경할 요소 선택 프롬프트)
+			}
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && stoi(menu) == 0)
+					;
+				// stoi(menu) == 0 : 반복되지 않는 일정으로 수정, 혹은 그대로 둠
+				else if (is_digit(menu) && stoi(menu) == 1)
+					flag = 9;
+				else if (is_digit(menu) && stoi(menu) == 2)
+					flag = 10;
+				else if (is_digit(menu) && stoi(menu) == 0)
+					flag = 11;
+			}
+			else{
+				cout << "오류: 0, 1, 2, 3 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "——————————————————————————\n";
+				cout << ">";
+			}
+			break;
+
+		case 9: // 년 단위
+			cout << "<일정 수정>\n\n";
+			cout << "년 입력\n\n";
+			cout << "반복할 날짜를 형식에 맞게 입력해주세요.\n";
+			cout << "(mm / dd, 여러 날짜의 입력은 공백류로 구분합니다.)\n";
+			cout << "예:  01 / 02 10 / 04 12 / 31  (매년 1월 2일, 10월 4일, 12월 31일 반복)\n\n";
+			cout << "(^ C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "——————————————————————————\n";
+			cout << ">";
+			break;
+		case 10: // 월 단위
+			break;
+		case 11: // 주 단위
+			cout << "<일정 수정>\n\n";
+			cout << "주 입력\n\n";
+			cout << "1. 일\n";
+			cout << "2. 월\n";
+			cout << "3. 화\n";
+			cout << "4. 수\n";
+			cout << "5. 목\n";
+			cout << "6. 금\n";
+			cout << "7. 토\n\n";
+			cout << "반복할 요일의 번호를 입력하세요.\n";
+			cout << "(여러 요일의 입력은 공백류로 구분합니다.)\n";
+			cout << "예 : 1 2 3\n\n";
+			cout << "(^ C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "——————————————————————————\n";
+			cout << ">";
+			break;
+		case 12: // 반복 종료일
+			break;
+		case 13:
 			cout << "<일정 삭제>\n\n";
 			cout << "제목 : " << sche[selectedNum]->getTitle() << "\n\n";
 			cout << "해당 일정을 정말로 삭제하시겠습니까?\n\n";
@@ -1101,7 +1173,7 @@ void Management::mod_or_delSchedule(){
 					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
 					if (_getch()) {
 						system("cls");
-						flag = 8; // 현재 프롬프트 반복
+						flag = 13; // 현재 프롬프트 반복
 					}
 				}
 			}
