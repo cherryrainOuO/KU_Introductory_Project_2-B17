@@ -126,6 +126,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         
     }
 
+    dupKeySches.clear();
     file.close();
 
     if (file.fail()) {
