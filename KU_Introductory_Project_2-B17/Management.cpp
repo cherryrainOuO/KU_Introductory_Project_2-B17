@@ -1037,7 +1037,7 @@ void Management::mod_or_delSchedule(){
 			system("cls");
 			if (menu == "^C") {
 				system("cls");
-				flag = 14;
+				flag = 15;
 				printSchedule(); // 이전 프롬프트 (일정목록/메뉴선택)
 			}
 			else if (is_digit(menu) && (stoi(menu) >= 1 && stoi(menu) <= sche.size())) {
@@ -1755,10 +1755,22 @@ void Management::mod_or_delSchedule(){
 				system("cls");
 			}
 			else if (menu.size() == 1) {
+				/*
 				if (is_digit(menu) && stoi(menu) == 1) {
 					cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 0; // 일정 선택 프롬프트로 이동
+				}
+				*/
+				if (is_digit(menu) && stoi(menu) == 1) {
+					if (sche[selectedNum]->getCycle() == 0) {
+						cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
+						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						flag = 0; // 일정 선택 프롬프트로 이동
+					}
+					else {
+						flag = 14;
+					}
 				}
 				else if (is_digit(menu) && stoi(menu) == 2) {
 					flag = 0; // 일정 선택 프롬프트로 이동
@@ -1791,9 +1803,14 @@ void Management::mod_or_delSchedule(){
 			}
 			else if (menu.size() == 1) {
 				if (is_digit(menu) && stoi(menu) == 1) {
-					cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
-					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					flag = 0; // 일정 선택 프롬프트로 이동
+					key = sche[selectedNum]->getKey();
+					for (int i = 0; i < cal->allSchs.size(); i++) {
+						if (cal->allSchs[i].getKey() == key) {
+							cal->allSchs.erase(cal->allSchs.begin() + i);
+							SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						}
+					}
+					flag = 0;
 				}
 				else if (is_digit(menu) && stoi(menu) == 2) {
 					flag = 0; // 일정 선택 프롬프트로 이동
