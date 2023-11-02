@@ -810,7 +810,7 @@ void Management::mod_or_delSchedule(){
 	int flag = 0;// 부 프롬프트 간 이동을 위한 변수
 	int backup_flag = 0;
 
-	while (flag < 14) {
+	while (flag < 15) {
 		system("cls");
 		switch (flag) {
 		case 0:
@@ -1322,6 +1322,84 @@ void Management::mod_or_delSchedule(){
 			}
 			break;
 		case 10: // 월 단위
+			cout << "<일정 수정>\n\n";
+			cout << "월 입력\n\n";
+			cout << "반복할 날짜의 숫자만 입력해주세요.\n";
+			cout << "(여러 날짜의 입력은 공백류로 구분됩니다.)\n";
+			cout << "예 : 1 11 21 (매달 1일, 11일, 21일 반복)\n\n";
+			cout << "(^ C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "——————————————————————————\n";
+			cout << ">";
+
+			getline(cin, mRptStr);
+			if (mRptStr == "^C") {
+				system("cls");
+				flag = 8;
+			}
+			else {
+				// 00 입력 불가, 01~09 == 1~9
+				//wregex wrx(L"(([0]?[1-9] | [1-9][0-9]?) ([ ]+[0-9][0-9]?)*)");
+				wregex wrx(L"(([0]?[1-9]|[1-9][0-9])(([ ]|[0]?[1-9]|[1-9][0-9])*))");
+				wsmatch wideMatch;
+				wstring wmRptStr = SDM.s2ws(mRptStr);
+				if (regex_match(wmRptStr.cbegin(), wmRptStr.cend(), wideMatch, wrx)) {
+					mRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
+
+					istringstream iss(mRptStr);
+					string word;
+					while (getline(iss, word, ' ')) {
+						mRptVec.push_back(stoi(word));
+					}
+					sort(mRptVec.begin(), mRptVec.end());
+					mRptVec.erase(unique(mRptVec.begin(), mRptVec.end()), mRptVec.end());
+
+					vector<int>::iterator ptr;
+					bool isExistDate = true;
+					for (ptr = mRptVec.begin(); ptr != mRptVec.end(); ++ptr) {
+						if (*ptr > 31) {
+							isExistDate = false;
+							break;
+						}
+					}
+					if (!isExistDate) {
+						system("cls");
+						cout << "오류: 공백류로 구분되는 \"1부터 31까지의 자연수 숫자\" 1개 이상을 입력해주셔야 합니다.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+						break;
+					}
+
+					bool hasEndDate = false;
+					int ed = stoi(endDate.substr(8, 2));
+					for (ptr = mRptVec.begin(); ptr != mRptVec.end(); ++ptr) {
+						if (*ptr == ed) {
+							hasEndDate = true;
+							break;
+						}
+					}
+					if (!hasEndDate) {
+						system("cls");
+						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+						break;
+					}
+
+					flag = 12;
+				}
+				else {
+					system("cls");
+					cout << "오류: 반복할 날짜를 형식에 맞게 입력해주세요.\n\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "_____________________________\n";
+					cout << "> ";
+					_getch();
+				}
+			}
 			break;
 		case 11: // 주 단위
 			backup_flag = 11;
@@ -1479,6 +1557,41 @@ void Management::mod_or_delSchedule(){
 					if (_getch()) {
 						system("cls");
 						flag = 13; // 현재 프롬프트 반복
+					}
+				}
+			}
+			break;
+		case 14:
+			cout << "<일정 삭제>\n\n";
+			cout << "제목 : " << sche[selectedNum]->getTitle() << "\n\n";
+			cout << "해당 일정은 (반복단위)로 반복되는 일정입니다.\n";
+			cout << "삭제할 경우 반복되는 일정 전체가 삭제됩니다.\n";
+			cout << "삭제하시겠습니까?\n\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
+			cout << "1. 예\n";
+			cout << "2. 아니요\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
+			getline(cin, menu);
+			system("cls");
+			if (menu == "^C") {
+				flag = 13; // 일정 삭제 확인 프롬프트로 이동
+				system("cls");
+			}
+			else if (menu.size() == 1) {
+				if (is_digit(menu) && stoi(menu) == 1) {
+					cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					flag = 0; // 일정 선택 프롬프트로 이동
+				}
+				else if (is_digit(menu) && stoi(menu) == 2) {
+					flag = 0; // 일정 선택 프롬프트로 이동
+				}
+				else {
+					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+					if (_getch()) {
+						system("cls");
+						flag = 14; // 현재 프롬프트 반복
 					}
 				}
 			}
