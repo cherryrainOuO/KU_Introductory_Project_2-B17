@@ -74,11 +74,17 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         int period = calcPeriod(sd, ed); //일정의 기간
 
         //반복 종료일까지 추가
-        while (checkD2(ed, rED)) {
+        if (cy >= 1) {
+            while (checkD2(ed, rED)) {
+                Schedule s(ti, sd, ed, cat, me, rED, cy, k);
+                c.allSchs.push_back(s);
+                ed = addDate(ed, cy);
+                sd = calcSD(ed, period);
+            }
+        }
+        else {
             Schedule s(ti, sd, ed, cat, me, rED, cy, k);
             c.allSchs.push_back(s);
-            ed = addDate(ed, cy);
-            sd = calcSD(ed, period);
         }
 
         record.clear();
