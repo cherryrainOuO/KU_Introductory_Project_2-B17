@@ -526,7 +526,6 @@ void Management::addSchedule()
 							break;
 						}
 					}
-
 					if (!hasEndDate) {
 						system("cls");
 						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n";
@@ -562,7 +561,8 @@ void Management::addSchedule()
 			}
 			else {
 				// 00 입력 불가, 01~09 == 1~9
-				wregex wrx(L"(([0]?[1-9] | [1-9][0-9]?) ([ ]+[0-9][0-9]?)*)");
+				//wregex wrx(L"(([0]?[1-9] | [1-9][0-9]?) ([ ]+[0-9][0-9]?)*)");
+				wregex wrx(L"(([0]?[1-9]|[1-9][0-9])(([ ]|[0]?[1-9]|[1-9][0-9])*))");
 				wsmatch wideMatch;
 				wstring wmRptStr = SDM.s2ws(mRptStr);
 				if (regex_match(wmRptStr.cbegin(), wmRptStr.cend(), wideMatch, wrx)) { 
@@ -591,6 +591,7 @@ void Management::addSchedule()
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
+						break;
 					}
 
 					bool hasEndDate = false;
@@ -608,8 +609,8 @@ void Management::addSchedule()
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
+						break;
 					}
-
 					flag = 9;
 				}
 				else {
@@ -645,7 +646,7 @@ void Management::addSchedule()
 				flag = 5;
 			}
 			else {
-				wregex wrx(L"([1-7] ([ ]+[1-7]?)*)");
+				wregex wrx(L"([1-7]([ ][1-7]?)*)");
 				wsmatch wideMatch;
 				wstring wwRptStr = SDM.s2ws(wRptStr);
 				if (regex_match(wwRptStr.cbegin(), wwRptStr.cend(), wideMatch, wrx)) {
@@ -657,7 +658,7 @@ void Management::addSchedule()
 						wRptVec.push_back(stoi(word));
 					}
 					sort(wRptVec.begin(), wRptVec.end());
-					mRptVec.erase(unique(wRptVec.begin(), wRptVec.end()), wRptVec.end());
+					wRptVec.erase(unique(wRptVec.begin(), wRptVec.end()), wRptVec.end());
 
 					bool hasEndDate = false;
 					int y = stoi(endDate.substr(0, 4));
@@ -679,8 +680,8 @@ void Management::addSchedule()
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
+						break;
 					}
-
 					flag = 9;
 				}
 				else {
@@ -759,7 +760,8 @@ void Management::addSchedule()
 	switch (cycle) {
 	case 0:	// 반복 x
 		key = 1102;	// 테스트 키
-		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
+		//Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
+		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, key);
 		cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 		break;
 	//case 1:	// 매년 반복
