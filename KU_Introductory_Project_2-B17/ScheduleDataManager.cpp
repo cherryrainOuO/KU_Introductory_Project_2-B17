@@ -74,11 +74,17 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         int period = calcPeriod(sd, ed); //일정의 기간
 
         //반복 종료일까지 추가
-        while (checkD2(ed, rED)) {
+        if (cy >= 1) {
+            while (checkD2(ed, rED)) {
+                Schedule s(ti, sd, ed, cat, me, rED, cy, k);
+                c.allSchs.push_back(s);
+                ed = addDate(ed, cy);
+                sd = calcSD(ed, period);
+            }
+        }
+        else {
             Schedule s(ti, sd, ed, cat, me, rED, cy, k);
             c.allSchs.push_back(s);
-            ed = addDate(ed, cy);
-            sd = calcSD(ed, period);
         }
 
         record.clear();
@@ -106,6 +112,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
             //key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
             Schedule earliest = dupKeySches[key];
             string standard = addDate(earliest.getEndDate(), earliest.getCycle());
+            standard = calcSD(standard, 1);
             if (!checkD2(s.getEndDate(), standard))
                 continue;
         }
@@ -402,7 +409,7 @@ string ScheduleDataManager::addDate(string date, int cy)
     if (day <= 9) {
         d = "0" + d;
     }
-    res = year + "/" + m + "/" + d;
+    res = y + "/" + m + "/" + d;
     return res;
 }
 
