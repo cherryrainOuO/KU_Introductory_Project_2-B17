@@ -789,17 +789,22 @@ void Management::addSchedule()
 
 void Management::mod_or_delSchedule(){
 	vector<Schedule*> sche; // 현재 날짜에 해당하는 스케줄
-	vector<int> scheNum; // 현재 날짜에 해당하는 스케줄의 번호
+	vector<int> scheNum; // 현재 날짜에 해당하는 스케줄의 번호 
 
 	string sd, ed;
-	string startDate, endDate, title, category, memo;
+	string startDate, endDate, title, category, memo, rptEndDate;
+	string yRptStr, mRptStr, wRptStr; //년, 월, 주별로 반복날짜 정보를 입력받을 문자열
+	vector<string> yRptVec; //연도 별로 반복날짜 정보를 저장할 벡터
+	vector<int> mRptVec, wRptVec;	//월, 주별로 반복날짜 정보를 저장할 벡터
+	int cycle, key;
 	string y, m, d;
-	string menu; // 메뉴 선택
 	int selectedNum = 0; // 사용자가 선택한 일정의 번호
 	int cateCount = 0;
-
+	string menu; // 메뉴 	int cateCount = 0;
 
 	int flag = 0;// 부 프롬프트 간 이동을 위한 변수
+	int backup_flag = 0;
+
 	while (flag < 14) {
 		system("cls");
 		switch (flag) {
@@ -1201,9 +1206,13 @@ void Management::mod_or_delSchedule(){
 				flag = 2; // 이전 프롬프트 (변경할 요소 선택 프롬프트)
 			}
 			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 0)
-					;
-				// stoi(menu) == 0 : 반복되지 않는 일정으로 수정, 혹은 그대로 둠
+				if (is_digit(menu) && stoi(menu) == 0) {
+					// stoi(menu) == 0 : 반복되지 않는 일정으로 수정, 혹은 그대로 둠
+					sche[selectedNum]->setCycle(0);
+					sche[selectedNum]->setRptEndDate("");
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+				}
 				else if (is_digit(menu) && stoi(menu) == 1)
 					flag = 9;
 				else if (is_digit(menu) && stoi(menu) == 2)
@@ -1220,18 +1229,97 @@ void Management::mod_or_delSchedule(){
 			break;
 
 		case 9: // 년 단위
+			backup_flag = 9;
 			cout << "<일정 수정>\n\n";
 			cout << "년 입력\n\n";
 			cout << "반복할 날짜를 형식에 맞게 입력해주세요.\n";
-			cout << "(mm / dd, 여러 날짜의 입력은 공백류로 구분합니다.)\n";
-			cout << "예:  01 / 02 10 / 04 12 / 31  (매년 1월 2일, 10월 4일, 12월 31일 반복)\n\n";
-			cout << "(^ C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "(mm/dd, 여러 날짜의 입력은 공백류로 구분합니다.)\n";
+			cout << "예: 01/02 10/04 12/31  (매년 1월 2일, 10월 4일, 12월 31일 반복)\n\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n";
 			cout << "——————————————————————————\n";
 			cout << ">";
+
+			getline(cin, yRptStr);
+			if (yRptStr == "^C") {
+				flag = 8;
+			}
+			else {
+				regex re("^([0-9]{2}/[0-9]{2})(?:\s+([0-9]{2}/[0-9]{2}))*$");	// 날짜 문법 형식
+				if (regex_match(yRptStr, re)) {
+					system("cls");
+					cout << "오류: 반복 날짜를 형식에 맞게 입력해주세요.\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "_____________________________\n";
+					cout << "> ";
+					if (_getch()) {
+						system("cls");
+						flag = 9; // 현재 프롬프트 반복
+						break;
+					}
+				}
+
+				regex re2("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])");
+				regex re3("02/30|02/31|02/31|04/31|06/31|09/31|11/31");
+
+				// 문법 형식에 맞지 않을 때 -1 반환
+				if (regex_match(yRptStr, re)) {
+					yRptVec.clear();
+
+					istringstream iss(yRptStr);
+					bool isExistDate = true, hasEndDate = false;
+
+					do {
+						std::string word;
+						iss >> word;
+						if (!word.empty()) {
+							if (regex_match(word, re2) && !regex_match(word, re2)) {
+								if (word == endDate.substr(5, 5)) {
+									hasEndDate = true; // 반복날짜 중에 사용자가 입력한 종료일이 포함되어 있는지
+								}
+								yRptVec.push_back(word);
+							}
+							else {
+								isExistDate = false; // 반복날짜들이 모두 존재하는 날짜인지
+								break;
+							}
+						}
+					} while (iss);
+
+					if (!isExistDate) {
+						system("cls");
+						cout << "오류: 존재하지 않는 날짜가 포함되어 있습니다.\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						if (_getch()) {
+							system("cls");
+							flag = 9; // 현재 프롬프트 반복
+							break;
+						}
+					}
+
+					if (!hasEndDate) {
+						system("cls");
+						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						if (_getch()) {
+							system("cls");
+							flag = 9; // 현재 프롬프트 반복
+							break;
+						}
+					}
+
+					yRptVec.erase(unique(yRptVec.begin(), yRptVec.end()), yRptVec.end()); //중복 제거
+					flag = 12; // 반복종료일 입력 프롬프트로 이동
+				}
+			}
 			break;
 		case 10: // 월 단위
 			break;
 		case 11: // 주 단위
+			backup_flag = 11;
 			cout << "<일정 수정>\n\n";
 			cout << "주 입력\n\n";
 			cout << "1. 일\n";
@@ -1247,8 +1335,114 @@ void Management::mod_or_delSchedule(){
 			cout << "(^ C 입력 시 이전 화면으로 돌아갑니다)\n";
 			cout << "——————————————————————————\n";
 			cout << ">";
+
+			getline(cin, wRptStr);
+			if (wRptStr == "^C") {
+				flag = 8;
+			}
+			else {
+				wregex wrx(L"([1-7] ([ ]+[1-7]?)*)");
+				wsmatch wideMatch;
+				wstring wwRptStr = SDM.s2ws(wRptStr);
+				if (regex_match(wwRptStr.cbegin(), wwRptStr.cend(), wideMatch, wrx)) {
+					wRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
+
+					istringstream iss(wRptStr);
+					string word;
+					while (getline(iss, word, ' ')) {
+						wRptVec.push_back(stoi(word));
+					}
+					sort(wRptVec.begin(), wRptVec.end());
+					mRptVec.erase(unique(wRptVec.begin(), wRptVec.end()), wRptVec.end());
+
+					bool hasEndDate = false;
+					int y = stoi(endDate.substr(0, 4));
+					int m = stoi(endDate.substr(5, 2));
+					int d = stoi(endDate.substr(8, 2));
+					int edWhatday = zeller(y, m, d);	// 종료일이 무슨 요일인지
+
+					vector<int>::iterator ptr;
+					for (ptr = wRptVec.begin(); ptr != wRptVec.end(); ++ptr) {
+						if (*ptr == edWhatday) {
+							hasEndDate = true;
+							break;
+						}
+					}
+					if (!hasEndDate) {
+						system("cls");
+						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+					}
+					flag = 12;
+				}
+				else {
+					system("cls");
+					cout << "오류: 공백류로 구분되는 \"1부터 7까지의 자연수 숫자\" 1개 이상을 입력해주셔야 합니다.\n\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "_____________________________\n";
+					cout << "> ";
+					_getch();
+				}
+			}
 			break;
 		case 12: // 반복 종료일
+			getline(cin, rptEndDate);
+			if (rptEndDate == "^C") {
+				flag = backup_flag;
+			}
+			else {
+				switch (isValidDate(rptEndDate)) {
+				case 0:
+					// 종료일보다 반복종료일이 빠른 경우 
+					int y1, m1, d1, y2, m2, d2;
+					y1 = stoi(endDate.substr(0, 4));
+					m1 = stoi(endDate.substr(5, 2));
+					d1 = stoi(endDate.substr(8, 2));
+					y2 = stoi(rptEndDate.substr(0, 4));
+					m2 = stoi(rptEndDate.substr(5, 2));
+					d2 = stoi(rptEndDate.substr(8, 2));
+
+					if ((y1 > y2) || ((y1 == y2) && (m1 > m2))
+						|| ((y1 == y2) && (m1 == m2) && (d1 > d2))) {
+						system("cls");
+						cout << "오류: 반복 종료일은 일정의 종료일과 같거나, 그 이후여야 합니다.\n\n";
+						cout << "아무 키나 눌러주세요.\n";
+						cout << "_____________________________\n";
+						cout << "> ";
+						_getch();
+						flag = 12;
+					}
+					else {
+						// 수정된 일정 
+						sche[selectedNum]->setCycle(flag-8);
+						sche[selectedNum]->setRptEndDate(rptEndDate);
+						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+					}
+					break;
+				case -1:
+					system("cls");
+					cout << "오류: 시작일의 날짜를 형식에 맞게 입력해주세요.\n\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "_____________________________\n";
+					cout << "> ";
+					_getch();
+					flag = 12;
+					break;
+				case -2:
+					system("cls");
+					cout << "오류: " << rptEndDate << "(은)는 존재하지 않는 날짜입니다.\n\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "_____________________________\n";
+					cout << "> ";
+					_getch();
+					flag = 12;
+					break;
+				}
+			}
 			break;
 		case 13:
 			cout << "<일정 삭제>\n\n";
