@@ -473,8 +473,8 @@ void Management::addSchedule()
 				flag = 5;
 			}
 			else {
-				regex re("^([0-9]{2}/[0-9]{2})(?:\s+([0-9]{2}/[0-9]{2}))*$");	// 날짜 문법 형식
-				if (regex_match(yRptStr, re)) {
+				regex re("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])([ ]+(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01]))*");	// 날짜 문법 형식
+				if (!regex_match(yRptStr, re)) {
 					system("cls");
 					cout << "오류: 반복 날짜를 형식에 맞게 입력해주세요.\n";
 					cout << "아무 키나 눌러주세요.\n";
@@ -486,7 +486,6 @@ void Management::addSchedule()
 						break;
 					}
 				}
-				
 				regex re2("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])");
 				regex re3("02/30|02/31|02/31|04/31|06/31|09/31|11/31");
 
@@ -496,12 +495,12 @@ void Management::addSchedule()
 					
 					istringstream iss(yRptStr);
 					bool isExistDate = true, hasEndDate = false;
-
 					do {
 						std::string word;
 						iss >> word;
 						if (!word.empty()) {
-							if (regex_match(word, re2) && !regex_match(word, re2)) {
+							
+							if (regex_match(word, re2) && !regex_match(word, re3)) {
 								if (word == endDate.substr(5, 5)) {
 									hasEndDate = true; // 반복날짜 중에 사용자가 입력한 종료일이 포함되어 있는지
 								}
@@ -526,10 +525,9 @@ void Management::addSchedule()
 							break;
 						}
 					}
-
 					if (!hasEndDate) {
 						system("cls");
-						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n";
+						cout << "오류: 일정의 '종료일'이 반복 날짜에 포함되어야 합니다.\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
@@ -562,7 +560,8 @@ void Management::addSchedule()
 			}
 			else {
 				// 00 입력 불가, 01~09 == 1~9
-				wregex wrx(L"(([0]?[1-9] | [1-9][0-9]?) ([ ]+[0-9][0-9]?)*)");
+				//wregex wrx(L"(([0]?[1-9] | [1-9][0-9]?) ([ ]+[0-9][0-9]?)*)");
+				wregex wrx(L"(([0]?[1-9]|[1-9][0-9])(([ ]|[0]?[1-9]|[1-9][0-9])*))");
 				wsmatch wideMatch;
 				wstring wmRptStr = SDM.s2ws(mRptStr);
 				if (regex_match(wmRptStr.cbegin(), wmRptStr.cend(), wideMatch, wrx)) { 
@@ -591,6 +590,7 @@ void Management::addSchedule()
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
+						break;
 					}
 
 					bool hasEndDate = false;
@@ -608,8 +608,8 @@ void Management::addSchedule()
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
+						break;
 					}
-
 					flag = 9;
 				}
 				else {
@@ -645,7 +645,7 @@ void Management::addSchedule()
 				flag = 5;
 			}
 			else {
-				wregex wrx(L"([1-7] ([ ]+[1-7]?)*)");
+				wregex wrx(L"([1-7]([ ][1-7]?)*)");
 				wsmatch wideMatch;
 				wstring wwRptStr = SDM.s2ws(wRptStr);
 				if (regex_match(wwRptStr.cbegin(), wwRptStr.cend(), wideMatch, wrx)) {
@@ -657,7 +657,7 @@ void Management::addSchedule()
 						wRptVec.push_back(stoi(word));
 					}
 					sort(wRptVec.begin(), wRptVec.end());
-					mRptVec.erase(unique(wRptVec.begin(), wRptVec.end()), wRptVec.end());
+					wRptVec.erase(unique(wRptVec.begin(), wRptVec.end()), wRptVec.end());
 
 					bool hasEndDate = false;
 					int y = stoi(endDate.substr(0, 4));
@@ -679,8 +679,8 @@ void Management::addSchedule()
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
+						break;
 					}
-
 					flag = 9;
 				}
 				else {
@@ -759,7 +759,8 @@ void Management::addSchedule()
 	switch (cycle) {
 	case 0:	// 반복 x
 		key = 1102;	// 테스트 키
-		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
+		//Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
+		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, key);
 		cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 		break;
 	//case 1:	// 매년 반복
