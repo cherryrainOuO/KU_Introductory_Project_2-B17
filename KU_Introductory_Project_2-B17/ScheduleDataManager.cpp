@@ -110,12 +110,22 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
 
         int key = s.getKey();
         if (dupKeySches.find(key) != dupKeySches.end()) {
-            //key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
             Schedule earliest = dupKeySches[key];
             string standard = addDate(earliest.getEndDate(), earliest.getCycle());
             standard = calcSD(standard, 1);
-            if (!checkD2(s.getEndDate(), standard))
-                continue;
+            //매년, 매주: key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
+            if (s.getCycle() == 1 || s.getCycle() == 3) {
+                if (!checkD2(s.getEndDate(), standard))
+                    continue;
+            }
+            else if (s.getCycle() == 2) {
+                //매월
+                int ed1 = stoi(earliest.getEndDate().substr(8, 2)), ed2 = stoi(s.getEndDate().substr(8, 2));
+                if (ed1 - ed2 >= 0)
+                    continue;
+                else
+                    dupKeySches[key] = s;
+            }
         }
         else {
             dupKeySches[key] = s;
@@ -321,10 +331,10 @@ bool ScheduleDataManager::checkCont(Schedule s)
             return false;
         if (calcPeriod(s.getStartDate(), s.getEndDate()) != calcPeriod(s2.getStartDate(), s2.getEndDate()))
             return false;
-        if (s2.getCycle() != s.getCycle())
-            return false;
-        if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
-            return false;
+        //if (s2.getCycle() != s.getCycle())
+            //return false;
+        //if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
+            //return false;
     }
     return true;
 }
