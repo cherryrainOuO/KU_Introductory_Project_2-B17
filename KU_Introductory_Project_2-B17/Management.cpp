@@ -51,7 +51,7 @@ int Management::isValidDate(string dateStr) {
 		d = dateStr.substr(8, 2);
 
 		// 의미 규칙에 맞지 않을 때 -2 반환
-		if (stoi(y) >= 2000 && stoi(y) <= 2030
+		if (stoi(y) >= 2000 && stoi(y) <= FINAL_YEAR
 			&& stoi(m) >= 1 && stoi(m) <= 12 && stoi(d) >= 1) {
 
 			// 유효한 날짜일 때 0 반환
@@ -253,7 +253,31 @@ string Management::calcStartDate(string endDate, int diffDate)
 	m2 = startTime.tm_mon + 1;
 	d2 = startTime.tm_mday;
 
-	return to_string(y2) + "/" + to_string(m2) + "/" + to_string(d2);
+	string m2_str = (m2 < 10) ? "0" + to_string(m2) : to_string(m2);
+	string d2_str = (d2 < 10) ? "0" + to_string(d2) : to_string(d2);
+
+	return to_string(y2) + "/" + m2_str + "/" + d2_str;
+}
+
+int Management::findLastDayofMonth(int endDateYear, int endDateMonth)
+{
+	switch (endDateMonth) {
+	case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+		return 31;
+
+	case 4: case 6: case 9: case 11:
+		return 30;
+
+	case 2:
+		if (endDateYear % 4) {
+			return 28;
+		}
+		else {
+			return 29;
+		}
+	default:
+		return -1;
+	}
 }
 
 void Management::addSchedule()
@@ -781,7 +805,7 @@ void Management::addSchedule()
 				flag = backup_flag;
 			}
 			else if (rptEndDate == "-1") {				
-				rptEndDate = "2030/12/31";
+				rptEndDate = to_string(FINAL_YEAR) + "/12/31";
 				flag = 10;
 			}
 			else {
@@ -833,38 +857,127 @@ void Management::addSchedule()
 			break;
 		}
 	}
+
+	int diffDate = 0;
+	Schedule* newDate = nullptr;
+	key = 1102;
 	switch (cycle) {
 	case 0:	// 반복 x
-		key = 1102;	// 테스트 키
 		//Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
-		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, key);
+		newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, key);
 		cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 		break;
 	case 1:	// 매년 반복
-	//	// 1. startDate와 endDate의 날짜 차이를 알아야 함.
-		//int diffDate = getDiffDate(startDate, endDate);
-		//for (int i = 0; i < yRptVec.size(); i++) {
-			// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
-			
-			//string rptEndDate = 
-			//string rptStartDate = calcStartDate(yRptVec[i], diffDate);
-			// 3. 알아낸 시작일과 yRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
-			//Schedule* newDate = new Schedule(title, rptStartDate, yRptVec[i], category, memo, rptEndDate, cycle, key);
-			//cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
-		//}
+		// 1. startDate와 endDate의 날짜 차이를 알아야 함.
+		diffDate = getDiffDate(startDate, endDate);
+		for (int i = 0; i < yRptVec.size(); i++) {
+		// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
+			int m1, d1, m2, d2;
+			m1 = stoi(endDate.substr(5, 2));
+			d1 = stoi(endDate.substr(8, 2));
+			m2 = stoi(yRptVec[i].substr(0, 2));
+			d2 = stoi(yRptVec[i].substr(3, 2));
+						
+			int endDateYear = stoi(endDate.substr(0, 4));
+			if ((m1 > m2) || ((m1 == m2) && (d1 > d2))) {	// endDate가 yRptVect보다 뒤에 있는 경우
+				endDateYear++;
+			}
+			string anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
+			while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
+				string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
+				string possibleStartDate = calcStartDate(possibleEndDate, diffDate); 
+				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);
+				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+				endDateYear++;
+				anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
+			}
+			if (endDateYear <= FINAL_YEAR) {	// 2월 29일이 있는 연도인 경우
+				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
+				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);
+				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+			}
+		}
 		break;
-	//case 2:	// 매월 반복
+	case 2:	// 매월 반복
 	//	// 1. startDate와 endDate의 날짜 차이를 알아야 함.
 	//	// 2. mRptVec에서 종료일(11)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
 	//	// 3. 알아낸 시작일과 mRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
 	//	// 4. 2와 3을 mRptVec의 모든 객체에 대하여 반복
-	//	break;
-	//case 3:	// 매주 반복
+		diffDate = getDiffDate(startDate, endDate);
+		for (int i = 0; i < mRptVec.size(); i++) {
+			int d1, d2;
+			d1 = stoi(endDate.substr(8, 2));
+			d2 = mRptVec[i];
+
+			int endDateYear = stoi(endDate.substr(0, 4));
+			int endDateMonth = stoi(endDate.substr(5, 2));
+			if (d1 > d2) {	// endDate가 yRptVect보다 뒤에 있는 경우
+				if (++endDateMonth > 12) {
+					endDateYear++;
+					endDateMonth -= 12;
+				}
+			}
+
+			string eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
+			string eDDString = (mRptVec[i] < 10) ? "0" + to_string(mRptVec[i]) : to_string(mRptVec[i]);
+			string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
+			while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
+				cout << "while : anotherEndDate :" << anotherEndDate << '\n';
+				string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
+				string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
+				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);
+				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+				if (++endDateMonth > 12) {
+					endDateYear++;
+					endDateMonth -= 12;
+				}
+				eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
+				anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
+			}
+			if (endDateYear <= FINAL_YEAR) {	// 해당 날짜가 있는 달인 경우
+				cout << "if : anotherEndDate :" << anotherEndDate << '\n';
+				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
+				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);
+				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+			}
+		}
+		_getch();	//test
+		break;
+	case 3:	// 매주 반복
 	//	// 1. startDate와 endDate의 날짜 차이를 알아야 함.
 	//	// 2. wRptVec에서 종료일(5)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
 	//	// 3. 알아낸 시작일과 wRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
 	//	// 4. 2와 3을 wRptVec의 모든 객체에 대하여 반복
-	//	break;
+		diffDate = getDiffDate(startDate, endDate);
+		for (int i = 0; i < wRptVec.size(); i++) {
+			int y, m, d;
+			y = stoi(endDate.substr(0, 4));
+			m = stoi(endDate.substr(5, 2));
+			d = stoi(endDate.substr(8, 2));
+			int edWhatday = zeller(y, m, d);
+
+			int endDateYear = stoi(endDate.substr(0, 4));
+			int endDateMonth = stoi(endDate.substr(5, 2));
+			int endDateDay = stoi(endDate.substr(8, 2));
+			int anotherEndDateDay, extraDay;
+
+			anotherEndDateDay = endDateDay + ((7 - (edWhatday - wRptVec[i])) % 7);
+			if (extraDay = (anotherEndDateDay - findLastDayofMonth(endDateYear, endDateMonth)) > 0) {	// 해당 달을 넘어서는 날짜인 경우
+				if (++endDateMonth > 12) {
+					endDateYear++;
+					endDateMonth -= 12;
+				}
+				anotherEndDateDay = extraDay;
+			}
+
+			string anotherEndDate = to_string(endDateYear) + "/" + to_string(endDateMonth) + "/" + to_string(anotherEndDateDay);
+			if (endDateYear <= FINAL_YEAR) {
+				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
+				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);
+				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+			}
+		}
+		break;
 	}
 
 	SDM.saveDataFile(*cal);	// 데이터 파일에 저장
