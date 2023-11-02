@@ -1515,6 +1515,7 @@ void Management::mod_or_delSchedule(){
 			}
 			break;
 		case 10: // 월 단위
+			backup_flag = 10;
 			cout << "<일정 수정>\n\n";
 			cout << "월 입력\n\n";
 			cout << "반복할 날짜의 숫자만 입력해주세요.\n";
@@ -1564,6 +1565,7 @@ void Management::mod_or_delSchedule(){
 						break;
 					}
 
+					endDate = sche[selectedNum]->getEndDate();
 					bool hasEndDate = false;
 					int ed = stoi(endDate.substr(8, 2));
 					for (ptr = mRptVec.begin(); ptr != mRptVec.end(); ++ptr) {
@@ -1665,9 +1667,22 @@ void Management::mod_or_delSchedule(){
 			}
 			break;
 		case 12: // 반복 종료일
+			cout << "<일정 추가>\n\n";
+			cout << "반복 종료일 입력\n\n";
+			cout << "반복 종료일을 입력해주세요.\n\n";
+			cout << "반복 종료일 입력 형식 : yyyy/mm/dd\n";
+			cout << "(지정하지 않을 경우 -1 을 입력해주세요.)\n\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "------------------------------------\n";
+			cout << "> ";
+
 			getline(cin, rptEndDate);
 			if (rptEndDate == "^C") {
 				flag = backup_flag;
+			}
+			else if (rptEndDate == "-1") {
+				rptEndDate = to_string(FINAL_YEAR) + "/12/31";
+				flag = 10;
 			}
 			else {
 				switch (isValidDate(rptEndDate)) {
@@ -1693,7 +1708,7 @@ void Management::mod_or_delSchedule(){
 					}
 					else {
 						// 수정된 일정 
-						sche[selectedNum]->setCycle(flag-8);
+						sche[selectedNum]->setCycle(backup_flag -8);
 						sche[selectedNum]->setRptEndDate(rptEndDate);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
