@@ -1245,7 +1245,7 @@ void Management::mod_or_delSchedule(){
 			}
 			else {
 				regex re("^([0-9]{2}/[0-9]{2})(?:\s+([0-9]{2}/[0-9]{2}))*$");	// 날짜 문법 형식
-				if (regex_match(yRptStr, re)) {
+				if (!(regex_match(yRptStr, re))) {
 					system("cls");
 					cout << "오류: 반복 날짜를 형식에 맞게 입력해주세요.\n";
 					cout << "아무 키나 눌러주세요.\n";
@@ -1272,7 +1272,7 @@ void Management::mod_or_delSchedule(){
 						std::string word;
 						iss >> word;
 						if (!word.empty()) {
-							if (regex_match(word, re2) && !regex_match(word, re2)) {
+							if (regex_match(word, re2) && !regex_match(word, re3)) {
 								if (word == endDate.substr(5, 5)) {
 									hasEndDate = true; // 반복날짜 중에 사용자가 입력한 종료일이 포함되어 있는지
 								}
@@ -1291,6 +1291,8 @@ void Management::mod_or_delSchedule(){
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
+						_getch();
+
 						if (_getch()) {
 							system("cls");
 							flag = 9; // 현재 프롬프트 반복
@@ -1304,6 +1306,8 @@ void Management::mod_or_delSchedule(){
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
+						_getch();
+
 						if (_getch()) {
 							system("cls");
 							flag = 9; // 현재 프롬프트 반복
@@ -1341,6 +1345,7 @@ void Management::mod_or_delSchedule(){
 				flag = 8;
 			}
 			else {
+				// wregex wrx(L"([1-7] ([ ]+[1-7]?)*)");
 				wregex wrx(L"([1-7] ([ ]+[1-7]?)*)");
 				wsmatch wideMatch;
 				wstring wwRptStr = SDM.s2ws(wRptStr);
