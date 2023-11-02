@@ -7,6 +7,9 @@
 #include <windows.h>
 #include <conio.h>
 #include <regex>
+#include <sstream>
+#include <algorithm>
+
 
 using namespace std;
 /* ## : 수정 필요, ctrl + f로 찾기 바람 */
@@ -25,6 +28,7 @@ private:
 	void mod_or_delSchedule();
 	int isValidDate(string dateStr);
 	bool is_digit(string str);
+	int zeller(int year, int month, int day);
 
 public:
 	Management(Calender* c, CategoryDataManager* _cateManager, Classification* _class) { cal = c; CDM = _cateManager; CLS = _class; };
