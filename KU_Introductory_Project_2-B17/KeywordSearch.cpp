@@ -47,6 +47,8 @@ void KeywordSearch::search()
     string tempKey = kwd;
     removeSpace(tempKey);
 
+    sort(cal->allSchs.begin(), cal->allSchs.end());
+
     for (Schedule s : cal->allSchs) {
         string title = s.getTitle();
         string memo = s.getMemo();

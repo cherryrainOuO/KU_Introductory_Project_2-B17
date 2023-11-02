@@ -97,7 +97,8 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 bool ScheduleDataManager::saveDataFile(Calender& c)
 {
     //이 함수를 호출하기 전 일정 추가 프롬프트에서 모든 문법 검사를 마치기 때문에 따로 검사를 하지 않습니다
-    //함수 호출 전 일정 시작일 순으로 정렬 필요
+    
+    sort(c.allSchs.begin(), c.allSchs.end());//일정 시작일 순으로 정렬 필요
 
     string fileName = "Calendar-schedule.txt";
     wofstream file;
