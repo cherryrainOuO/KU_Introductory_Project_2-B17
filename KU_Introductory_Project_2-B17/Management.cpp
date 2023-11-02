@@ -707,6 +707,10 @@ void Management::addSchedule()
 			if (rptEndDate == "^C") {
 				flag = backup_flag;
 			}
+			else if (rptEndDate == "-1") {				
+				rptEndDate = "2030/12/31";
+				flag = 10;
+			}
 			else {
 				switch (isValidDate(rptEndDate)) {
 				case 0:
