@@ -112,6 +112,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
             //key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
             Schedule earliest = dupKeySches[key];
             string standard = addDate(earliest.getEndDate(), earliest.getCycle());
+            standard = calcSD(standard, 1);
             if (!checkD2(s.getEndDate(), standard))
                 continue;
         }
