@@ -896,9 +896,9 @@ void Management::mod_or_delSchedule(){
 			cout << "2. 종료일\n";
 			cout << "3. 제목\n";
 			cout << "4. 카테고리\n";
-			cout << "5. 메모\n"; 
+			cout << "5. 메모\n";
 			cout << "6. 반복 여부 / 반복 일자 / 반복 종료일\n\n";
-	
+
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
 			cout << "선택한 일정에서 정보를 변경할 요소를 선택해주세요.\n";
 			cout << "(반복되는 일정일 시, “일괄 수정” 됩니다.)\n";
@@ -1221,7 +1221,7 @@ void Management::mod_or_delSchedule(){
 				else if (is_digit(menu) && stoi(menu) == 3)
 					flag = 11;
 			}
-			else{
+			else {
 				cout << "오류: 0, 1, 2, 3 중 하나의 숫자를 입력해주세요.\n\n";
 				cout << "아무 키나 눌러주세요.\n";
 				cout << "——————————————————————————\n";
@@ -1236,8 +1236,8 @@ void Management::mod_or_delSchedule(){
 			cout << "반복할 날짜를 형식에 맞게 입력해주세요.\n";
 			cout << "(mm/dd, 여러 날짜의 입력은 공백류로 구분합니다.)\n";
 			cout << "예: 01/02 10/04 12/31  (매년 1월 2일, 10월 4일, 12월 31일 반복)\n\n";
-			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
-			cout << "—————————————————————---—————\n";
+			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n";
+			cout << "------------------------------\n";
 			cout << ">";
 
 			getline(cin, yRptStr);
@@ -1245,8 +1245,8 @@ void Management::mod_or_delSchedule(){
 				flag = 8;
 			}
 			else {
-				regex re("^([0-9]{2}/[0-9]{2})(?:\s+([0-9]{2}/[0-9]{2}))*$");	// 날짜 문법 형식
-				if (!(regex_match(yRptStr, re))) {
+				regex re("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])([ ]+(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01]))*");	// 날짜 문법 형식
+				if (!regex_match(yRptStr, re)) {
 					system("cls");
 					cout << "오류: 반복 날짜를 형식에 맞게 입력해주세요.\n";
 					cout << "아무 키나 눌러주세요.\n";
@@ -1258,7 +1258,6 @@ void Management::mod_or_delSchedule(){
 						break;
 					}
 				}
-
 				regex re2("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])");
 				regex re3("02/30|02/31|02/31|04/31|06/31|09/31|11/31");
 
@@ -1268,11 +1267,11 @@ void Management::mod_or_delSchedule(){
 
 					istringstream iss(yRptStr);
 					bool isExistDate = true, hasEndDate = false;
-
 					do {
 						std::string word;
 						iss >> word;
 						if (!word.empty()) {
+
 							if (regex_match(word, re2) && !regex_match(word, re3)) {
 								if (word == endDate.substr(5, 5)) {
 									hasEndDate = true; // 반복날짜 중에 사용자가 입력한 종료일이 포함되어 있는지
@@ -1292,23 +1291,18 @@ void Management::mod_or_delSchedule(){
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
-						_getch();
-
 						if (_getch()) {
 							system("cls");
 							flag = 9; // 현재 프롬프트 반복
 							break;
 						}
 					}
-
 					if (!hasEndDate) {
 						system("cls");
-						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n";
+						cout << "오류: 일정의 '종료일'이 반복 날짜에 포함되어야 합니다.\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
-						_getch();
-
 						if (_getch()) {
 							system("cls");
 							flag = 9; // 현재 프롬프트 반복
