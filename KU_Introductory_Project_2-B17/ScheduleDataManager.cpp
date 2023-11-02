@@ -74,11 +74,13 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         int period = calcPeriod(sd, ed); //일정의 기간
 
         //반복 종료일까지 추가
+
         if (cy >= 1) {
+            int endday = stoi(ed.substr(8, 2));
             while (checkD2(ed, rED)) {
                 Schedule s(ti, sd, ed, cat, me, rED, cy, k);
                 c.allSchs.push_back(s);
-                ed = addDate(ed, cy);
+                ed = addDate(ed, cy, endday);
                 sd = calcSD(ed, period);
             }
         }
@@ -111,7 +113,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         int key = s.getKey();
         if (dupKeySches.find(key) != dupKeySches.end()) {
             Schedule earliest = dupKeySches[key];
-            string standard = addDate(earliest.getEndDate(), earliest.getCycle());
+            string standard = addDate(earliest.getEndDate(), earliest.getCycle(), 0);
             standard = calcSD(standard, 1);
             //매년, 매주: key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
             if (s.getCycle() == 1 || s.getCycle() == 3) {
@@ -371,7 +373,7 @@ int ScheduleDataManager::calcPeriod(string d1, string d2)
 }
 
 //주기 별 종료일 계산
-string ScheduleDataManager::addDate(string date, int cy)
+string ScheduleDataManager::addDate(string date, int cy, int endday)
 {
     int year = stoi(date.substr(0, 4)), month = stoi(date.substr(5, 2)), day = stoi(date.substr(8, 2));
     int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
@@ -385,6 +387,7 @@ string ScheduleDataManager::addDate(string date, int cy)
     }
     else if (cy == 2) {
         //month
+        if (day < endday) day = endday;
         month += 1;
         if (month > 12) {
             year += 1;
