@@ -735,7 +735,7 @@ void Management::addSchedule()
 					break;
 				case -1:
 					system("cls");
-					cout << "오류: 시작일의 날짜를 형식에 맞게 입력해주세요.\n\n";
+					cout << "오류: 반복 종료일의 날짜를 형식에 맞게 입력해주세요.\n\n";
 					cout << "아무 키나 눌러주세요.\n";
 					cout << "_____________________________\n";
 					cout << "> ";
