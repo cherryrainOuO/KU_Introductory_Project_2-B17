@@ -38,5 +38,9 @@ public:
 	void setCycle(int c) { cycle = c; };
 	string getRptEndDate() { return rptEndDate; };
 	void setRptEndDate(string rd) { rptEndDate = rd; };
+
+	bool operator < (Schedule& schedule) {
+		return this->startDate < schedule.startDate;
+	}
 };
 
