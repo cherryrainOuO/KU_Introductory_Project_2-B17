@@ -379,7 +379,7 @@ void Management::addSchedule()
 			cout << "<일정 추가>\n\n";
 			cout << "메모 입력\n\n";
 			cout << "메모 형식:\n";
-			cout << "길이가 1 이상 30 이하이며 한글/영어/숫자와 공백의 조합\n";
+			cout << "길이가 0 이상 30 이하이며 한글/영어/숫자와 공백의 조합\n";
 			cout << "첫 문자와 마지막 문자는 한글/영어/숫자\n";
 			cout << "탭, 줄바꿈 사용 불가\n\n";
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
@@ -707,6 +707,10 @@ void Management::addSchedule()
 			if (rptEndDate == "^C") {
 				flag = backup_flag;
 			}
+			else if (rptEndDate == "-1") {				
+				rptEndDate = "2030/12/31";
+				flag = 10;
+			}
 			else {
 				switch (isValidDate(rptEndDate)) {
 				case 0:
@@ -735,7 +739,7 @@ void Management::addSchedule()
 					break;
 				case -1:
 					system("cls");
-					cout << "오류: 시작일의 날짜를 형식에 맞게 입력해주세요.\n\n";
+					cout << "오류: 반복 종료일의 날짜를 형식에 맞게 입력해주세요.\n\n";
 					cout << "아무 키나 눌러주세요.\n";
 					cout << "_____________________________\n";
 					cout << "> ";
@@ -1153,7 +1157,7 @@ void Management::mod_or_delSchedule(){
 			cout << "<일정 수정>\n\n";
 			cout << "메모 입력\n\n";
 			cout << "메모 형식:\n";
-			cout << "길이가 1 이상 30 이하이며 한글/영어/숫자와 공백의 조합\n";
+			cout << "길이가 0 이상 30 이하이며 한글/영어/숫자와 공백의 조합\n";
 			cout << "첫 문자와 마지막 문자는 한글/영어/숫자\n";
 			cout << "탭, 줄바꿈 사용 불가\n\n";
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
