@@ -402,7 +402,7 @@ string ScheduleDataManager::addDate(string date, int cy)
     if (day <= 9) {
         d = "0" + d;
     }
-    res = year + "/" + m + "/" + d;
+    res = y + "/" + m + "/" + d;
     return res;
 }
 
