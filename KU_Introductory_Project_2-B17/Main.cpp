@@ -23,7 +23,7 @@ CategoryDataManager CDM(&category, &calender);
 
 KeywordSearch ks(&calender); //test
 Classification classification(&calender, &CDM);
-Management mng(&calender, &CDM, &classification);
+Management mng(&calender, &CDM, &classification, &category);
 
 int main() {
 	if(!CDM.loadDataFile(category)) exit(0);

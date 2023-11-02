@@ -24,6 +24,7 @@ private:
 	ScheduleDataManager SDM;
 	CategoryDataManager* CDM;
 	Classification* CLS;
+	Category* cate;
 
 	void printSchedule();
 	void addSchedule();
@@ -36,7 +37,7 @@ private:
 	int findLastDayofMonth(int endDateYear, int endDateMonth);
 
 public:
-	Management(Calender* c, CategoryDataManager* _cateManager, Classification* _class) { cal = c; CDM = _cateManager; CLS = _class; };
+	Management(Calender* c, CategoryDataManager* _cateManager, Classification* _class, Category* _cate) { cal = c; CDM = _cateManager; CLS = _class; cate = _cate; };
 	void Prompt();
 };
 

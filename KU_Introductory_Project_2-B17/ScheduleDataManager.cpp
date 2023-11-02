@@ -132,6 +132,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         else {
             dupKeySches[key] = s;
         }
+        c.setHighestKey();
 
         wstring t = s2ws(s.getTitle());
         wstring c = s2ws(s.getCategory());
@@ -143,7 +144,6 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         wstring k = s2ws(to_string(s.getKey()));
         
         file << t << L"\t" << c << L"\t" << sD << L"\t" << eD << L"\t" << m << L"\t" << rED << L"\t" << cy << L"\t"<< k << L"\n";
-        
     }
 
     dupKeySches.clear();

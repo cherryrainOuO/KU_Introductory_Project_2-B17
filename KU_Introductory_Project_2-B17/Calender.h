@@ -13,7 +13,9 @@ public:
 	Calender();
 	map<string, vector<Schedule>> schsmap; //날짜별로 검색용
 	vector<Schedule> allSchs; //keysearch
+	void setHighestKey();
+	int getHighestKey();
 private:
-
+	int highestKey = 0;
 };
 

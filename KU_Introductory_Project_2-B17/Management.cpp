@@ -856,10 +856,9 @@ void Management::addSchedule()
 
 	int diffDate = 0;
 	Schedule* newDate = nullptr;
-	key = 1102;
 	switch (cycle) {
 	case 0:	// 반복 x
-		newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, key);
+		newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, cal->getHighestKey() + 1);
 		cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 		break;
 	case 1:	// 매년 반복
@@ -882,15 +881,15 @@ void Management::addSchedule()
 			string anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 			while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 				string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
-				string possibleStartDate = calcStartDate(possibleEndDate, diffDate); 
-				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);
+				string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
+				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 				endDateYear++;
 				anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 			}
 			if (endDateYear <= FINAL_YEAR) {	// 2월 29일이 있는 연도인 경우
 				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);
+				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 			}
 		}
@@ -921,7 +920,7 @@ void Management::addSchedule()
 			while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 				string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
 				string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
-				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);
+				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 				if (++endDateMonth > 12) {
 					endDateYear++;
@@ -932,7 +931,7 @@ void Management::addSchedule()
 			}
 			if (endDateYear <= FINAL_YEAR) {	// 해당 날짜가 있는 달인 경우
 				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);
+				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 			}
 		}
@@ -951,7 +950,7 @@ void Management::addSchedule()
 			int anotherEndDateDay, extraDay;
 
 			anotherEndDateDay = endDateDay + ((7 - (edWhatday - wRptVec[i])) % 7);
-			if (extraDay = (anotherEndDateDay - findLastDayofMonth(endDateYear, endDateMonth)) > 0) {	// 해당 달을 넘어서는 날짜인 경우
+			if ((extraDay = (anotherEndDateDay - findLastDayofMonth(endDateYear, endDateMonth))) > 0) {	// 해당 달을 넘어서는 날짜인 경우
 				if (++endDateMonth > 12) {
 					endDateYear++;
 					endDateMonth -= 12;
@@ -964,7 +963,7 @@ void Management::addSchedule()
 			string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
 			if (endDateYear <= FINAL_YEAR) {
 				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);
+				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 			}
 		}
@@ -972,6 +971,8 @@ void Management::addSchedule()
 	}
 
 	SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+	SDM.loadDataFile(*cal, *cate);
+	CDM->loadDataFile(*cate);
 	system("cls");
 	printSchedule();
 }
