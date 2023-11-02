@@ -1217,7 +1217,7 @@ void Management::mod_or_delSchedule(){
 					flag = 9;
 				else if (is_digit(menu) && stoi(menu) == 2)
 					flag = 10;
-				else if (is_digit(menu) && stoi(menu) == 0)
+				else if (is_digit(menu) && stoi(menu) == 3)
 					flag = 11;
 			}
 			else{
