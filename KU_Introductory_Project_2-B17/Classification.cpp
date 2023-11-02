@@ -51,11 +51,17 @@ void Classification::Prompt_CategoryMenu()
 				break;
 			}
 		}
-		else {
+		else { // 오류 메세지
+			system("cls"); // 화면 지우기
+
 			cout << "오류 : 1, 2, 3 중 하나의 숫자를 입력해주세요.\n\n";
 			cout << "아무 키나 눌러주세요.\n";
 			cout << "-------------------------------------\n";
 			cout << "> ";
+
+			_getch(); // 아무 키나 입력 대기
+
+			Prompt_CategoryMenu();
 		}
 	}
 
