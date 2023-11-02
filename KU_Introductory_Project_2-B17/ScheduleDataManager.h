@@ -45,7 +45,7 @@ private:
 	//날짜 관련 연산
 	void initTime(struct tm& date, int y, int m, int d);
 	int calcPeriod(string d1, string d2);
-	string addDate(string date, int cy);
+	string addDate(string date, int cy, int endday);
 	string calcSD(string ed, int pe);
 };
 

@@ -9,7 +9,9 @@
 #include <regex>
 #include <sstream>
 #include <algorithm>
+#include <ctime>
 
+#define FINAL_YEAR 2030
 
 using namespace std;
 /* ## : 수정 필요, ctrl + f로 찾기 바람 */
@@ -29,6 +31,9 @@ private:
 	int isValidDate(string dateStr);
 	bool is_digit(string str);
 	int zeller(int year, int month, int day);
+	int getDiffDate(string startDate, string endDate);
+	string calcStartDate(string endDate, int diffDate);
+	int findLastDayofMonth(int endDateYear, int endDateMonth);
 
 public:
 	Management(Calender* c, CategoryDataManager* _cateManager, Classification* _class) { cal = c; CDM = _cateManager; CLS = _class; };
