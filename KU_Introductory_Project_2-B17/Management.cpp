@@ -1468,7 +1468,7 @@ void Management::mod_or_delSchedule(){
 						std::string word;
 						iss >> word;
 						if (!word.empty()) {
-
+							endDate = sche[selectedNum]->getEndDate();
 							if (regex_match(word, re2) && !regex_match(word, re3)) {
 								if (word == endDate.substr(5, 5)) {
 									hasEndDate = true; // 반복날짜 중에 사용자가 입력한 종료일이 포함되어 있는지
@@ -1681,7 +1681,10 @@ void Management::mod_or_delSchedule(){
 			}
 			else if (rptEndDate == "-1") {
 				rptEndDate = to_string(FINAL_YEAR) + "/12/31";
-				flag = 10;
+				sche[selectedNum]->setCycle(backup_flag - 8);
+				sche[selectedNum]->setRptEndDate(rptEndDate);
+				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
 				switch (isValidDate(rptEndDate)) {
