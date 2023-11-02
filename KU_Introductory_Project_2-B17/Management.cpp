@@ -759,7 +759,7 @@ void Management::addSchedule()
 	switch (cycle) {
 	case 0:	// 반복 x
 		key = 1102;	// 테스트 키
-		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
+		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, key);
 		cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 		break;
 	//case 1:	// 매년 반복
@@ -1209,7 +1209,7 @@ void Management::mod_or_delSchedule(){
 				if (is_digit(menu) && stoi(menu) == 0) {
 					// stoi(menu) == 0 : 반복되지 않는 일정으로 수정, 혹은 그대로 둠
 					sche[selectedNum]->setCycle(0);
-					sche[selectedNum]->setRptEndDate("");
+					sche[selectedNum]->setRptEndDate(sche[selectedNum]->getEndDate());
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
