@@ -1574,7 +1574,7 @@ void Management::mod_or_delSchedule(){
 					}
 					if (!hasEndDate) {
 						system("cls");
-						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
+						cout << "오류: 일정의 '종료일'이 반복 날짜에 포함되어야 합니다.\n\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
@@ -1609,7 +1609,7 @@ void Management::mod_or_delSchedule(){
 			cout << "(여러 요일의 입력은 공백류로 구분합니다.)\n";
 			cout << "예 : 1 2 3\n\n";
 			cout << "(^ C 입력 시 이전 화면으로 돌아갑니다)\n";
-			cout << "——————————————————————————\n";
+			cout << "---------------------------\n";
 			cout << ">";
 
 			getline(cin, wRptStr);
@@ -1617,8 +1617,7 @@ void Management::mod_or_delSchedule(){
 				flag = 8;
 			}
 			else {
-				// wregex wrx(L"([1-7] ([ ]+[1-7]?)*)");
-				wregex wrx(L"([1-7] ([ ]+[1-7]?)*)");
+				wregex wrx(L"([1-7]([ ][1-7]?)*)");
 				wsmatch wideMatch;
 				wstring wwRptStr = SDM.s2ws(wRptStr);
 				if (regex_match(wwRptStr.cbegin(), wwRptStr.cend(), wideMatch, wrx)) {
@@ -1630,9 +1629,10 @@ void Management::mod_or_delSchedule(){
 						wRptVec.push_back(stoi(word));
 					}
 					sort(wRptVec.begin(), wRptVec.end());
-					mRptVec.erase(unique(wRptVec.begin(), wRptVec.end()), wRptVec.end());
+					wRptVec.erase(unique(wRptVec.begin(), wRptVec.end()), wRptVec.end());
 
 					bool hasEndDate = false;
+					endDate = sche[selectedNum]->getEndDate();
 					int y = stoi(endDate.substr(0, 4));
 					int m = stoi(endDate.substr(5, 2));
 					int d = stoi(endDate.substr(8, 2));
@@ -1647,11 +1647,12 @@ void Management::mod_or_delSchedule(){
 					}
 					if (!hasEndDate) {
 						system("cls");
-						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
+						cout << "오류: 일정의 '종료일'이 반복 날짜에 포함되어야 합니다.\n\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
 						_getch();
+						break;
 					}
 					flag = 12;
 				}
