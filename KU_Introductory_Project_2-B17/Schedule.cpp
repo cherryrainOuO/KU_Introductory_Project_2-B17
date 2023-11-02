@@ -21,6 +21,22 @@ void Schedule::print()
 	cout << "제목: " << title << "\n";
 	cout << "카테고리: " << category << "\n";
 	cout << "날짜: " << startDate << " ~ " << endDate << "\n";
-	cout << "메모: " << memo << "\n\n";
-	//출력은 나중에 추가할게요..
+	cout << "메모: " << memo << "\n";
+
+	cout << "반복 주기: ";
+	switch (cycle) {
+	case 0: cout << "반복하지 않음\n"; break;
+	case 1: cout << "매년 반복\n"; break;
+	case 2: cout << "매월 반복\n"; break;
+	case 3: cout << "매주 반복\n"; break;
+	}
+
+	cout << "반복 종료일: ";
+	if (cycle == 0) {
+		cout << "반복하지 않음\n\n";
+	}
+	else {
+		cout << rptEndDate << "\n\n";
+	}
+
 }

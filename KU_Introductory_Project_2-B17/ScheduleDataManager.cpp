@@ -74,11 +74,17 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         int period = calcPeriod(sd, ed); //일정의 기간
 
         //반복 종료일까지 추가
-        while (checkD2(ed, rED)) {
+        if (cy >= 1) {
+            while (checkD2(ed, rED)) {
+                Schedule s(ti, sd, ed, cat, me, rED, cy, k);
+                c.allSchs.push_back(s);
+                ed = addDate(ed, cy);
+                sd = calcSD(ed, period);
+            }
+        }
+        else {
             Schedule s(ti, sd, ed, cat, me, rED, cy, k);
             c.allSchs.push_back(s);
-            ed = addDate(ed, cy);
-            sd = calcSD(ed, period);
         }
 
         record.clear();
@@ -91,7 +97,8 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 bool ScheduleDataManager::saveDataFile(Calender& c)
 {
     //이 함수를 호출하기 전 일정 추가 프롬프트에서 모든 문법 검사를 마치기 때문에 따로 검사를 하지 않습니다
-    //함수 호출 전 일정 시작일 순으로 정렬 필요
+    
+    sort(c.allSchs.begin(), c.allSchs.end());//일정 시작일 순으로 정렬 필요
 
     string fileName = "Calendar-schedule.txt";
     wofstream file;
@@ -106,6 +113,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
             //key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
             Schedule earliest = dupKeySches[key];
             string standard = addDate(earliest.getEndDate(), earliest.getCycle());
+            standard = calcSD(standard, 1);
             if (!checkD2(s.getEndDate(), standard))
                 continue;
         }
