@@ -183,6 +183,79 @@ int Management::zeller(int year, int month, int day) {
 	return(day_of_week + 1);
 }
 
+int Management::getDiffDate(string startDate, string endDate)
+{
+	int y1, m1, d1, y2, m2, d2;
+	y1 = stoi(startDate.substr(0, 4));
+	m1 = stoi(startDate.substr(5, 2));
+	d1 = stoi(startDate.substr(8, 2));
+	y2 = stoi(endDate.substr(0, 4));
+	m2 = stoi(endDate.substr(5, 2));
+	d2 = stoi(endDate.substr(8, 2));
+
+	time_t start, end;
+	struct tm startTime, endTime;
+	int tm_day;
+	double diff;
+
+	startTime.tm_year = y1 - 1900; // 년도가 1900년부터 시작하기 때문
+	startTime.tm_mon = m1 - 1; //월이 0부터 시작하기 때문
+	startTime.tm_mday = d1;
+	startTime.tm_hour = 0;
+	startTime.tm_min = 0;
+	startTime.tm_sec = 0;
+	startTime.tm_isdst = 0; //썸머타임 사용안함
+
+	endTime.tm_year = y2 - 1900; // 년도가 1900년부터 시작하기 때문
+	endTime.tm_mon = m2 - 1; //월이 0부터 시작하기 때문
+	endTime.tm_mday = d2;
+	endTime.tm_hour = 0;
+	endTime.tm_min = 0;
+	endTime.tm_sec = 0;
+	endTime.tm_isdst = 0; //썸머타임 사용안함
+
+	start = mktime(&startTime);
+	end = mktime(&endTime);
+
+	diff = difftime(end, start);
+
+	tm_day = diff / (60 * 60 * 24);
+
+	return tm_day;
+}
+
+string Management::calcStartDate(string endDate, int diffDate)
+{
+	int y1, m1, d1, y2, m2, d2;
+	y1 = stoi(endDate.substr(0, 4));
+	m1 = stoi(endDate.substr(5, 2));
+	d1 = stoi(endDate.substr(8, 2));
+
+	time_t start, end;
+	struct tm startTime, endTime;
+	int tm_day;
+
+	endTime.tm_year = y1 - 1900; // 년도가 1900년부터 시작하기 때문
+	endTime.tm_mon = m1 - 1; //월이 0부터 시작하기 때문
+	endTime.tm_mday = d1;
+	endTime.tm_hour = 0;
+	endTime.tm_min = 0;
+	endTime.tm_sec = 0;
+	endTime.tm_isdst = 0; //썸머타임 사용안함
+
+	end = mktime(&endTime);
+
+	start = end - (time_t)diffDate;
+
+	localtime_s(&startTime, &start);
+
+	y2 = startTime.tm_year + 1900;
+	m2 = startTime.tm_mon + 1;
+	d2 = startTime.tm_mday;
+
+	return to_string(y2) + "/" + to_string(m2) + "/" + to_string(d2);
+}
+
 void Management::addSchedule()
 {
 	string startDate, endDate, title, category, memo, rptEndDate;
@@ -758,15 +831,22 @@ void Management::addSchedule()
 	switch (cycle) {
 	case 0:	// 반복 x
 		key = 1102;	// 테스트 키
-		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
+		Schedule* newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, key);
 		cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 		break;
-	//case 1:	// 매년 반복
+	case 1:	// 매년 반복
 	//	// 1. startDate와 endDate의 날짜 차이를 알아야 함.
-	//	// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
-	//	// 3. 알아낸 시작일과 yRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
-	//	// 4. 2와 3을 yRptVec의 모든 객체에 대하여 반복
-	//	break;
+		//int diffDate = getDiffDate(startDate, endDate);
+		//for (int i = 0; i < yRptVec.size(); i++) {
+			// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
+			
+			//string rptEndDate = 
+			//string rptStartDate = calcStartDate(yRptVec[i], diffDate);
+			// 3. 알아낸 시작일과 yRptVec에서 꺼낸 종료일을 가지고 새로운 스케줄 객체 생성
+			//Schedule* newDate = new Schedule(title, rptStartDate, yRptVec[i], category, memo, rptEndDate, cycle, key);
+			//cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+		//}
+		break;
 	//case 2:	// 매월 반복
 	//	// 1. startDate와 endDate의 날짜 차이를 알아야 함.
 	//	// 2. mRptVec에서 종료일(11)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄

@@ -9,6 +9,7 @@
 #include <regex>
 #include <sstream>
 #include <algorithm>
+#include <ctime>
 
 
 using namespace std;
@@ -29,6 +30,8 @@ private:
 	int isValidDate(string dateStr);
 	bool is_digit(string str);
 	int zeller(int year, int month, int day);
+	int getDiffDate(string startDate, string endDate);
+	string calcStartDate(string endDate, int diffDate);
 
 public:
 	Management(Calender* c, CategoryDataManager* _cateManager, Classification* _class) { cal = c; CDM = _cateManager; CLS = _class; };
