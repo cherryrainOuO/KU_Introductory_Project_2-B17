@@ -1,6 +1,6 @@
 #include "Management.h"
 
-void Management::Prompt(){
+void Management::Prompt() {
 	system("cls");
 
 	cout << "날짜 입력\n\n";
@@ -87,10 +87,10 @@ bool Management::is_digit(string str) {
 	return atoi(str.c_str()) != 0 || str.compare("0") == 0;
 }
 
-void Management::printSchedule(){
+void Management::printSchedule() {
 	string sd, ed;  // startDate, endDate
 	vector<Schedule*> sche; // 현재 날짜에 해당하는 스케줄
-	
+
 	// 현재 날짜의 스케줄을 캘린더에서 하나씩 추가
 	for (int i = 0; i < cal->allSchs.size(); i++) {
 
@@ -137,7 +137,7 @@ void Management::printSchedule(){
 			}
 		}
 	}
-	
+
 	// 선택한 날짜의 일정이 0개인 경우
 	else {
 		cout << "<" << dateinfo << "의 일정>\n\n";
@@ -149,11 +149,11 @@ void Management::printSchedule(){
 		cout << "> ";
 		getline(cin, m);
 		system("cls");
-		if (m == "^C"){
+		if (m == "^C") {
 			system("cls");
 			Prompt();
 		}
-		else if(m.size()==1&& m[0] == '1')
+		else if (m.size() == 1 && m[0] == '1')
 			addSchedule();
 		else {
 			cout << "오류: 1을 입력해주세요.\n";
@@ -290,7 +290,7 @@ void Management::addSchedule()
 	string y, m, d;
 	int cateCount = 0;
 	string menu;
-	
+
 	int flag = 0;	// 부 프롬프트 간 이동을 위한 변수
 	int backup_flag = 0;
 	while (flag < 10) {
@@ -486,7 +486,7 @@ void Management::addSchedule()
 
 			getline(cin, memo);
 			if (memo == "^C") {
-				flag = 3;	
+				flag = 3;
 			}
 			else {
 				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
@@ -589,20 +589,20 @@ void Management::addSchedule()
 				// 문법 형식에 맞지 않을 때 -1 반환
 				if (regex_match(yRptStr, re)) {
 					yRptVec.clear();
-					
+
 					istringstream iss(yRptStr);
 					bool isExistDate = true, hasEndDate = false;
 					do {
 						std::string word;
 						iss >> word;
 						if (!word.empty()) {
-							
+
 							if (regex_match(word, re2) && !regex_match(word, re3)) {
 								if (word == endDate.substr(5, 5)) {
 									hasEndDate = true; // 반복날짜 중에 사용자가 입력한 종료일이 포함되어 있는지
 								}
 								yRptVec.push_back(word);
-							}	
+							}
 							else {
 								isExistDate = false; // 반복날짜들이 모두 존재하는 날짜인지
 								break;
@@ -658,7 +658,7 @@ void Management::addSchedule()
 			else {
 				// 00 입력 불가, 01~09 == 1~9
 				regex re("(0?[1-9]|[12][0-9]|3[01])([ ]+(0?[1-9]|[12][0-9]|3[01]))*");
-				if (regex_match(mRptStr, re)) { 
+				if (regex_match(mRptStr, re)) {
 					mRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
 
 					istringstream iss(mRptStr);
@@ -743,7 +743,7 @@ void Management::addSchedule()
 				regex re("[1-7]([ ]+[1-7])*");
 				if (regex_match(wRptStr, re)) {
 					wRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
-					
+
 					istringstream iss(wRptStr);
 					string word;
 					while (iss >> word) {
@@ -800,7 +800,7 @@ void Management::addSchedule()
 			if (rptEndDate == "^C") {
 				flag = backup_flag;
 			}
-			else if (rptEndDate == "-1") {				
+			else if (rptEndDate == "-1") {
 				rptEndDate = to_string(FINAL_YEAR) + "/12/31";
 				flag = 10;
 			}
@@ -873,7 +873,7 @@ void Management::addSchedule()
 			d1 = stoi(endDate.substr(8, 2));
 			m2 = stoi(yRptVec[i].substr(0, 2));
 			d2 = stoi(yRptVec[i].substr(3, 2));
-						
+
 			int endDateYear = stoi(endDate.substr(0, 4));
 			if ((m1 > m2) || ((m1 == m2) && (d1 > d2))) {	// endDate가 yRptVect보다 뒤에 있는 경우
 				endDateYear++;
@@ -977,7 +977,7 @@ void Management::addSchedule()
 	printSchedule();
 }
 
-void Management::mod_or_delSchedule(){
+void Management::mod_or_delSchedule() {
 	vector<Schedule*> sche; // 현재 날짜에 해당하는 스케줄
 	vector<int> scheNum; // 현재 날짜에 해당하는 스케줄의 번호 
 
@@ -994,8 +994,6 @@ void Management::mod_or_delSchedule(){
 
 	int flag = 0;// 부 프롬프트 간 이동을 위한 변수
 	int backup_flag = 0;
-
-	// vector<Schedule*> samekeySche; // key가 같은 스케줄들
 
 	while (flag < 15) {
 		system("cls");
@@ -1064,17 +1062,8 @@ void Management::mod_or_delSchedule(){
 				flag = 0; // 이전 프롬프트 (일정 선택 프롬프트)
 			}
 			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 1) {
-					/*if (sche[selectedNum]->getCycle() > 0) {
-						samekeySche.clear();
-						for (int i = 0; i < cal->allSchs.size(); i++) {
-							if (sche[selectedNum]->getKey() == cal->allSchs[i].getKey()) {
-								samekeySche.push_back(&cal->allSchs[i]);
-							}
-						}
-					}*/
+				if (is_digit(menu) && stoi(menu) == 1)
 					flag = 2; // 수정 프롬프트로 이동
-				}
 				else if (is_digit(menu) && stoi(menu) == 2)
 					flag = 13; // 삭제 프롬프트로 이동
 				else {
@@ -1171,11 +1160,39 @@ void Management::mod_or_delSchedule(){
 						flag = 3; // 현재 프롬프트 반복
 					}
 					else {
-						/*if (!samekeySche.empty()) {
-							for (int i = 0; i < samekeySche.size(); i++) {
-								// samekeySche[i]->setStartDate(SDM.calcSD(samekeySche[i]->getStartDate(), -getDiffDate(sche[selectedNum]->getStartDate(), startDate)));
+						/**************************************************************************************
+						if (sche[selectedNum]->getCycle() == 0) {
+							sche[selectedNum]->setStartDate(startDate);
+							SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+							flag = 2;
+						}
+						// 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+
+						else {
+							key = sche[selectedNum]->getKey();
+							for (int i = 0; i < cal->allSchs.size();) {
+								if (cal->allSchs[i].getKey() == key) {
+									cal->allSchs[i].setStartDate(startDate);
+								}
+								else {
+									i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+								}
 							}
-						}*/
+							SDM.saveDataFile(*cal);
+							flag = 2;
+						}
+						**************************************************************************************/
+						/*
+						key = sche[selectedNum]->getKey();
+						for (int i = 0; i < cal->allSchs.size(); i++) {
+							if (cal->allSchs[i].getKey() == key) {
+								cal->allSchs[i].setStartDate(SDM.calcSD(cal->allSchs[i].getStartDate(), -getDiffDate(sche[selectedNum]->getStartDate(), startDate)));
+
+							}
+						}
+						SDM.saveDataFile(*cal);
+						flag = 2;
+						*/
 
 						key = sche[selectedNum]->getKey();
 						string sD = startDate;
@@ -1253,8 +1270,12 @@ void Management::mod_or_delSchedule(){
 						flag = 4; // 현재 프롬프트 반복
 					}
 					else {
+<<<<<<< HEAD
 						// 반복종료일 < 종료일일 때 예외처리 필요 
 						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate)>0) {
+=======
+						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate) > 0) {
+>>>>>>> d49ccc26054baa9ad109eedb5ab4003ddb321521
 							system("cls");
 							cout << "오류: 종료일은 반복종료일과 같거나, 그 이전이여야 합니다.\n\n";
 							cout << "아무 키나 눌러주세요.\n";
@@ -1263,21 +1284,21 @@ void Management::mod_or_delSchedule(){
 							_getch();
 							flag = 4; // 현재 프롬프트 반복
 						}
-						else{
-						key = sche[selectedNum]->getKey();
-						string eD = endDate;
-						string ssNeD = sche[selectedNum]->getEndDate();
-						for (int i = 0; i < cal->allSchs.size(); i++) {
-							if (cal->allSchs[i].getKey() == key) {
-								cal->allSchs[i].setEndDate(SDM.calcSD(cal->allSchs[i].getEndDate(), getDiffDate(eD, ssNeD)));
+						else {
+							key = sche[selectedNum]->getKey();
+							string eD = endDate;
+							string ssNeD = sche[selectedNum]->getEndDate();
+							for (int i = 0; i < cal->allSchs.size(); i++) {
+								if (cal->allSchs[i].getKey() == key) {
+									cal->allSchs[i].setEndDate(SDM.calcSD(cal->allSchs[i].getEndDate(), getDiffDate(eD, ssNeD)));
+								}
 							}
-						}
-						sche[selectedNum]->setEndDate(endDate);
-						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						SDM.loadDataFile(*cal, *cate);
-						CDM->loadDataFile(*cate);
+							sche[selectedNum]->setEndDate(endDate);
+							SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+							SDM.loadDataFile(*cal, *cate);
+							CDM->loadDataFile(*cate);
 
-						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+							flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 						}
 					}
 					break;
@@ -1324,21 +1345,15 @@ void Management::mod_or_delSchedule(){
 				wstring wtitle = SDM.s2ws(title);
 				if (regex_match(wtitle.cbegin(), wtitle.cend(), wideMatch, wrx) &&
 					title[0] != ' ' && title.back() != ' ') {
-					/*f(!samekeySche.empty()) {
-						for (int i = 0; i < samekeySche.size(); i++) {
-							samekeySche[i]->setTitle(title);
-						}
-					}*/
+
 					key = sche[selectedNum]->getKey();
-					for (int i = 0; i < cal->allSchs.size();i++) {
+					for (int i = 0; i < cal->allSchs.size(); i++) {
 						if (cal->allSchs[i].getKey() == key) {
 							cal->allSchs[i].setTitle(title);
 						}
 					}
-					sche[selectedNum]->setTitle(title);
+					//sche[selectedNum]->setTitle(title);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					SDM.loadDataFile(*cal, *cate);
-					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else {
@@ -1378,10 +1393,8 @@ void Management::mod_or_delSchedule(){
 							cal->allSchs[i].setCategory("기본");
 						}
 					}
-					sche[selectedNum]->setCategory("기본"); // 기본 카테고리
+					//sche[selectedNum]->setCategory("기본"); // 기본 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					SDM.loadDataFile(*cal, *cate);
-					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
@@ -1390,29 +1403,22 @@ void Management::mod_or_delSchedule(){
 						if (cal->allSchs[i].getKey() == key) {
 							cal->allSchs[i].setCategory(CDM->GetCategory()->at(stoi(menu) - 1));
 						}
-						else {
-							i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
-						}
 					}
-					sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
+					//sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					SDM.loadDataFile(*cal, *cate);
-					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
 					CLS->CategoryAdd(); // 카테고리 추가
 					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
-						sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
 						key = sche[selectedNum]->getKey();
 						for (int i = 0; i < cal->allSchs.size(); i++) {
 							if (cal->allSchs[i].getKey() == key) {
 								cal->allSchs[i].setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1));
 							}
 						}
+						//sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						SDM.loadDataFile(*cal, *cate);
-						CDM->loadDataFile(*cate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					else {
@@ -1451,17 +1457,14 @@ void Management::mod_or_delSchedule(){
 				if (memo.size() != 0) {
 					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
 						memo[0] != ' ' && memo.back() != ' ') {
-
 						key = sche[selectedNum]->getKey();
 						for (int i = 0; i < cal->allSchs.size(); i++) {
 							if (cal->allSchs[i].getKey() == key) {
 								cal->allSchs[i].setMemo(memo);
 							}
 						}
-						sche[selectedNum]->setMemo(memo);
+						//sche[selectedNum]->setMemo(memo);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						SDM.loadDataFile(*cal, *cate);
-						CDM->loadDataFile(*cate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					else {
@@ -1805,16 +1808,29 @@ void Management::mod_or_delSchedule(){
 						cycle = backup_flag - 8;
 						startDate = sche[selectedNum]->getStartDate();
 						endDate = sche[selectedNum]->getEndDate();
-						title= sche[selectedNum]->getTitle();
+						title = sche[selectedNum]->getTitle();
 						category = sche[selectedNum]->getCategory();
 						memo = sche[selectedNum]->getMemo();
+						key = sche[selectedNum]->getKey();
 						int diffDate = 0;
 						Schedule* newDate = nullptr;
+
+						for (int i = 0; i < cal->allSchs.size();) {
+							if (cal->allSchs[i].getKey() == key) {
+								cal->allSchs.erase(cal->allSchs.begin() + i);
+							}
+							else {
+								i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+							}
+						}
+
 						switch (cycle) {
+
 						case 0:	// 반복 x
 							newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, cal->getHighestKey() + 1);
 							cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 							break;
+
 						case 1:	// 매년 반복
 							// 1. startDate와 endDate의 날짜 차이를 알아야 함.
 							// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
@@ -1836,7 +1852,7 @@ void Management::mod_or_delSchedule(){
 								while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 									string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
-									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 1, cal->getHighestKey() + 1);
+									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 									endDateYear++;
 									anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
@@ -1874,7 +1890,7 @@ void Management::mod_or_delSchedule(){
 								while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 									string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
-									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 2, cal->getHighestKey() + 1);
+									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);		//왜 cycle 0
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 									if (++endDateMonth > 12) {
 										endDateYear++;
@@ -1885,7 +1901,7 @@ void Management::mod_or_delSchedule(){
 								}
 								if (endDateYear <= FINAL_YEAR) {	// 해당 날짜가 있는 달인 경우
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1);
+									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 								}
 							}
