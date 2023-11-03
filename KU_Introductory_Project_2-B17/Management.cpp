@@ -1176,6 +1176,16 @@ void Management::mod_or_delSchedule(){
 								// samekeySche[i]->setStartDate(SDM.calcSD(samekeySche[i]->getStartDate(), -getDiffDate(sche[selectedNum]->getStartDate(), startDate)));
 							}
 						}*/
+
+						key = sche[selectedNum]->getKey();
+						for (int i = 0; i < cal->allSchs.size(); i++) {
+							if (cal->allSchs[i].getKey() == key) {
+								cal->allSchs[i].setStartDate(SDM.calcSD(cal->allSchs[i].getStartDate(), -getDiffDate(sche[selectedNum]->getStartDate(), startDate)));
+							}
+							else {
+								i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+							}
+						}
 						sche[selectedNum]->setStartDate(startDate);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						SDM.loadDataFile(*cal, *cate);
