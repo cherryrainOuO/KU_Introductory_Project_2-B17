@@ -1901,7 +1901,15 @@ void Management::mod_or_delSchedule(){
 		case 14:
 			cout << "<일정 삭제>\n\n";
 			cout << "제목 : " << sche[selectedNum]->getTitle() << "\n\n";
-			cout << "해당 일정은 (반복단위)로 반복되는 일정입니다.\n";
+
+			cout << "해당 일정은 "; //? (반복 단위)는 cycle 에 따라서 아래 처럼 표시됩니다!
+			switch (sche[selectedNum]->getCycle()) {
+			case 1: cout << "년 단위"; break;
+			case 2: cout << "월 단위"; break;
+			case 3: cout << "주 단위"; break;
+			}
+			cout << "로 반복되는 일정입니다.\n";
+
 			cout << "삭제할 경우 반복되는 일정 전체가 삭제됩니다.\n";
 			cout << "삭제하시겠습니까?\n\n";
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
@@ -1918,12 +1926,17 @@ void Management::mod_or_delSchedule(){
 			else if (menu.size() == 1) {
 				if (is_digit(menu) && stoi(menu) == 1) {
 					key = sche[selectedNum]->getKey();
-					for (int i = 0; i < cal->allSchs.size(); i++) {
+
+					for (int i = 0; i < cal->allSchs.size();) {
 						if (cal->allSchs[i].getKey() == key) {
 							cal->allSchs.erase(cal->allSchs.begin() + i);
-							SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						}
+						else {
+							i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
 						}
 					}
+
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 0;
 				}
 				else if (is_digit(menu) && stoi(menu) == 2) {
