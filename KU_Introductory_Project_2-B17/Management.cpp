@@ -245,7 +245,7 @@ string Management::calcStartDate(string endDate, int diffDate)
 
 	end = mktime(&endTime);
 
-	start = end - (time_t)diffDate;
+	start = end - (time_t)diffDate * (60 * 60 * 24);
 
 	localtime_s(&startTime, &start);
 
