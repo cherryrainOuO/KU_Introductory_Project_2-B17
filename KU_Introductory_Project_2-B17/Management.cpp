@@ -1254,6 +1254,16 @@ void Management::mod_or_delSchedule(){
 					}
 					else {
 						// 반복종료일 < 종료일일 때 예외처리 필요 
+						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate) > 0) {
+							system("cls");
+							cout << "오류: 종료일은 반복종료일과 같거나, 그 이전이여야 합니다.\n\n";
+							cout << "아무 키나 눌러주세요.\n";
+							cout << "_____________________________\n";
+							cout << "> ";
+							_getch();
+							flag = 4; // 현재 프롬프트 반복
+						}
+						else{
 						key = sche[selectedNum]->getKey();
 						string eD = endDate;
 						string ssNeD = sche[selectedNum]->getEndDate();
@@ -1268,6 +1278,7 @@ void Management::mod_or_delSchedule(){
 						CDM->loadDataFile(*cate);
 
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+						}
 					}
 					break;
 				case -1:
