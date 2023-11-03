@@ -108,6 +108,8 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
     file.open(fileName, ios::out);
     file.imbue(locale(file.getloc(), new codecvt_utf8<wchar_t>));
 
+    map<int, bool> out;
+
     for (Schedule s : c.allSchs) {
 
         int key = s.getKey();
@@ -115,10 +117,15 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
             Schedule earliest = dupKeySches[key];
             string standard = addDate(earliest.getEndDate(), earliest.getCycle(), 0);
             standard = calcSD(standard, 1);
-            //매년, 매주: key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
-            if (s.getCycle() == 1 || s.getCycle() == 3) {
-                if (!checkD2(s.getEndDate(), standard))
-                    continue;
+            
+            if (s.getCycle() == 1) {
+                //매년
+                int ed1 = stoi(earliest.getEndDate().substr(8, 2)), ed2 = stoi(s.getEndDate().substr(8, 2));
+                if(!checkD2(s.getEndDate(), standard)) out[key] = true;
+                if (out[key] && ed1 - ed2 >= 0) continue;
+                else if (ed1 - ed2 < 0) {
+                    dupKeySches[key] = s;
+                }
             }
             else if (s.getCycle() == 2) {
                 //매월
@@ -128,9 +135,15 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
                 else
                     dupKeySches[key] = s;
             }
+            else if (s.getCycle() == 3) {
+                //매주: key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
+                if (!checkD2(s.getEndDate(), standard))
+                    continue;
+            }
         }
         else {
             dupKeySches[key] = s;
+            out[key] = false;
         }
         c.setHighestKey();
 
@@ -146,7 +159,6 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         file << t << L"\t" << c << L"\t" << sD << L"\t" << eD << L"\t" << m << L"\t" << rED << L"\t" << cy << L"\t"<< k << L"\n";
     }
 
-    dupKeySches.clear();
     file.close();
 
     if (file.fail()) {
@@ -381,6 +393,7 @@ string ScheduleDataManager::addDate(string date, int cy, int endday)
 
     if (cy == 1) {
         //year
+        if (day < endday) day = endday;
         year += 1;
         if (year % 4 && month == 2 && day == 29)
             day = 28;
