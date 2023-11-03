@@ -27,6 +27,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
     }
 
     //파일이 존재하는 경우
+    c.allSchs.clear(); //일정 생성 전 벡터 초기화
     vector<string>* categories = cat.GetCategories();
     vector<string> record;
     wstring line;
@@ -165,7 +166,8 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         cerr << "파일 저장에 실패했습니다.";
         return false;
     }
-
+    out.clear();
+    dupKeySches.clear();
     return true;
 }
 
