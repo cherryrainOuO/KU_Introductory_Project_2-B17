@@ -110,16 +110,11 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
     file.imbue(locale(file.getloc(), new codecvt_utf8<wchar_t>));
 
     map<int, bool> out;
-    stack<Schedule> prev;
 
     for (Schedule s : c.allSchs) {
+
         int key = s.getKey();
         if (dupKeySches.find(key) != dupKeySches.end()) {
-
-            //동치 비교: 파일에 같은 일정 중복 추가 방지
-            if (!prev.empty())
-                if (isSameSch(prev.top(), s)) continue;
-
             Schedule earliest = dupKeySches[key];
             string standard = addDate(earliest.getEndDate(), earliest.getCycle(), 0);
             standard = calcSD(standard, 1);
@@ -163,8 +158,6 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         wstring k = s2ws(to_string(s.getKey()));
         
         file << t << L"\t" << c << L"\t" << sD << L"\t" << eD << L"\t" << m << L"\t" << rED << L"\t" << cy << L"\t"<< k << L"\n";
-
-        prev.push(s);
     }
 
     file.close();
@@ -359,16 +352,6 @@ bool ScheduleDataManager::checkCont(Schedule s)
         //if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
             //return false;
     }
-    return true;
-}
-
-bool ScheduleDataManager::isSameSch(Schedule s1, Schedule s2)
-{
-    if (s1.getKey() != s2.getKey()) return false;
-    if (s1.getStartDate().compare(s2.getStartDate()) != 0) return false;
-    if (s1.getEndDate().compare(s2.getEndDate()) != 0) return false;
-    if (s1.getCycle() != s2.getCycle()) return false;
-    if (s1.getRptEndDate().compare(s2.getRptEndDate()) != 0) return false;
     return true;
 }
 
