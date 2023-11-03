@@ -152,7 +152,7 @@ void Classification::PrintSchedule_ByCategory()
 		catch (exception e) {
 			system("cls"); // 화면 지우기
 
-			cout << "오류 : 잘못된 입력입니다. 숫자를 입력하세요.\n\n";
+			cout << "오류 : 해당 카테고리는 존재하지 않습니다.\n\n";
 			cout << "아무 키나 눌러주세요.\n";
 			cout << "-------------------------------------\n";
 			cout << "> ";

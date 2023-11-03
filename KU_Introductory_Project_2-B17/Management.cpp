@@ -995,6 +995,8 @@ void Management::mod_or_delSchedule(){
 	int flag = 0;// 부 프롬프트 간 이동을 위한 변수
 	int backup_flag = 0;
 
+	// vector<Schedule*> samekeySche; // key가 같은 스케줄들
+
 	while (flag < 15) {
 		system("cls");
 		switch (flag) {
@@ -1062,8 +1064,17 @@ void Management::mod_or_delSchedule(){
 				flag = 0; // 이전 프롬프트 (일정 선택 프롬프트)
 			}
 			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 1)
+				if (is_digit(menu) && stoi(menu) == 1) {
+					/*if (sche[selectedNum]->getCycle() > 0) {
+						samekeySche.clear();
+						for (int i = 0; i < cal->allSchs.size(); i++) {
+							if (sche[selectedNum]->getKey() == cal->allSchs[i].getKey()) {
+								samekeySche.push_back(&cal->allSchs[i]);
+							}
+						}
+					}*/
 					flag = 2; // 수정 프롬프트로 이동
+				}
 				else if (is_digit(menu) && stoi(menu) == 2)
 					flag = 13; // 삭제 프롬프트로 이동
 				else {
@@ -1160,8 +1171,15 @@ void Management::mod_or_delSchedule(){
 						flag = 3; // 현재 프롬프트 반복
 					}
 					else {
+						/*if (!samekeySche.empty()) {
+							for (int i = 0; i < samekeySche.size(); i++) {
+								// samekeySche[i]->setStartDate(SDM.calcSD(samekeySche[i]->getStartDate(), -getDiffDate(sche[selectedNum]->getStartDate(), startDate)));
+							}
+						}*/
 						sche[selectedNum]->setStartDate(startDate);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						SDM.loadDataFile(*cal, *cate);
+						CDM->loadDataFile(*cate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					break;
@@ -1274,8 +1292,24 @@ void Management::mod_or_delSchedule(){
 				wstring wtitle = SDM.s2ws(title);
 				if (regex_match(wtitle.cbegin(), wtitle.cend(), wideMatch, wrx) &&
 					title[0] != ' ' && title.back() != ' ') {
+					/*f(!samekeySche.empty()) {
+						for (int i = 0; i < samekeySche.size(); i++) {
+							samekeySche[i]->setTitle(title);
+						}
+					}*/
+					key = sche[selectedNum]->getKey();
+					for (int i = 0; i < cal->allSchs.size();i++) {
+						if (cal->allSchs[i].getKey() == key) {
+							cal->allSchs[i].setTitle(title);
+						}
+						else {
+							i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+						}
+					}
 					sche[selectedNum]->setTitle(title);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					SDM.loadDataFile(*cal, *cate);
+					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else {
@@ -1659,7 +1693,7 @@ void Management::mod_or_delSchedule(){
 			}
 			break;
 		case 12: // 반복 종료일
-			cout << "<일정 추가>\n\n";
+			cout << "<일정 수정>\n\n";
 			cout << "반복 종료일 입력\n\n";
 			cout << "반복 종료일을 입력해주세요.\n\n";
 			cout << "반복 종료일 입력 형식 : yyyy/mm/dd\n";
@@ -1737,7 +1771,7 @@ void Management::mod_or_delSchedule(){
 								while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 									string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
-									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
+									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 1, cal->getHighestKey() + 1);
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 									endDateYear++;
 									anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
@@ -1775,7 +1809,7 @@ void Management::mod_or_delSchedule(){
 								while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 									string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
-									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
+									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 2, cal->getHighestKey() + 1);
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 									if (++endDateMonth > 12) {
 										endDateYear++;
