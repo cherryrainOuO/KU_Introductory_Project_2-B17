@@ -1253,8 +1253,20 @@ void Management::mod_or_delSchedule(){
 						flag = 4; // 현재 프롬프트 반복
 					}
 					else {
+						// 반복종료일 < 종료일일 때 예외처리 필요 
+						key = sche[selectedNum]->getKey();
+						string eD = endDate;
+						string ssNeD = sche[selectedNum]->getEndDate();
+						for (int i = 0; i < cal->allSchs.size(); i++) {
+							if (cal->allSchs[i].getKey() == key) {
+								cal->allSchs[i].setEndDate(SDM.calcSD(cal->allSchs[i].getEndDate(), getDiffDate(eD, ssNeD)));
+							}
+						}
 						sche[selectedNum]->setEndDate(endDate);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						SDM.loadDataFile(*cal, *cate);
+						CDM->loadDataFile(*cate);
+
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					break;
