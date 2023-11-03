@@ -1826,8 +1826,8 @@ void Management::mod_or_delSchedule(){
 						}
 
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						//SDM.loadDataFile(*cal, *cate);
-						//CDM->loadDataFile(*cate);
+						SDM.loadDataFile(*cal, *cate);
+						CDM->loadDataFile(*cate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					break;
