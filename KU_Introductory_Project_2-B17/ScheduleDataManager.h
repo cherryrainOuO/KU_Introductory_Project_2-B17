@@ -11,6 +11,7 @@
 #include <codecvt>
 #include <atlstr.h>
 #include "Category.h"
+#include <stack>
 
 
 #define SIZE 8 //데이터 요소
@@ -41,6 +42,7 @@ private:
 	bool checkCy(string data, string sd, string ed); //cycle
 	bool checkKey(string data); //key
 	bool checkCont(Schedule s);
+	bool isSameSch(Schedule s1, Schedule s2);
 	
 	//날짜 관련 연산
 	void initTime(struct tm& date, int y, int m, int d);
