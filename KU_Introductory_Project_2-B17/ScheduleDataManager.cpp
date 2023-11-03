@@ -108,6 +108,8 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
     file.open(fileName, ios::out);
     file.imbue(locale(file.getloc(), new codecvt_utf8<wchar_t>));
 
+    map<int, bool> out;
+
     for (Schedule s : c.allSchs) {
 
         int key = s.getKey();
@@ -119,8 +121,11 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
             if (s.getCycle() == 1) {
                 //매년
                 int ed1 = stoi(earliest.getEndDate().substr(8, 2)), ed2 = stoi(s.getEndDate().substr(8, 2));
-                if (!checkD2(s.getEndDate(), standard) && ed1 - ed2 >= 0)
-                    continue;
+                if(!checkD2(s.getEndDate(), standard)) out[key] = true;
+                if (out[key] && ed1 - ed2 >= 0) continue;
+                else if (ed1 - ed2 < 0) {
+                    dupKeySches[key] = s;
+                }
             }
             else if (s.getCycle() == 2) {
                 //매월
@@ -138,6 +143,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         }
         else {
             dupKeySches[key] = s;
+            out[key] = false;
         }
         c.setHighestKey();
 
