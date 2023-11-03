@@ -38,6 +38,6 @@ public:
 private:
 	Category* cate;
 	Calender* cale;
-	ScheduleDataManager* SDM;
+	ScheduleDataManager SDM;
 };
 

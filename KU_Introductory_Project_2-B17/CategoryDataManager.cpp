@@ -168,14 +168,10 @@ bool CategoryDataManager::UpdateCategoryToCalender(int _cateNum, string _newStr)
 	for (int i = 0; i < cale->allSchs.size(); i++) {
 		if (cale->allSchs.at(i).getCategory().compare(oldCate) == 0) {
 			cale->allSchs.at(i).setCategory(_newStr);
-			cale->allSchs.at(i).print();
+			//cale->allSchs.at(i).print();
 		}
 	}
-	SDM->saveDataFile(*cale);
-
-
-
-
+	SDM.saveDataFile(*cale);
 
 	return true;
 }
@@ -194,8 +190,9 @@ void CategoryDataManager::CategoryAdd(string _str)
 
 void CategoryDataManager::CategoryEdit(int _cateNum, string _newStr)
 {
-	cate->GetCategories()->at(_cateNum) = _newStr;
 	UpdateCategoryToCalender(_cateNum, _newStr); // 수정
+	cate->GetCategories()->at(_cateNum) = _newStr;
+
 	SaveDataFile();
 }
 
@@ -227,7 +224,7 @@ bool CategoryDataManager::SyntaxCheck(string _str)
 {
 	wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]{1,30})");
 	wsmatch wideMatch;
-	wstring wstr = SDM->s2ws(_str);
+	wstring wstr = SDM.s2ws(_str);
 	if (regex_match(wstr.cbegin(), wstr.cend(), wideMatch, wrx) &&
 		_str[0] != ' ' && _str.back() != ' ') {
 		return true;
