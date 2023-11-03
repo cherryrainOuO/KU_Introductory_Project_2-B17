@@ -1178,14 +1178,13 @@ void Management::mod_or_delSchedule(){
 						}*/
 
 						key = sche[selectedNum]->getKey();
-						int cc = 0;
+						string sD = startDate;
+						string ssNsD = sche[selectedNum]->getStartDate();
 						for (int i = 0; i < cal->allSchs.size(); i++) {
 							if (cal->allSchs[i].getKey() == key) {
-								cal->allSchs[i].setStartDate(SDM.calcSD(cal->allSchs[i].getStartDate(), getDiffDate(startDate, sche[selectedNum]->getStartDate())));
-								cc++;
+								cal->allSchs[i].setStartDate(SDM.calcSD(cal->allSchs[i].getStartDate(), getDiffDate(sD, ssNsD)));
 							}
 						}
-						cout << "!!!!!!!!!!!!!!!!!!!!!count : " << cc << "!!!!!!!!!!!!!!!!!!!!!!!\n";
 						sche[selectedNum]->setStartDate(startDate);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						SDM.loadDataFile(*cal, *cate);
