@@ -1395,8 +1395,20 @@ void Management::mod_or_delSchedule(){
 				if (memo.size() != 0) {
 					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
 						memo[0] != ' ' && memo.back() != ' ') {
+
+						key = sche[selectedNum]->getKey();
+						for (int i = 0; i < cal->allSchs.size(); i++) {
+							if (cal->allSchs[i].getKey() == key) {
+								cal->allSchs[i].setMemo(memo);
+							}
+							else {
+								i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+							}
+						}
 						sche[selectedNum]->setMemo(memo);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						SDM.loadDataFile(*cal, *cate);
+						CDM->loadDataFile(*cate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					else {
