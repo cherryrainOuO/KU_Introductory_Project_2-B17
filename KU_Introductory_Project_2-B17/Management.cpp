@@ -1343,20 +1343,53 @@ void Management::mod_or_delSchedule(){
 			}
 			else if (menu.size() == 1) {
 				if (is_digit(menu) && 0 == stoi(menu)) {
+					key = sche[selectedNum]->getKey();
+					for (int i = 0; i < cal->allSchs.size(); i++) {
+						if (cal->allSchs[i].getKey() == key) {
+							cal->allSchs[i].setCategory("기본");
+						}
+						else {
+							i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+						}
+					}
 					sche[selectedNum]->setCategory("기본"); // 기본 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					SDM.loadDataFile(*cal, *cate);
+					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
+					key = sche[selectedNum]->getKey();
+					for (int i = 0; i < cal->allSchs.size(); i++) {
+						if (cal->allSchs[i].getKey() == key) {
+							cal->allSchs[i].setCategory(CDM->GetCategory()->at(stoi(menu) - 1));
+						}
+						else {
+							i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+						}
+					}
 					sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					SDM.loadDataFile(*cal, *cate);
+					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
 					CLS->CategoryAdd(); // 카테고리 추가
 					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
 						sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
+						key = sche[selectedNum]->getKey();
+						for (int i = 0; i < cal->allSchs.size(); i++) {
+							if (cal->allSchs[i].getKey() == key) {
+								cal->allSchs[i].setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1));
+							}
+							else {
+								i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+							}
+						}
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						SDM.loadDataFile(*cal, *cate);
+						CDM->loadDataFile(*cate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					else {
