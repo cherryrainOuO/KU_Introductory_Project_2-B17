@@ -1189,7 +1189,7 @@ void Management::mod_or_delSchedule(){
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						SDM.loadDataFile(*cal, *cate);
 						CDM->loadDataFile(*cate);
-						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+						flag = 1; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					break;
 
@@ -1254,7 +1254,7 @@ void Management::mod_or_delSchedule(){
 					}
 					else {
 						// 반복종료일 < 종료일일 때 예외처리 필요 
-						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate) > 0) {
+						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate)>0) {
 							system("cls");
 							cout << "오류: 종료일은 반복종료일과 같거나, 그 이전이여야 합니다.\n\n";
 							cout << "아무 키나 눌러주세요.\n";
