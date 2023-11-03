@@ -1178,14 +1178,14 @@ void Management::mod_or_delSchedule(){
 						}*/
 
 						key = sche[selectedNum]->getKey();
+						int cc = 0;
 						for (int i = 0; i < cal->allSchs.size(); i++) {
 							if (cal->allSchs[i].getKey() == key) {
-								cal->allSchs[i].setStartDate(SDM.calcSD(cal->allSchs[i].getStartDate(), -getDiffDate(sche[selectedNum]->getStartDate(), startDate)));
-							}
-							else {
-								i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+								cal->allSchs[i].setStartDate(SDM.calcSD(cal->allSchs[i].getStartDate(), getDiffDate(startDate, sche[selectedNum]->getStartDate())));
+								cc++;
 							}
 						}
+						cout << "!!!!!!!!!!!!!!!!!!!!!count : " << cc << "!!!!!!!!!!!!!!!!!!!!!!!\n";
 						sche[selectedNum]->setStartDate(startDate);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						SDM.loadDataFile(*cal, *cate);
@@ -1312,9 +1312,6 @@ void Management::mod_or_delSchedule(){
 						if (cal->allSchs[i].getKey() == key) {
 							cal->allSchs[i].setTitle(title);
 						}
-						else {
-							i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
-						}
 					}
 					sche[selectedNum]->setTitle(title);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
@@ -1358,9 +1355,6 @@ void Management::mod_or_delSchedule(){
 						if (cal->allSchs[i].getKey() == key) {
 							cal->allSchs[i].setCategory("기본");
 						}
-						else {
-							i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
-						}
 					}
 					sche[selectedNum]->setCategory("기본"); // 기본 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
@@ -1392,9 +1386,6 @@ void Management::mod_or_delSchedule(){
 						for (int i = 0; i < cal->allSchs.size(); i++) {
 							if (cal->allSchs[i].getKey() == key) {
 								cal->allSchs[i].setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1));
-							}
-							else {
-								i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
 							}
 						}
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
@@ -1443,9 +1434,6 @@ void Management::mod_or_delSchedule(){
 						for (int i = 0; i < cal->allSchs.size(); i++) {
 							if (cal->allSchs[i].getKey() == key) {
 								cal->allSchs[i].setMemo(memo);
-							}
-							else {
-								i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
 							}
 						}
 						sche[selectedNum]->setMemo(memo);
