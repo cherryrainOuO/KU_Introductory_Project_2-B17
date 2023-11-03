@@ -1659,7 +1659,7 @@ void Management::mod_or_delSchedule(){
 			}
 			break;
 		case 12: // 반복 종료일
-			cout << "<일정 추가>\n\n";
+			cout << "<일정 수정>\n\n";
 			cout << "반복 종료일 입력\n\n";
 			cout << "반복 종료일을 입력해주세요.\n\n";
 			cout << "반복 종료일 입력 형식 : yyyy/mm/dd\n";
