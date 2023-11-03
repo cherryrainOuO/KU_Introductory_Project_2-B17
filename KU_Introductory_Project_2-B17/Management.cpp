@@ -1495,8 +1495,29 @@ void Management::mod_or_delSchedule() {
 			else if (menu.size() == 1) {
 				if (is_digit(menu) && stoi(menu) == 0) {
 					// stoi(menu) == 0 : 반복되지 않는 일정으로 수정, 혹은 그대로 둠
-					sche[selectedNum]->setCycle(0);
-					sche[selectedNum]->setRptEndDate(sche[selectedNum]->getEndDate());
+					//sche[selectedNum]->setCycle(0);
+					//sche[selectedNum]->setRptEndDate(sche[selectedNum]->getEndDate());
+					//SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					//flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+					startDate = sche[selectedNum]->getStartDate();
+					endDate = sche[selectedNum]->getEndDate();
+					title = sche[selectedNum]->getTitle();
+					category = sche[selectedNum]->getCategory();
+					memo = sche[selectedNum]->getMemo();
+					key = sche[selectedNum]->getKey();
+					Schedule* newDate = nullptr;
+
+					for (int i = 0; i < cal->allSchs.size();) {
+						if (cal->allSchs[i].getKey() == key) {
+							cal->allSchs.erase(cal->allSchs.begin() + i);
+						}
+						else {
+							i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+						}
+					}
+					newDate = new Schedule(title, startDate, endDate, category, memo, endDate, 0, key);
+					cal->allSchs.push_back(*newDate);
+
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
@@ -1820,12 +1841,12 @@ void Management::mod_or_delSchedule() {
 						}
 
 						switch (cycle) {
-
-						case 0:	// 반복 x
-							newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, cal->getHighestKey() + 1);
-							cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
-							break;
-
+							/*
+							case 0:	// 반복 x
+								newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, cal->getHighestKey() + 1);
+								cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+								break;
+							*/
 						case 1:	// 매년 반복
 							// 1. startDate와 endDate의 날짜 차이를 알아야 함.
 							// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
