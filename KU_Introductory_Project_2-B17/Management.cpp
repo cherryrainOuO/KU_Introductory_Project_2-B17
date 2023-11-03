@@ -1799,9 +1799,10 @@ void Management::mod_or_delSchedule(){
 					for (int i = 0; i < cal->allSchs.size(); i++) {
 						if (cal->allSchs[i].getKey() == key) {
 							cal->allSchs.erase(cal->allSchs.begin() + i);
-							SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+							i--;
 						}
 					}
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 0;
 				}
 				else if (is_digit(menu) && stoi(menu) == 2) {
