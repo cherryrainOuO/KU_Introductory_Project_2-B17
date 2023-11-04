@@ -218,8 +218,7 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         if(!checkM(record[4])) return false; // memo
         if (!checkD(record[5])) return false; //repeat end Date
         if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
-        int period = calcPeriod(record[2], record[3]);
-        if (!checkCy(record[6], record[2], record[3])) return false; // cycle
+        if (!checkCy(record[6])) return false; // cycle
         if (!checkKey(record[7])) return false; //key
     }
     catch (const exception& e)
@@ -324,7 +323,7 @@ bool ScheduleDataManager::checkM(string data)
     return true;
 }
 
-bool ScheduleDataManager::checkCy(string data, string sd, string ed)
+bool ScheduleDataManager::checkCy(string data)
 {
     int cycle = stoi(data);
     if (cycle < 0 || cycle > CYMAX)
@@ -341,7 +340,7 @@ bool ScheduleDataManager::checkKey(string data)
 
 bool ScheduleDataManager::checkCont(Schedule s)
 {
-    //key값이 같은 경우 동일해야하는 요소: 제목, 카테고리, 메모, 시작일~종료일 간격, 주기, 반복 종료일
+    //key값이 같은 경우 동일해야하는 요소: 제목, 카테고리, 메모, 시작일~종료일 간격
     int key = s.getKey();
     if (dupKeySches.find(key) != dupKeySches.end()) {
         Schedule s2(dupKeySches[key]);
