@@ -1959,6 +1959,8 @@ void Management::mod_or_delSchedule() {
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						SDM.loadDataFile(*cal, *cate);
 						CDM->loadDataFile(*cate);
+						newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
+						sche.insert(sche.begin() + selectedNum, newDate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					break;
