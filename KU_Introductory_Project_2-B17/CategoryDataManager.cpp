@@ -30,6 +30,9 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 		}
 		else {
 			fout.close();
+			cout << "파일 생성 성공\n";
+			Sleep(1000);
+
 			return true;
 		}
 	}
