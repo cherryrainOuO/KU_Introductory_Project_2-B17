@@ -73,6 +73,8 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 
 					return false;
 				}
+				else if (find(record.begin(), record.end(), temptkn) != record.end() || temptkn.compare("기본") == 0)
+					continue;
 				record.push_back(temptkn); //연속된 tab 무시
 			}
 
