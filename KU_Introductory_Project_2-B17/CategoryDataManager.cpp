@@ -49,7 +49,7 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 			string temptkn;
 			temptkn = ws2s(token);
 			trim(temptkn); // tkn의 앞 뒤 공백 제거
-			cout << temptkn << "\n";
+			//cout << temptkn << "\n";
 
 			if (!temptkn.empty()) {
 				if (SyntaxCheck(temptkn) == false) {
@@ -81,7 +81,7 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 	record.clear();
 
 	file.close();
-	cout << "데이터 로드 성공\n";
+	//cout << "데이터 로드 성공\n";
 	return true;
 
 }
