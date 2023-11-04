@@ -42,7 +42,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
             string temptkn;
             temptkn = ws2s(token);
             trim(temptkn); // tkn의 앞 뒤 공백 제거
-            cout << temptkn;
+            //cout << temptkn;
             if (!temptkn.empty()) record.push_back(temptkn); //연속된 tab 무시
         }
         //메모가 비워진 경우 4번 인덱스에 빈 문자열 삽입
@@ -50,7 +50,10 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 
         if (record.size() != SIZE || !isRight(record, categories)) {
             //cout << record.size(); //test
-            cerr << "오류: 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
+            cerr << "오류: 데이터 파일의 형식이 잘못되었습니다.\n";
+            cout << "---------------------------------------------------------------------------------------\n";
+            cout << ws2s(line) << "\n";
+            cout << "---------------------------------------------------------------------------------------\n프로그램을 종료합니다.\n";
             return false;
         }
 
@@ -67,7 +70,10 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         Schedule s(ti, sd, ed, cat, me, rED, cy, k);
 
         if (!checkCont(s)) {
-            cerr << "오류: 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
+            cerr << "오류: 데이터 파일의 형식이 잘못되었습니다.\n";
+            cout << "---------------------------------------------------------------------------------------\n";
+            cout << ws2s(line) << "\n";
+            cout << "---------------------------------------------------------------------------------------\n프로그램을 종료합니다.\n";
             return false;
         }
         dupKeySches[k] = s; //키가 중복될 때 검사하기 위해
