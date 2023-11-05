@@ -2029,7 +2029,7 @@ void Management::mod_or_delSchedule() {
 				}
 				*/
 				if (is_digit(menu) && stoi(menu) == 1) {
-					if (sche[selectedNum]->getCycle() == 0) {
+					if (cal->cycle_per_keys[sche[selectedNum]->getKey()] == 0) {
 						cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						flag = 0; // 일정 선택 프롬프트로 이동
@@ -2055,7 +2055,7 @@ void Management::mod_or_delSchedule() {
 			cout << "제목 : " << sche[selectedNum]->getTitle() << "\n\n";
 
 			cout << "해당 일정은 "; //? (반복 단위)는 cycle 에 따라서 아래 처럼 표시됩니다!
-			switch (sche[selectedNum]->getCycle()) {
+			switch (cal->cycle_per_keys[sche[selectedNum]->getKey()]) {
 			case 1: cout << "년 단위"; break;
 			case 2: cout << "월 단위"; break;
 			case 3: cout << "주 단위"; break;
@@ -2089,6 +2089,7 @@ void Management::mod_or_delSchedule() {
 					}
 
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					cal->cycle_per_keys.erase(key);
 					flag = 0;
 				}
 				else if (is_digit(menu) && stoi(menu) == 2) {

@@ -39,6 +39,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 
     //파일이 존재하는 경우
     c.allSchs.clear(); //일정 생성 전 벡터 초기화
+    c.cycle_per_keys.clear();
     vector<string>* categories = cat.GetCategories();
     vector<string> record;
     wstring line;
@@ -86,6 +87,12 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
             cout << ws2s(line) << "\n";
             cout << "---------------------------------------------------------------------------------------\n프로그램을 종료합니다.\n";
             return false;
+        }
+        if (dupKeySches.find(k) != dupKeySches.end()) {
+            c.cycle_per_keys[k] = max(c.cycle_per_keys[k], cy);
+        }
+        else {
+            c.cycle_per_keys[k] = cy;
         }
         dupKeySches[k] = s; //키가 중복될 때 검사하기 위해
 
