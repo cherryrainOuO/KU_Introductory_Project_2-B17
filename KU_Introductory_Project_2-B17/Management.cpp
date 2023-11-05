@@ -1228,7 +1228,7 @@ void Management::mod_or_delSchedule() {
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						SDM.loadDataFile(*cal, *cate);
 						CDM->loadDataFile(*cate);
-						flag = 1; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					break;
 
@@ -1370,7 +1370,7 @@ void Management::mod_or_delSchedule() {
 							cal->allSchs[i].setTitle(title);
 						}
 					}
-					//sche[selectedNum]->setTitle(title);
+					sche[selectedNum]->setTitle(title);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
@@ -1411,7 +1411,7 @@ void Management::mod_or_delSchedule() {
 							cal->allSchs[i].setCategory("기본");
 						}
 					}
-					//sche[selectedNum]->setCategory("기본"); // 기본 카테고리
+					sche[selectedNum]->setCategory("기본"); // 기본 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
@@ -1422,7 +1422,7 @@ void Management::mod_or_delSchedule() {
 							cal->allSchs[i].setCategory(CDM->GetCategory()->at(stoi(menu) - 1));
 						}
 					}
-					//sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
+					sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
@@ -1435,7 +1435,7 @@ void Management::mod_or_delSchedule() {
 								cal->allSchs[i].setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1));
 							}
 						}
-						//sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
+						sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
@@ -1485,7 +1485,7 @@ void Management::mod_or_delSchedule() {
 							cal->allSchs[i].setMemo(memo);
 						}
 					}
-					//sche[selectedNum]->setMemo(memo);
+					sche[selectedNum]->setMemo(memo);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					//}
