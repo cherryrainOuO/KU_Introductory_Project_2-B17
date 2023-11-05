@@ -156,10 +156,10 @@ void Management::printSchedule() {
 		else if (m.size() == 1 && m[0] == '1')
 			addSchedule();
 		else {
-			cout << "오류: 1을 입력해주세요.\n";
+			cout << "오류: 1을 입력해주세요.\n\n";
 			cout << "아무 키나 눌러주세요.\n";
 			cout << "_____________________________\n";
-			cout << "> "
+			cout << "> ";
 			if (_getch()) {
 				system("cls");
 				printSchedule();
