@@ -1669,11 +1669,8 @@ void Management::mod_or_delSchedule() {
 			}
 			else {
 				// 00 입력 불가, 01~09 == 1~9
-				//wregex wrx(L"(([0]?[1-9] | [1-9][0-9]?) ([ ]+[0-9][0-9]?)*)");
-				wregex wrx(L"(([0]?[1-9]|[1-9][0-9])(([ ]|[0]?[1-9]|[1-9][0-9])*))");
-				wsmatch wideMatch;
-				wstring wmRptStr = SDM.s2ws(mRptStr);
-				if (regex_match(wmRptStr.cbegin(), wmRptStr.cend(), wideMatch, wrx)) {
+				regex re("(0?[1-9]|[12][0-9]|3[01])([ ]+(0?[1-9]|[12][0-9]|3[01]))*");
+				if (regex_match(mRptStr, re)) {
 					mRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
 
 					istringstream iss(mRptStr);
@@ -1756,10 +1753,8 @@ void Management::mod_or_delSchedule() {
 				flag = 8;
 			}
 			else {
-				wregex wrx(L"([1-7]([ ][1-7]?)*)");
-				wsmatch wideMatch;
-				wstring wwRptStr = SDM.s2ws(wRptStr);
-				if (regex_match(wwRptStr.cbegin(), wwRptStr.cend(), wideMatch, wrx)) {
+				regex re("[1-7]([ ]+[1-7])*");
+				if (regex_match(wRptStr, re)) {
 					wRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
 
 					istringstream iss(wRptStr);
