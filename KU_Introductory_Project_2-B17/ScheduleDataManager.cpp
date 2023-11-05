@@ -17,11 +17,22 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         ofstream fout;
         fout.open(fileName);
         if (!fout.is_open()) {
-            cout << "오류: 데이터 파일 생성을 실패하였습니다. 프로그램을 종료합니다.\n";
+            cout << "오류: 데이터 파일 생성을 실패하였습니다. 프로그램을 종료합니다.\n\n";
+            cout << "아무 키나 눌러주세요.\n";
+            cout << "-------------------------------------\n";
+            cout << "> ";
+
+            _getch(); // 아무 키나 입력 대기
+
+            exit(0);
+
             return false; //false가 리턴되면 프로그램이 종료되도록
         }
         else {
             fout.close();
+            cout << "파일 생성 성공\n";
+            Sleep(1000);
+
             return true;
         }
     }
@@ -42,7 +53,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
             string temptkn;
             temptkn = ws2s(token);
             trim(temptkn); // tkn의 앞 뒤 공백 제거
-            cout << temptkn;
+            //cout << temptkn;
             if (!temptkn.empty()) record.push_back(temptkn); //연속된 tab 무시
         }
         //메모가 비워진 경우 4번 인덱스에 빈 문자열 삽입
@@ -50,7 +61,10 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 
         if (record.size() != SIZE || !isRight(record, categories)) {
             //cout << record.size(); //test
-            cerr << "오류: 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
+            cerr << "오류: 데이터 파일의 형식이 잘못되었습니다.\n";
+            cout << "---------------------------------------------------------------------------------------\n";
+            cout << ws2s(line) << "\n";
+            cout << "---------------------------------------------------------------------------------------\n프로그램을 종료합니다.\n";
             return false;
         }
 
@@ -67,7 +81,10 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         Schedule s(ti, sd, ed, cat, me, rED, cy, k);
 
         if (!checkCont(s)) {
-            cerr << "오류: 데이터 파일의 형식이 잘못되었습니다. 프로그램을 종료합니다.\n";
+            cerr << "오류: 데이터 파일의 형식이 잘못되었습니다.\n";
+            cout << "---------------------------------------------------------------------------------------\n";
+            cout << ws2s(line) << "\n";
+            cout << "---------------------------------------------------------------------------------------\n프로그램을 종료합니다.\n";
             return false;
         }
         dupKeySches[k] = s; //키가 중복될 때 검사하기 위해
@@ -212,8 +229,7 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         if(!checkM(record[4])) return false; // memo
         if (!checkD(record[5])) return false; //repeat end Date
         if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
-        int period = calcPeriod(record[2], record[3]);
-        if (!checkCy(record[6], record[2], record[3])) return false; // cycle
+        if (!checkCy(record[6])) return false; // cycle
         if (!checkKey(record[7])) return false; //key
     }
     catch (const exception& e)
@@ -318,7 +334,7 @@ bool ScheduleDataManager::checkM(string data)
     return true;
 }
 
-bool ScheduleDataManager::checkCy(string data, string sd, string ed)
+bool ScheduleDataManager::checkCy(string data)
 {
     int cycle = stoi(data);
     if (cycle < 0 || cycle > CYMAX)
@@ -335,7 +351,7 @@ bool ScheduleDataManager::checkKey(string data)
 
 bool ScheduleDataManager::checkCont(Schedule s)
 {
-    //key값이 같은 경우 동일해야하는 요소: 제목, 카테고리, 메모, 시작일~종료일 간격, 주기, 반복 종료일
+    //key값이 같은 경우 동일해야하는 요소: 제목, 카테고리, 메모, 시작일~종료일 간격
     int key = s.getKey();
     if (dupKeySches.find(key) != dupKeySches.end()) {
         Schedule s2(dupKeySches[key]);

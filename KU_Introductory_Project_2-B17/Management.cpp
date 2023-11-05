@@ -570,7 +570,7 @@ void Management::addSchedule()
 				flag = 5;
 			}
 			else {
-				regex re("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])([ ]+(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01]))*");	// 날짜 문법 형식
+				regex re("([0-9]{2}/[0-9]{2})([ ]+([0-9]{2}/[0-9]{2}))*");	// 날짜 문법 형식
 				if (!regex_match(yRptStr, re)) {
 					system("cls");
 					cout << "오류: 반복 날짜를 형식에 맞게 입력해주세요.\n";
@@ -1496,8 +1496,29 @@ void Management::mod_or_delSchedule() {
 			else if (menu.size() == 1) {
 				if (is_digit(menu) && stoi(menu) == 0) {
 					// stoi(menu) == 0 : 반복되지 않는 일정으로 수정, 혹은 그대로 둠
-					sche[selectedNum]->setCycle(0);
-					sche[selectedNum]->setRptEndDate(sche[selectedNum]->getEndDate());
+					//sche[selectedNum]->setCycle(0);
+					//sche[selectedNum]->setRptEndDate(sche[selectedNum]->getEndDate());
+					//SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					//flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+					startDate = sche[selectedNum]->getStartDate();
+					endDate = sche[selectedNum]->getEndDate();
+					title = sche[selectedNum]->getTitle();
+					category = sche[selectedNum]->getCategory();
+					memo = sche[selectedNum]->getMemo();
+					key = sche[selectedNum]->getKey();
+					Schedule* newDate = nullptr;
+
+					for (int i = 0; i < cal->allSchs.size();) {
+						if (cal->allSchs[i].getKey() == key) {
+							cal->allSchs.erase(cal->allSchs.begin() + i);
+						}
+						else {
+							i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
+						}
+					}
+					newDate = new Schedule(title, startDate, endDate, category, memo, endDate, 0, key);
+					cal->allSchs.push_back(*newDate);
+
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
@@ -1821,12 +1842,12 @@ void Management::mod_or_delSchedule() {
 						}
 
 						switch (cycle) {
-
-						case 0:	// 반복 x
-							newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, cal->getHighestKey() + 1);
-							cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
-							break;
-
+							/*
+							case 0:	// 반복 x
+								newDate = new Schedule(title, startDate, endDate, category, memo, endDate, cycle, cal->getHighestKey() + 1);
+								cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
+								break;
+							*/
 						case 1:	// 매년 반복
 							// 1. startDate와 endDate의 날짜 차이를 알아야 함.
 							// 2. yRptVec에서 종료일(10/04)을 꺼내와서 해당 날짜 차이를 가지고 시작일을 알아냄
@@ -1848,14 +1869,14 @@ void Management::mod_or_delSchedule() {
 								while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 									string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
-									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
+									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);   //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 									endDateYear++;
 									anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 								}
 								if (endDateYear <= FINAL_YEAR) {	// 2월 29일이 있는 연도인 경우
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1);
+									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);   //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 								}
 							}
@@ -1897,7 +1918,7 @@ void Management::mod_or_delSchedule() {
 								}
 								if (endDateYear <= FINAL_YEAR) {	// 해당 날짜가 있는 달인 경우
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);
+									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key);   //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 								}
 							}
@@ -1929,7 +1950,7 @@ void Management::mod_or_delSchedule() {
 								string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
 								if (endDateYear <= FINAL_YEAR) {
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1);
+									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key); //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 								}
 							}
@@ -1939,6 +1960,8 @@ void Management::mod_or_delSchedule() {
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 						SDM.loadDataFile(*cal, *cate);
 						CDM->loadDataFile(*cate);
+						newDate = new Schedule(title, startDate, endDate, category, memo, rptEndDate, cycle, key);
+						sche.insert(sche.begin() + selectedNum, newDate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					break;

@@ -71,7 +71,6 @@ void KeywordSearch::print()
     else {
         while (!res.empty()) {
             res.front().print();
-            cout << "\n";
             res.pop();
         }
         cout << "---------------------------------------------\n";

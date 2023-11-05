@@ -29,7 +29,7 @@ int main() {
 	if(!CDM.loadDataFile(category)) exit(0);
 	if(!SDM.loadDataFile(calender, category)) exit(0);
 	SDM.saveDataFile(calender); //test
-	Sleep(2000);
+	//Sleep(2000);
 
 	CDM.SaveDataFile(); //test
 	while (true) {

@@ -38,7 +38,7 @@ private:
 	bool checkD(string s); //date
 	bool checkD2(string sd, string ed);
 	bool checkM(string data); //memo
-	bool checkCy(string data, string sd, string ed); //cycle
+	bool checkCy(string data); //cycle
 	bool checkKey(string data); //key
 	bool checkCont(Schedule s);
 	

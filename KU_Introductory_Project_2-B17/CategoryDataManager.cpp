@@ -30,6 +30,9 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 		}
 		else {
 			fout.close();
+			cout << "파일 생성 성공\n";
+			Sleep(1000);
+
 			return true;
 		}
 	}
@@ -49,7 +52,7 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 			string temptkn;
 			temptkn = ws2s(token);
 			trim(temptkn); // tkn의 앞 뒤 공백 제거
-			cout << temptkn << "\n";
+			//cout << temptkn << "\n";
 
 			if (!temptkn.empty()) {
 				if (SyntaxCheck(temptkn) == false) {
@@ -70,6 +73,26 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 
 					return false;
 				}
+				else if (find(record.begin(), record.end(), temptkn) != record.end() || temptkn.compare("기본") == 0) { // 중복 체크
+					cout << "오류 : 데이터 파일의 형식이 잘못되었습니다.\n";
+					cout << "-------------------------------------\n";
+					cout << ws2s(line) << "\n";
+					cout << "-------------------------------------\n\n";
+
+					cout << "프로그램을 종료합니다.\n\n";
+
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "-------------------------------------\n";
+					cout << "> ";
+
+					_getch(); // 아무 키나 입력 대기
+
+					exit(0);
+
+					return false;
+
+				}
+					
 				record.push_back(temptkn); //연속된 tab 무시
 			}
 
@@ -81,7 +104,7 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 	record.clear();
 
 	file.close();
-	cout << "데이터 로드 성공\n";
+	//cout << "데이터 로드 성공\n";
 	return true;
 
 }
