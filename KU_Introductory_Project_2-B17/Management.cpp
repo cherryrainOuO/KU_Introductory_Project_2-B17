@@ -1077,17 +1077,20 @@ void Management::mod_or_delSchedule() {
 				system("cls");
 				flag = 0; // 이전 프롬프트 (일정 선택 프롬프트)
 			}
-			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 1)
+			else if (menu.size() == 1 && is_digit(menu) && stoi(menu) >= 1 && stoi(menu) <= 2) {
+				if (stoi(menu) == 1)
 					flag = 2; // 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 2)
+				else if (stoi(menu) == 2)
 					flag = 13; // 삭제 프롬프트로 이동
-				else {
-					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 1; // 현재 프롬프트 반복
-					}
+			}
+			else {
+				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무키나 눌러주세요." << endl;
+				cout << "----------------------------------------------" << endl;
+				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 1; // 현재 프롬프트 반복
 				}
 			}
 			break;
@@ -1116,25 +1119,28 @@ void Management::mod_or_delSchedule() {
 				system("cls");
 				flag = 1; // 이전 프롬프트 (수정/삭제 여부 선택 프롬프트)
 			}
-			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 1)
+			else if (menu.size() == 1 && is_digit(menu) && stoi(menu) >= 1 && stoi(menu) <= 6) {
+				if (stoi(menu) == 1)
 					flag = 3; // 시작일 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 2)
+				else if (stoi(menu) == 2)
 					flag = 4; // 종료일 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 3)
+				else if (stoi(menu) == 3)
 					flag = 5; // 제목 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 4)
+				else if (stoi(menu) == 4)
 					flag = 6; // 카테고리 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 5)
+				else if (stoi(menu) == 5)
 					flag = 7; // 메모 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 6)
+				else if (stoi(menu) == 6)
 					flag = 8; // 반복 관련 수정 프롬프트로 이동 
-				else {
-					cout << "오류: 1,2,3,4,5,6 중 하나의 숫자를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 2; // 현재 프롬프트 반복
-					}
+			}
+			else {
+				cout << "오류: 1,2,3,4,5,6 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무키나 눌러주세요." << endl;
+				cout << "----------------------------------------------" << endl;
+				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 2; // 현재 프롬프트 반복
 				}
 			}
 			break;
