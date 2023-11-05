@@ -1389,7 +1389,7 @@ void Management::mod_or_delSchedule() {
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
 			cout << "일정의 새로운 카테고리를 선택하세요.\n";
 			cout << "------------------------------------\n";
-			cout << "> ";
+			cout << "> "; 
 
 			getline(cin, menu);
 			system("cls");
@@ -1509,8 +1509,8 @@ void Management::mod_or_delSchedule() {
 				system("cls");
 				flag = 2; // 이전 프롬프트 (변경할 요소 선택 프롬프트)
 			}
-			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 0) {
+			else if (menu.size() == 1 && is_digit(menu)&& stoi(menu) >= 0 && stoi(menu) <= 3) {
+				if (stoi(menu) == 0) {
 					// stoi(menu) == 0 : 반복되지 않는 일정으로 수정, 혹은 그대로 둠
 					//sche[selectedNum]->setCycle(0);
 					//sche[selectedNum]->setRptEndDate(sche[selectedNum]->getEndDate());
@@ -1538,18 +1538,24 @@ void Management::mod_or_delSchedule() {
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
-				else if (is_digit(menu) && stoi(menu) == 1)
+				else if (stoi(menu) == 1)
 					flag = 9;
-				else if (is_digit(menu) && stoi(menu) == 2)
+				else if (stoi(menu) == 2)
 					flag = 10;
-				else if (is_digit(menu) && stoi(menu) == 3)
+				else if (stoi(menu) == 3)
 					flag = 11;
 			}
 			else {
+				system("cls");
 				cout << "오류: 0, 1, 2, 3 중 하나의 숫자를 입력해주세요.\n\n";
 				cout << "아무 키나 눌러주세요.\n";
-				cout << "——————————————————————————\n";
+				cout << "--------------------------\n";
 				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 8; // 현재 프롬프트 반복
+					break;
+				};
 			}
 			break;
 
