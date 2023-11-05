@@ -128,12 +128,15 @@ void Management::printSchedule() {
 				addSchedule();
 			else if (m[0] == '2')
 				mod_or_delSchedule();
-			else {
-				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					printSchedule();
-				}
+		}
+		else {
+			cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> ";
+			if (_getch()) {
+				system("cls");
+				printSchedule();
 			}
 		}
 	}
