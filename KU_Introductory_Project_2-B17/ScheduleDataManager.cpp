@@ -149,7 +149,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
             else if (s.getCycle() == 2) {
                 //매월
                 int ed1 = stoi(prevS.getEndDate().substr(8, 2)), ed2 = stoi(s.getEndDate().substr(8, 2));
-                if (ed1 - ed2 >= 0)
+                if (ed1 - ed2 >= 0 && !checkD2(s.getEndDate(), standard))
                     continue;
                 else
                     prev[key] = s;
