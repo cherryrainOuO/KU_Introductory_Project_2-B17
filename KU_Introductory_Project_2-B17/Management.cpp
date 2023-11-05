@@ -1809,14 +1809,14 @@ void Management::mod_or_delSchedule() {
 			if (rptEndDate == "^C") {
 				flag = backup_flag;
 			}
-			else if (rptEndDate == "-1") {
-				rptEndDate = to_string(FINAL_YEAR) + "/12/31";
-				sche[selectedNum]->setCycle(backup_flag - 8);
-				sche[selectedNum]->setRptEndDate(rptEndDate);
-				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-			}
 			else {
+				if (rptEndDate == "-1") {
+					rptEndDate = to_string(FINAL_YEAR) + "/12/31";
+					sche[selectedNum]->setCycle(backup_flag - 8);
+					sche[selectedNum]->setRptEndDate(rptEndDate);
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+				}
+
 				switch (isValidDate(rptEndDate)) {
 				case 0:
 					// 종료일보다 반복종료일이 빠른 경우 
