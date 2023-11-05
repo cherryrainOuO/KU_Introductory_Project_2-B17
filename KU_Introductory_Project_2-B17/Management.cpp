@@ -1395,7 +1395,7 @@ void Management::mod_or_delSchedule() {
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
 			cout << "일정의 새로운 카테고리를 선택하세요.\n";
 			cout << "------------------------------------\n";
-			cout << "> "; 
+			cout << "> ";
 
 			getline(cin, menu);
 			system("cls");
@@ -1403,8 +1403,8 @@ void Management::mod_or_delSchedule() {
 				system("cls");
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
-			else if (menu.size() == 1) {
-				if (is_digit(menu) && 0 == stoi(menu)) {
+			else if (menu.size() >= 1 && is_digit(menu) && stoi(menu) >= 0 && stoi(menu) <= cateCount + 1) {
+				if (0 == stoi(menu)) {
 					key = sche[selectedNum]->getKey();
 					for (int i = 0; i < cal->allSchs.size(); i++) {
 						if (cal->allSchs[i].getKey() == key) {
@@ -1415,7 +1415,7 @@ void Management::mod_or_delSchedule() {
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
-				else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
+				else if (1 <= stoi(menu) && stoi(menu) <= cateCount) {
 					key = sche[selectedNum]->getKey();
 					for (int i = 0; i < cal->allSchs.size(); i++) {
 						if (cal->allSchs[i].getKey() == key) {
@@ -1426,7 +1426,7 @@ void Management::mod_or_delSchedule() {
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
-				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
+				else if (stoi(menu) == cateCount + 1) {
 					CLS->CategoryAdd(); // 카테고리 추가
 					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
 						key = sche[selectedNum]->getKey();
@@ -1443,12 +1443,15 @@ void Management::mod_or_delSchedule() {
 						flag = 6; // 현재 프롬프트 반복
 					}
 				}
-				else {
-					cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 6; // 현재 프롬프트 반복
-					}
+			}
+			else {
+				cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "_____________________________\n";
+				cout << "> ";
+				if (_getch()) {
+					system("cls");
+					flag = 6; // 현재 프롬프트 반복
 				}
 			}
 			break;
@@ -1472,19 +1475,21 @@ void Management::mod_or_delSchedule() {
 				wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]+)");
 				wsmatch wideMatch;
 				wstring wmemo = SDM.s2ws(memo);
-				if (memo.size() != 0) {
-					if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
-						memo[0] != ' ' && memo.back() != ' ') {
-						key = sche[selectedNum]->getKey();
-						for (int i = 0; i < cal->allSchs.size(); i++) {
-							if (cal->allSchs[i].getKey() == key) {
-								cal->allSchs[i].setMemo(memo);
-							}
+				if ((memo.size() >= 0 && regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
+					memo[0] != ' ' && memo.back() != ' ') || memo.size() == 0) {
+					//if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
+					//	memo[0] != ' ' && memo.back() != ' ') {
+					key = sche[selectedNum]->getKey();
+					for (int i = 0; i < cal->allSchs.size(); i++) {
+						if (cal->allSchs[i].getKey() == key) {
+							cal->allSchs[i].setMemo(memo);
 						}
-						//sche[selectedNum]->setMemo(memo);
-						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
+					//sche[selectedNum]->setMemo(memo);
+					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+					//}
+						/*
 					else {
 						system("cls");
 						cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
@@ -1494,6 +1499,16 @@ void Management::mod_or_delSchedule() {
 						_getch();
 						flag = 7; // 현재 프롬프트 반복
 					}
+					*/
+				}
+				else {
+					system("cls");
+					cout << "오류: 메모를 형식에 맞게 입력해주세요.\n\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "_____________________________\n";
+					cout << "> ";
+					_getch();
+					flag = 7; // 현재 프롬프트 반복
 				}
 			}
 			break;
