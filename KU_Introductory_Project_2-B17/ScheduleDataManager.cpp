@@ -126,32 +126,33 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
     file.open(fileName, ios::out);
     file.imbue(locale(file.getloc(), new codecvt_utf8<wchar_t>));
 
-    map<int, bool> out;
+    map<int, Schedule> prev;
 
     for (Schedule s : c.allSchs) {
 
         int key = s.getKey();
         if (dupKeySches.find(key) != dupKeySches.end()) {
-            Schedule earliest = dupKeySches[key];
-            string standard = addDate(earliest.getEndDate(), earliest.getCycle(), 0);
+            Schedule prevS = prev[key];
+            Schedule first = dupKeySches[key];
+            string standard = addDate(first.getEndDate(), first.getCycle(), 0);
             standard = calcSD(standard, 1);
             
             if (s.getCycle() == 1) {
                 //매년
-                int ed1 = stoi(earliest.getEndDate().substr(8, 2)), ed2 = stoi(s.getEndDate().substr(8, 2));
-                if(!checkD2(s.getEndDate(), standard)) out[key] = true;
-                if (out[key] && ed1 - ed2 >= 0) continue;
+                int em1 = stoi(prevS.getEndDate().substr(5, 2)), em2 = stoi(s.getEndDate().substr(5, 2));
+                int ed1 = stoi(prevS.getEndDate().substr(8, 2)), ed2 = stoi(s.getEndDate().substr(8, 2));
+                if (!checkD2(s.getEndDate(), standard) && ed1 - ed2 >= 0) continue;
                 else if (ed1 - ed2 < 0) {
-                    dupKeySches[key] = s;
+                    prev[key] = s;
                 }
             }
             else if (s.getCycle() == 2) {
                 //매월
-                int ed1 = stoi(earliest.getEndDate().substr(8, 2)), ed2 = stoi(s.getEndDate().substr(8, 2));
+                int ed1 = stoi(prevS.getEndDate().substr(8, 2)), ed2 = stoi(s.getEndDate().substr(8, 2));
                 if (ed1 - ed2 >= 0)
                     continue;
                 else
-                    dupKeySches[key] = s;
+                    prev[key] = s;
             }
             else if (s.getCycle() == 3) {
                 //매주: key 값이 같은 경우 해당 일정의 종료일이 가장 빠른 종료일에서 주기 내에 존재하는 경우에만 파일에 추가
@@ -161,7 +162,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         }
         else {
             dupKeySches[key] = s;
-            out[key] = false;
+            prev[key] = s;
         }
         c.setHighestKey();
 
@@ -183,7 +184,7 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         cerr << "파일 저장에 실패했습니다.";
         return false;
     }
-    out.clear();
+    prev.clear();
     dupKeySches.clear();
     return true;
 }
@@ -228,8 +229,7 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         if (!checkD2(record[2], record[3])) return false; //startDate <= endDate
         if(!checkM(record[4])) return false; // memo
         if (!checkD(record[5])) return false; //repeat end Date
-        if(stoi(record[6]) > 0) //cycle 0은 검사 x
-            if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
+        if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
         if (!checkCy(record[6])) return false; // cycle
         if (!checkKey(record[7])) return false; //key
     }
@@ -364,10 +364,14 @@ bool ScheduleDataManager::checkCont(Schedule s)
             return false;
         if (calcPeriod(s.getStartDate(), s.getEndDate()) != calcPeriod(s2.getStartDate(), s2.getEndDate()))
             return false;
-        //if (s2.getCycle() != s.getCycle())
-            //return false;
-        //if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
-            //return false;
+        if (s2.getCycle() > 0 && s.getCycle() > 0) //반복 주기
+            if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
+                return false;
+        if (s2.getCycle() == 0 && s.getCycle() == 0) {
+            if (s2.getStartDate().substr(5, 5).compare(s.getStartDate().substr(5, 5)) != 0
+                || s2.getEndDate().substr(5, 5).compare(s.getEndDate().substr(5, 5)) != 0)
+                return false;
+        }
     }
     return true;
 }
