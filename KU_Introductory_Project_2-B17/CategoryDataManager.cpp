@@ -73,8 +73,26 @@ bool CategoryDataManager::loadDataFile(Category& _cate)
 
 					return false;
 				}
-				else if (find(record.begin(), record.end(), temptkn) != record.end() || temptkn.compare("기본") == 0)
-					continue;
+				else if (find(record.begin(), record.end(), temptkn) != record.end() || temptkn.compare("기본") == 0) { // 중복 체크
+					cout << "오류 : 데이터 파일의 형식이 잘못되었습니다.\n";
+					cout << "-------------------------------------\n";
+					cout << ws2s(line) << "\n";
+					cout << "-------------------------------------\n\n";
+
+					cout << "프로그램을 종료합니다.\n\n";
+
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "-------------------------------------\n";
+					cout << "> ";
+
+					_getch(); // 아무 키나 입력 대기
+
+					exit(0);
+
+					return false;
+
+				}
+					
 				record.push_back(temptkn); //연속된 tab 무시
 			}
 
