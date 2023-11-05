@@ -1270,12 +1270,8 @@ void Management::mod_or_delSchedule() {
 						flag = 4; // 현재 프롬프트 반복
 					}
 					else {
-<<<<<<< HEAD
-						// 반복종료일 < 종료일일 때 예외처리 필요 
+
 						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate)>0) {
-=======
-						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate) > 0) {
->>>>>>> d49ccc26054baa9ad109eedb5ab4003ddb321521
 							system("cls");
 							cout << "오류: 종료일은 반복종료일과 같거나, 그 이전이여야 합니다.\n\n";
 							cout << "아무 키나 눌러주세요.\n";
