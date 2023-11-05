@@ -228,7 +228,8 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         if (!checkD2(record[2], record[3])) return false; //startDate <= endDate
         if(!checkM(record[4])) return false; // memo
         if (!checkD(record[5])) return false; //repeat end Date
-        if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
+        if(stoi(record[6]) > 0) //cycle 0은 검사 x
+            if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
         if (!checkCy(record[6])) return false; // cycle
         if (!checkKey(record[7])) return false; //key
     }
