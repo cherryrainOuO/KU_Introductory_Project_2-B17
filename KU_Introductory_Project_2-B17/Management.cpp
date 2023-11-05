@@ -2030,7 +2030,7 @@ void Management::mod_or_delSchedule() {
 				flag = 0; // 일정 선택 프롬프트로 이동
 				system("cls");
 			}
-			else if (menu.size() == 1) {
+			else if (menu.size() == 1 && is_digit(menu) && stoi(menu) >= 1 && stoi(menu) <= 2) {
 				/*
 				if (is_digit(menu) && stoi(menu) == 1) {
 					cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
@@ -2038,28 +2038,31 @@ void Management::mod_or_delSchedule() {
 					flag = 0; // 일정 선택 프롬프트로 이동
 				}
 				*/
-				if (is_digit(menu) && stoi(menu) == 1) {
+				if (stoi(menu) == 1) {
 					if (sche[selectedNum]->getCycle() == 0) {
 						cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						system("cls");
 						flag = 0; // 일정 선택 프롬프트로 이동
 					}
 					else {
+						system("cls");
 						flag = 14;
 					}
 				}
-				else if (is_digit(menu) && stoi(menu) == 2) {
+				else if (stoi(menu) == 2) {
 					flag = 0; // 일정 선택 프롬프트로 이동
 				}
-				else {
-					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
-					cout << "아무 키나 눌러주세요.\n";
-					cout << "--------------------------------------\n";
-					cout << ">";
-					if (_getch()) {
-						system("cls");
-						flag = 13; // 현재 프롬프트 반복
-					}
+			}
+			else {
+				system("cls");
+				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "--------------------------------------\n";
+				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 13; // 현재 프롬프트 반복
 				}
 			}
 			break;
@@ -2088,8 +2091,8 @@ void Management::mod_or_delSchedule() {
 				flag = 13; // 일정 삭제 확인 프롬프트로 이동
 				system("cls");
 			}
-			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 1) {
+			else if (menu.size() == 1 && is_digit(menu) && stoi(menu) >= 1 && stoi(menu) <= 2) {
+				if (stoi(menu) == 1) {
 					key = sche[selectedNum]->getKey();
 
 					for (int i = 0; i < cal->allSchs.size();) {
@@ -2105,19 +2108,20 @@ void Management::mod_or_delSchedule() {
 					system("cls");
 					flag = 0;
 				}
-				else if (is_digit(menu) && stoi(menu) == 2) {
+				else if (stoi(menu) == 2) {
 					system("cls");
 					flag = 0; // 일정 선택 프롬프트로 이동
 				}
-				else {
-					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
-					cout << "아무 키나 눌러주세요.\n";
-					cout << "--------------------------------------\n";
-					cout << ">";
-					if (_getch()) {
-						system("cls");
-						flag = 14; // 현재 프롬프트 반복
-					}
+			}
+			else {
+				system("cls");
+				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "--------------------------------------\n";
+				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 14; // 현재 프롬프트 반복
 				}
 			}
 			break;
