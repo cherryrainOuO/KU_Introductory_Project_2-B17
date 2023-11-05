@@ -337,6 +337,9 @@ bool ScheduleDataManager::checkM(string data)
 
 bool ScheduleDataManager::checkCy(string data)
 {
+    regex r("[0-9]+");
+    if (!regex_match(data.cbegin(), data.cend(), r))
+        return false;
     int cycle = stoi(data);
     if (cycle < 0 || cycle > CYMAX)
         return false;
@@ -345,6 +348,9 @@ bool ScheduleDataManager::checkCy(string data)
 
 bool ScheduleDataManager::checkKey(string data)
 {
+    regex r("[0-9]+");
+    if (!regex_match(data.cbegin(), data.cend(), r))
+        return false;
     if (stoi(data) < 0)
         return false;
     return true;
