@@ -1163,40 +1163,6 @@ void Management::mod_or_delSchedule() {
 						flag = 3; // 현재 프롬프트 반복
 					}
 					else {
-						/**************************************************************************************
-						if (sche[selectedNum]->getCycle() == 0) {
-							sche[selectedNum]->setStartDate(startDate);
-							SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-							flag = 2;
-						}
-						// 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-
-						else {
-							key = sche[selectedNum]->getKey();
-							for (int i = 0; i < cal->allSchs.size();) {
-								if (cal->allSchs[i].getKey() == key) {
-									cal->allSchs[i].setStartDate(startDate);
-								}
-								else {
-									i++; //? i= -1 되는 경우를 방지하기 위해 여기로 옮겼습니다!
-								}
-							}
-							SDM.saveDataFile(*cal);
-							flag = 2;
-						}
-						**************************************************************************************/
-						/*
-						key = sche[selectedNum]->getKey();
-						for (int i = 0; i < cal->allSchs.size(); i++) {
-							if (cal->allSchs[i].getKey() == key) {
-								cal->allSchs[i].setStartDate(SDM.calcSD(cal->allSchs[i].getStartDate(), -getDiffDate(sche[selectedNum]->getStartDate(), startDate)));
-
-							}
-						}
-						SDM.saveDataFile(*cal);
-						flag = 2;
-						*/
-
 						key = sche[selectedNum]->getKey();
 						string sD = startDate;
 						string ssNsD = sche[selectedNum]->getStartDate();
@@ -1353,6 +1319,8 @@ void Management::mod_or_delSchedule() {
 					}
 					sche[selectedNum]->setTitle(title);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					SDM.loadDataFile(*cal, *cate);
+					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else {
@@ -1394,6 +1362,8 @@ void Management::mod_or_delSchedule() {
 					}
 					sche[selectedNum]->setCategory("기본"); // 기본 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					SDM.loadDataFile(*cal, *cate);
+					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else if (1 <= stoi(menu) && stoi(menu) <= cateCount) {
@@ -1405,6 +1375,8 @@ void Management::mod_or_delSchedule() {
 					}
 					sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					SDM.loadDataFile(*cal, *cate);
+					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
 				else if (stoi(menu) == cateCount + 1) {
@@ -1418,6 +1390,8 @@ void Management::mod_or_delSchedule() {
 						}
 						sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						SDM.loadDataFile(*cal, *cate);
+						CDM->loadDataFile(*cate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
 					else {
@@ -1468,6 +1442,8 @@ void Management::mod_or_delSchedule() {
 					}
 					sche[selectedNum]->setMemo(memo);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					SDM.loadDataFile(*cal, *cate);
+					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					//}
 						/*
