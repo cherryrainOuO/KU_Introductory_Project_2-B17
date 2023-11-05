@@ -295,7 +295,7 @@ void Management::addSchedule()
 	string menu;
 
 	int flag = 0;	// 부 프롬프트 간 이동을 위한 변수
-	int backup_flag = 0;
+	//int backup_flag = 0;
 	while (flag < 10) {
 		system("cls");
 		switch (flag) {
@@ -558,7 +558,7 @@ void Management::addSchedule()
 			}
 			break;
 		case 6:
-			backup_flag = 6;
+			//backup_flag = 6;
 			cout << "<일정 추가>\n\n";
 			cout << "년 입력\n\n";
 			cout << "반복할 날짜를 형식에 맞게 입력해주세요.\n";
@@ -644,7 +644,7 @@ void Management::addSchedule()
 			}
 			break;
 		case 7:
-			backup_flag = 7;
+			//backup_flag = 7;
 			cout << "<일정 추가>\n\n";
 			cout << "월 입력\n\n";
 			cout << "반복할 날짜를 숫자만 입력해주세요.\n";
@@ -721,7 +721,7 @@ void Management::addSchedule()
 			}
 			break;
 		case 8:
-			backup_flag = 8;
+			//backup_flag = 8;
 			cout << "<일정 추가>\n\n";
 			cout << "주 입력\n\n";
 			cout << "1. 일\n";
