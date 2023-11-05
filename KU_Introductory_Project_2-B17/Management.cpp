@@ -76,9 +76,7 @@ int Management::isValidDate(string dateStr) {
 				}
 			}
 		}
-		else {
-			return -2;
-		}
+		return -2;
 	}
 	return -1;
 }
@@ -449,33 +447,39 @@ void Management::addSchedule()
 			if (menu == "^C") {
 				system("cls");
 				flag = 2; // 이전 프롬프트(제목 입력 프롬프트)로 이동
+				break;
 			}
 			else if (menu.size() == 1) {
 				if (is_digit(menu) && 0 == stoi(menu)) {
 					category = "기본"; // 기본 카테고리
 					flag = 4; // 메모 입력 프롬프트로 이동
+					break;
 				}
 				else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
 					category = CDM->GetCategory()->at(stoi(menu) - 1); // 사용자 지정 카테고리
 					flag = 4; // 메모 입력 프롬프트로 이동
+					break;
 				}
 				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
 					CLS->CategoryAdd(); // 카테고리 추가
 					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
 						category = CDM->GetCategory()->at(CDM->GetSize() - 1); // 새로 추가한 카테고리
 						flag = 4; // 메모 입력 프롬프트로 이동
+						break;
 					}
 					else {
 						flag = 3;//현재 프롬프트 반복
+						break;
 					}
 				}
-				else {
-					cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 3; // 현재 프롬프트 반복
-					}
-				}
+			}
+			cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> ";
+			if (_getch()) {
+				system("cls");
+				flag = 3; // 현재 프롬프트 반복
 			}
 			break;
 		case 4:
@@ -532,32 +536,38 @@ void Management::addSchedule()
 			getline(cin, menu);
 			if (menu == "^C") {
 				flag = 4;
+				break;
 			}
 			else if (menu.size() == 1) {
 				if (is_digit(menu) && stoi(menu) == 0) {
 					cycle = stoi(menu);
 					flag = 10; // 프롬프트 종료, 일정 추가/저장
+					break;
 				}
 				else if (is_digit(menu) && stoi(menu) == 1) {
 					cycle = stoi(menu);
 					flag = 6; // 년 입력 프롬프트로 이동
+					break;
 				}
 				else if (is_digit(menu) && stoi(menu) == 2) {
 					cycle = stoi(menu);
 					flag = 7; // 월 입력 프롬프트로 이동
+					break;
 				}
 				else if (is_digit(menu) && stoi(menu) == 3) {
 					cycle = stoi(menu);
 					flag = 8; // 주 입력 프롬프트로 이동
+					break;
 				}
-				else {
-					system("cls");
-					cout << "오류: 0,1,2,3 중 하나의 숫자를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 5; // 현재 프롬프트 반복
-					}
-				}
+			}
+			system("cls");
+			cout << "오류: 0,1,2,3 중 하나의 숫자를 입력해주세요.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> ";
+			if (_getch()) {
+				system("cls");
+				flag = 5; // 현재 프롬프트 반복
 			}
 			break;
 		case 6:
@@ -704,7 +714,7 @@ void Management::addSchedule()
 					}
 					if (!hasEndDate) {
 						system("cls");
-						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
+						cout << "오류: 일정의 '종료일'이 반복 날짜에 포함되어야 합니다.\n\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
@@ -715,7 +725,7 @@ void Management::addSchedule()
 				}
 				else {
 					system("cls");
-					cout << "오류: 반복할 날짜를 형식에 맞게 입력해주세요.\n\n";
+					cout << "오류: 오류: 공백류로 구분되는 \"1부터 31까지의 자연수 숫자\" 1개 이상을 입력해주셔야 합니다.\n\n";
 					cout << "아무 키나 눌러주세요.\n";
 					cout << "_____________________________\n";
 					cout << "> ";
@@ -773,7 +783,7 @@ void Management::addSchedule()
 					}
 					if (!hasEndDate) {
 						system("cls");
-						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
+						cout << "오류: 일정의 '종료일'의 요일이 반복 요일에 포함되어야 합니다.\n\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
