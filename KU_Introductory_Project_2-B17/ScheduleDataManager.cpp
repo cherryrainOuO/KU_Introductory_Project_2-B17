@@ -228,8 +228,7 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         if (!checkD2(record[2], record[3])) return false; //startDate <= endDate
         if(!checkM(record[4])) return false; // memo
         if (!checkD(record[5])) return false; //repeat end Date
-        if(stoi(record[6]) > 0) //cycle 0은 검사 x
-            if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
+        if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
         if (!checkCy(record[6])) return false; // cycle
         if (!checkKey(record[7])) return false; //key
     }
@@ -364,10 +363,9 @@ bool ScheduleDataManager::checkCont(Schedule s)
             return false;
         if (calcPeriod(s.getStartDate(), s.getEndDate()) != calcPeriod(s2.getStartDate(), s2.getEndDate()))
             return false;
-        //if (s2.getCycle() != s.getCycle())
-            //return false;
-        //if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
-            //return false;
+        if (s2.getCycle() > 0 && s.getCycle() > 0)
+            if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
+                return false;
     }
     return true;
 }
