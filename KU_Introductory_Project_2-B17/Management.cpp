@@ -1792,7 +1792,7 @@ void Management::mod_or_delSchedule() {
 
 			getline(cin, rptEndDate);
 			if (rptEndDate == "^C") {
-				flag = backup_flag;
+				flag = 8;
 			}
 			else if (rptEndDate == "-1") {
 				rptEndDate = to_string(FINAL_YEAR) + "/12/31";
