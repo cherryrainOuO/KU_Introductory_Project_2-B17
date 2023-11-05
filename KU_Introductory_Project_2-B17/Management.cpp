@@ -2052,7 +2052,10 @@ void Management::mod_or_delSchedule() {
 					flag = 0; // 일정 선택 프롬프트로 이동
 				}
 				else {
-					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "--------------------------------------\n";
+					cout << ">";
 					if (_getch()) {
 						system("cls");
 						flag = 13; // 현재 프롬프트 반복
@@ -2099,13 +2102,18 @@ void Management::mod_or_delSchedule() {
 					}
 
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+					system("cls");
 					flag = 0;
 				}
 				else if (is_digit(menu) && stoi(menu) == 2) {
+					system("cls");
 					flag = 0; // 일정 선택 프롬프트로 이동
 				}
 				else {
-					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
+					cout << "아무 키나 눌러주세요.\n";
+					cout << "--------------------------------------\n";
+					cout << ">";
 					if (_getch()) {
 						system("cls");
 						flag = 14; // 현재 프롬프트 반복
