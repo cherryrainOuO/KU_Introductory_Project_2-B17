@@ -157,6 +157,9 @@ void Management::printSchedule() {
 			addSchedule();
 		else {
 			cout << "오류: 1을 입력해주세요.\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> "
 			if (_getch()) {
 				system("cls");
 				printSchedule();
