@@ -271,8 +271,8 @@ void Classification::PrintSchedule_ByCategory()
 			else {
 				cout << "카테고리 \"" << cateKwd << "\"에 해당되는 일정들입니다." << endl << endl;
 				while (!res.empty()) {
-					res.back().print();
-					res.pop_back();
+					res.front().print();
+					res.pop();
 				}
 			}
 
@@ -402,8 +402,8 @@ void Classification::Caculate_ByOperators() {
 		else {
 			cout << "카테고리 \"" << kwd << "\"에 해당되는 일정들입니다." << endl << endl;
 			while (!res.empty()) {
-				res.back().print();
-				res.pop_back();
+				res.front().print();
+				res.pop();
 			}
 		}
 
@@ -430,30 +430,43 @@ void Classification::Caculate_ByOperators() {
 }
 
 void Classification::makeQueueForPrint(vector<string> cate, vector<string> block) {
-	/*
+	// 좀더 구현필요
+
+	// 1. 1 | ~ 4 이런 입력은 1 or ~4 인 일정 전체라서, 1을 가진 일정 + ~4인 모든 일정을 가져와야함
+	// 중복 체크 필요
+
+
+
 	for (Schedule s : cal->allSchs) {
 		for (string c : cate) {
 			c = CDM->GetValue(stoi(c) - 1);
 
 			if ((s.getCategory().compare(c)) == 0) {
-				for (string b : block) {
-					b = CDM->GetValue(stoi(b) - 1);
 
-					if ((s.getCategory().compare(b)) == 1) { 
-						if(find(res.begin(), res.end(), &s) == res.end())
-							res.push_back(s); 
+				if (block.size() > 0) {
+					for (string b : block) {
+						b = CDM->GetValue(stoi(b) - 1);
+
+						if ((s.getCategory().compare(b)) != 0) {
+
+							res.push(s);
+						}
 					}
-				}				
+				}
+				else {
+					res.push(s);
+				}
+							
 			}
 		}
 		
-	}*/
+	}
 }
 
 void Classification::makeQueueForPrint(string str) {
 	for (Schedule s : cal->allSchs) {
 		if (s.getCategory().compare(str) == 0) {
-			res.push_back(s);
+			res.push(s);
 		}
 	}
 }

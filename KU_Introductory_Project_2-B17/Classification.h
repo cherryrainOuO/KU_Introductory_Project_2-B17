@@ -15,7 +15,7 @@ class Classification
 private:
 	Calender* cal; 
 	string kwd; // 키보드 입력 용
-	vector<Schedule> res; // 스케줄
+	queue<Schedule> res; // 스케줄
 	CategoryDataManager* CDM; // 카테고리 매니저
 
 	void CategoryAdd();
