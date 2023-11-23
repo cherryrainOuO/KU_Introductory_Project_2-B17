@@ -136,6 +136,8 @@ void Classification::PrintSchedule_ByCategory()
 	cout << "0. 기본" << endl;
 	CDM->CategoryPrint();
 	cout << "원하는 카테고리를 선택하세요." << endl;
+	cout << "카테고리는 & | ~ 연산 기호를 조합하여 여러개 입력할 수도 있습니다.\n";
+	cout << "연산의 우선순위 : not(~) > and(&) > or(|)\n";
 	cout << "(취소를 원한다면 \"^C\"를 입력해주세요.)\n";
 	cout << "-------------------------------------\n";
 	cout << "> ";
@@ -146,6 +148,12 @@ void Classification::PrintSchedule_ByCategory()
 		Prompt_CategoryMenu();
 	}
 	else {
+		/* 피연산자와 연산자의 조합 */
+
+
+
+
+
 		try {
 			int ikwd = stoi(kwd);
 		}
