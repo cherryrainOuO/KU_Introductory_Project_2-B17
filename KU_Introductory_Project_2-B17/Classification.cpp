@@ -127,6 +127,77 @@ void Classification::CategoryAdd()
 
 }
 
+
+
+vector<string> split(string str, string delims)
+{
+	vector<string> result;
+
+	string temp = "";
+	for (int i = 0; i < str.size(); i++) {
+		if (str[i] == '~') {
+			if (temp != "") result.push_back(temp);
+			temp = "";
+			result.push_back("~");
+		}
+		else if (str[i] == '&') {
+			if (temp != "") result.push_back(temp);
+			temp = "";
+			result.push_back("&");
+		}
+		else if (str[i] == '|') {
+			if (temp != "") result.push_back(temp);
+			temp = "";
+			result.push_back("|");
+		}
+		else {
+			temp += str[i];
+		}
+	}
+
+	if (temp != "") result.push_back(temp);
+
+	return result;
+}
+
+struct Oper {
+	int priority;
+	string oper;
+
+	Oper(int _prio, string _oper) {
+		priority = _prio;
+		oper = _oper;
+	}
+};
+
+class CategoryComponent {
+public:
+	vector<string> cate; // 있어야 되는 카테고리
+	vector<string> block; // 있으면 안되는 카테고리
+	
+	CategoryComponent(string str) { // 최초 피연산자 넣기
+		cate.push_back(str);
+	}
+
+	CategoryComponent(CategoryComponent* left, CategoryComponent* right, string oper) { // 계산해서 컴포넌트 합치기
+		if (oper == "~") {
+			for(string s : right->cate) block.push_back(s);
+			for (string s : right->block) cate.push_back(s);
+		}
+		else if (oper == "&") {
+			for (string s : left->cate) cate.push_back(s);
+
+			for (string s : left->block) block.push_back(s);
+
+			for (string s : right->cate) cate.push_back(s);
+
+			for (string s : right->block) block.push_back(s);
+		}
+		// 여러개의 컴포넌트 구분짓는 기준을 or 로 할거라서 따로 계산 안함. 
+	}
+
+};
+
 void Classification::PrintSchedule_ByCategory()
 {
 	Sleep(100);
@@ -147,13 +218,10 @@ void Classification::PrintSchedule_ByCategory()
 	if (kwd == "^C") { // 취소
 		Prompt_CategoryMenu();
 	}
-	else {
-		/* 피연산자와 연산자의 조합 */
-
-
-
-
-
+	else if (kwd.find('~') == string::npos 
+			&& kwd.find('&') == string::npos 
+			&& kwd.find('|') == string::npos) 
+	{ // 단일 번호의 경우
 		try {
 			int ikwd = stoi(kwd);
 		}
@@ -203,8 +271,8 @@ void Classification::PrintSchedule_ByCategory()
 			else {
 				cout << "카테고리 \"" << cateKwd << "\"에 해당되는 일정들입니다." << endl << endl;
 				while (!res.empty()) {
-					res.front().print();
-					res.pop();
+					res.back().print();
+					res.pop_back();
 				}
 			}
 
@@ -216,15 +284,176 @@ void Classification::PrintSchedule_ByCategory()
 			Prompt_CategoryMenu();
 		}
 	}
+	else {	
+		Caculate_ByOperators(); //? 피연산자와 연산자의 조합 계산 및 출력
+	}
+}
 
-	
+void Classification::Caculate_ByOperators() {
+	/* 피연산자와 연산자의 조합 */
+	try {
+		vector<Oper*> userOperators;
+		vector<string> postfix;
 
+		vector<string> splitedKwd = split(kwd, "~&|");
+
+		for (string s : splitedKwd) cout << s << " ";
+		cout << "\n";
+
+		for (int i = 0; i < splitedKwd.size(); i++) {
+			if (splitedKwd[i] == "~") {
+
+				userOperators.push_back(new Oper(1, "~"));
+			}
+			else if (splitedKwd[i] == "&") {
+
+				while (userOperators.size() > 0 && userOperators.back()->priority <= 1) {
+					postfix.push_back(userOperators.back()->oper);
+					userOperators.pop_back();
+				}
+
+				userOperators.push_back(new Oper(2, "&"));
+
+			}
+			else if (splitedKwd[i] == "|") {
+				while (userOperators.size() > 0 && userOperators.back()->priority <= 2) {
+					postfix.push_back(userOperators.back()->oper);
+					userOperators.pop_back();
+				}
+
+				userOperators.push_back(new Oper(3, "|"));
+
+			}
+			else {
+				postfix.push_back(splitedKwd[i]);
+			}
+		}
+
+		while (userOperators.size() > 0) {
+			postfix.push_back(userOperators.back()->oper);
+			userOperators.pop_back();
+		}
+
+		for (string s : postfix) cout << s << " ";
+		cout << "\n";
+
+		vector<CategoryComponent*> stack;
+		CategoryComponent* tempLeft;
+		CategoryComponent* tempRight;
+
+		int componentCount = 1;
+
+		for (int i = 0; i < postfix.size(); i++) {
+			if (postfix[i] == "~") {
+				if (stack.size() == 0) throw out_of_range("잘못함");
+
+				tempRight = stack.back();
+				stack.pop_back();
+
+				stack.push_back(new CategoryComponent(NULL, tempRight, "~"));
+			}
+			else if (postfix[i] == "&") {
+				if (stack.size() == 0) throw out_of_range("잘못함");
+
+				tempLeft = stack.back();
+				stack.pop_back();
+
+				if (stack.size() == 0) throw out_of_range("잘못함");
+
+				tempRight = stack.back();
+				stack.pop_back();
+
+				stack.push_back(new CategoryComponent(tempLeft, tempRight, "&"));
+			}
+			else if (postfix[i] == "|") {
+				// 어차피 이부분은 마지막에 하므로 아무것도 하지말고 
+				// 그냥 stack에는 여러 컴포넌트들이 생기도록 하기.
+				// = 여러개의 컴포넌트 구분짓는 기준을 or 로 할거라서 따로 계산 안함.
+				// 아 | 몇번나왔는지 계산해서 이거랑 컴포넌트 수랑 다르면 틀린걸로 계산해야함.
+				componentCount++;
+			}
+			else {
+				stack.push_back(new CategoryComponent(postfix[i]));
+			}
+		}
+
+		// stack : 카테고리 컴포넌트들이 들어있는데 각 성분들은 or로 연결.
+
+		if (componentCount != stack.size()) // | 개수랑 다르면 틀린거
+		{
+			throw out_of_range("잘못함");
+		}
+
+
+		for (int i = 0; i < stack.size(); i++) {
+			/* test */
+			cout << "test ok : ";
+			for (string s : stack[i]->cate) cout << s << " ";
+			cout << "\n";
+			cout << "test block : ";
+			for (string s : stack[i]->block) cout << s << " ";
+			cout << "\n---------or---------\n";
+
+			makeQueueForPrint(stack[i]->cate, stack[i]->block);
+		}
+
+		if (res.empty())
+			cout << "\"" << kwd << "\" 카테고리를 포함하고 있는 일정이 없습니다." << endl << endl;
+		else {
+			cout << "카테고리 \"" << kwd << "\"에 해당되는 일정들입니다." << endl << endl;
+			while (!res.empty()) {
+				res.back().print();
+				res.pop_back();
+			}
+		}
+
+		cout << "아무 키나 눌러주세요.\n";
+		cout << "-------------------------------------\n";
+		cout << "> ";
+		_getch(); // 아무 키나 입력 대기
+
+		Prompt_CategoryMenu();
+	}
+	catch (exception& e) {
+		system("cls"); // 화면 지우기
+
+		cout << "오류 : 올바르지 못한 연산입니다.\n\n";
+		cout << "아무 키나 눌러주세요.\n";
+		cout << "-------------------------------------\n";
+		cout << "> ";
+
+		_getch(); // 아무 키나 입력 대기
+
+		PrintSchedule_ByCategory();
+
+	}
+}
+
+void Classification::makeQueueForPrint(vector<string> cate, vector<string> block) {
+	/*
+	for (Schedule s : cal->allSchs) {
+		for (string c : cate) {
+			c = CDM->GetValue(stoi(c) - 1);
+
+			if ((s.getCategory().compare(c)) == 0) {
+				for (string b : block) {
+					b = CDM->GetValue(stoi(b) - 1);
+
+					if ((s.getCategory().compare(b)) == 1) { 
+						if(find(res.begin(), res.end(), &s) == res.end())
+							res.push_back(s); 
+					}
+				}				
+			}
+		}
+		
+	}*/
 }
 
 void Classification::makeQueueForPrint(string str) {
 	for (Schedule s : cal->allSchs) {
 		if (s.getCategory().compare(str) == 0) {
-			res.push(s);
+			res.push_back(s);
 		}
 	}
 }

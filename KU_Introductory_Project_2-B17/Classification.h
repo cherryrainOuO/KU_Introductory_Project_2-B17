@@ -8,18 +8,21 @@
 #include <regex>
 #include <string>
 #include <queue>
+#include <sstream>
 
 class Classification
 {
 private:
 	Calender* cal; 
 	string kwd; // 키보드 입력 용
-	queue<Schedule> res; // 스케줄
+	vector<Schedule> res; // 스케줄
 	CategoryDataManager* CDM; // 카테고리 매니저
 
 	void CategoryAdd();
 	void PrintSchedule_ByCategory();
+	void Caculate_ByOperators();
 	void makeQueueForPrint(string str);
+	void makeQueueForPrint(vector<string> cate, vector<string> block);
 
 	void Prompt_CategoryEdit(int _cateNum);
 	void Prompt_CategoryRemove(int _cateNum);
