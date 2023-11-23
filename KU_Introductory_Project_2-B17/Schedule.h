@@ -16,6 +16,7 @@ private:
 	int cycle; //0: x, 1: 매년, 2: 매달, 3: 매주
 	string rptEndDate; //반복종료일
 
+	int rc = 0; // 레퍼런스 카운트 : 일정분류에서 카테고리 연산에 따른 여러 일정 출력할 때 중복 체크 용도입니다.
 
 public:
 	Schedule();
@@ -38,6 +39,9 @@ public:
 	void setCycle(int c) { cycle = c; };
 	string getRptEndDate() { return rptEndDate; };
 	void setRptEndDate(string rd) { rptEndDate = rd; };
+
+	int getRC() { return rc; }
+	void setRC(int _rc) { rc = _rc; }
 
 	bool operator < (Schedule& schedule) {
 		return this->startDate < schedule.startDate;

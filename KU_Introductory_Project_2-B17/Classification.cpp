@@ -397,6 +397,8 @@ void Classification::Caculate_ByOperators() {
 			makeQueueForPrint(stack[i]->cate, stack[i]->block);
 		}
 
+		for (Schedule s : cal->allSchs) { s.setRC(0); } // 레퍼런스 카운트 초기화
+
 		if (res.empty())
 			cout << "\"" << kwd << "\" 카테고리를 포함하고 있는 일정이 없습니다." << endl << endl;
 		else {
@@ -438,6 +440,8 @@ void Classification::makeQueueForPrint(vector<string> cate, vector<string> block
 
 
 	for (Schedule s : cal->allSchs) {
+		if (s.getRC() > 0) continue; // 이미 res에 추가된 일정인지 중복 체크
+
 		for (string c : cate) {
 			c = CDM->GetValue(stoi(c) - 1);
 
@@ -450,11 +454,13 @@ void Classification::makeQueueForPrint(vector<string> cate, vector<string> block
 						if ((s.getCategory().compare(b)) != 0) {
 
 							res.push(s);
+							s.setRC(1);
 						}
 					}
 				}
 				else {
 					res.push(s);
+					s.setRC(1);
 				}
 							
 			}
