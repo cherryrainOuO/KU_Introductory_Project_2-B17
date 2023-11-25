@@ -39,7 +39,7 @@ public:
 	void setCycle(int c) { cycle = c; };
 	string getRptEndDate() { return rptEndDate; };
 	void setRptEndDate(string rd) { rptEndDate = rd; };
-
+	int getRptK() { return rptK; }
 	int getRC() { return rc; }
 	void setRC(int _rc) { rc = _rc; }
 

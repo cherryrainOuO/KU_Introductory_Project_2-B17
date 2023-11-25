@@ -44,24 +44,29 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
     vector<string> record;
     wstring line;
     int idx = 0;
+
+    //파일 레코드 순서: 제목, 카테고리 개수, 카테고리, 시작일, 종료일, 메모, 반복 종료일, 반복 주기, 키, 반복 기준 구분용 키
+
     while (getline(file, line)) {
         wstringstream ss(line);
-        //wcout << line << " "; //OK
-        //wcout << ss.str() << " "; //OK
         wstring token;
+        vector<string> cates; //한 일정 여러 개의 카테고리
+
         while (getline(ss, token, L'\t')) {
-            //wcout << token;
             string temptkn;
             temptkn = ws2s(token);
             trim(temptkn); // tkn의 앞 뒤 공백 제거
-            //cout << temptkn;
-            if (!temptkn.empty()) record.push_back(temptkn); //연속된 tab 무시
-        }
-        //메모가 비워진 경우 4번 인덱스에 빈 문자열 삽입
-        if (record.size() == SIZE - 1) record.insert(record.begin() + 4, "");
 
-        if (record.size() != SIZE || !isRight(record, categories)) {
-            //cout << record.size(); //test
+            if (!temptkn.empty()) {
+                record.push_back(temptkn); //연속된 tab 무시
+            }
+        }
+
+        //메모가 비워진 경우 (카테고리 개수 - 1) + 5번 인덱스에 빈 문자열 삽입
+        if (record.size() == (SIZE + stoi(record[1]) - 1) - 1) record.insert(record.begin() + stoi(record[1]) - 1 + 5, "");
+
+        //레코드 사이즈가 안 맞는 경우
+        if (record.size() != (SIZE + stoi(record[1]) - 1)) {
             cerr << "오류: 데이터 파일의 형식이 잘못되었습니다.\n";
             cout << "---------------------------------------------------------------------------------------\n";
             cout << ws2s(line) << "\n";
@@ -69,19 +74,26 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
             return false;
         }
 
-        //title, sd, ed, cate, memo, rED, cy, k 순서
+        //title, sd, ed, cate(여러 개), memo, rED, cy, k, rk순서
         string ti = record[0];
-        string sd = record[2];
-        string ed = record[3];
-        string cat = record[1];
-        string me = record[4];
-        string rED = record[5];
-        int cy = stoi(record[6]);
-        int k = stoi(record[7]);
+        int catecnt = stoi(record[1]);
+        vector<string> cates;
+        for (int i = 2; i < catecnt + 2; i++) {
+            cates.push_back(record[i]);
+        }
+        string sd = record[catecnt + 2];
+        string ed = record[catecnt + 3];
+        string me = record[catecnt + 4];
+        string rED = record[catecnt + 5];
+        int cy = stoi(record[catecnt + 6]);
+        int k = stoi(record[catecnt + 7]);
+        int rptK = stoi(record[catecnt + 8]);
 
-        Schedule s(ti, sd, ed, cat, me, rED, cy, k);
+        sort(cates.begin(), cates.end()); //카테고리 비교를 위한 정렬
 
-        if (!checkCont(s)) {
+        Schedule s(ti, sd, ed, cates, me, rED, cy, k, rptK);
+
+        if (!isRight(record, categories) || !checkCont(s)) {
             cerr << "오류: 데이터 파일의 형식이 잘못되었습니다.\n";
             cout << "---------------------------------------------------------------------------------------\n";
             cout << ws2s(line) << "\n";
@@ -94,7 +106,9 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         else {
             c.cycle_per_keys[k] = cy;
         }
-        dupKeySches[k] = s; //키가 중복될 때 검사하기 위해
+
+        if (dupKeySches[k].find(rptK) != dupKeySches[k].end()) continue; //key가 같고 rptK도 중복이면 무시
+        dupKeySches[k][rptK] = s; //키가 중복될 때 검사하기 위해
 
         int period = calcPeriod(sd, ed); //일정의 기간
 
@@ -103,14 +117,14 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         if (cy >= 1) {
             int endday = stoi(ed.substr(8, 2));
             while (checkD2(ed, rED)) {
-                Schedule s(ti, sd, ed, cat, me, rED, cy, k);
+                Schedule s(ti, sd, ed, cates, me, rED, cy, k, rptK);
                 c.allSchs.push_back(s);
                 ed = addDate(ed, cy, endday);
                 sd = calcSD(ed, period);
             }
         }
         else {
-            Schedule s(ti, sd, ed, cat, me, rED, cy, k);
+            Schedule s(ti, sd, ed, cates, me, rED, cy, k, rptK);
             c.allSchs.push_back(s);
         }
 
@@ -140,10 +154,10 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
         int key = s.getKey();
         if (dupKeySches.find(key) != dupKeySches.end()) {
             Schedule prevS = prev[key];
-            Schedule first = dupKeySches[key];
+            Schedule first = dupKeySches[key][0];
             string standard = addDate(first.getEndDate(), first.getCycle(), 0);
             standard = calcSD(standard, 1);
-            
+
             if (s.getCycle() == 1) {
                 //매년
                 int em1 = stoi(prevS.getEndDate().substr(5, 2)), em2 = stoi(s.getEndDate().substr(5, 2));
@@ -168,21 +182,47 @@ bool ScheduleDataManager::saveDataFile(Calender& c)
             }
         }
         else {
-            dupKeySches[key] = s;
+            dupKeySches[key][0] = s;
             prev[key] = s;
         }
         c.setHighestKey();
 
-        wstring t = s2ws(s.getTitle());
-        wstring c = s2ws(s.getCategory());
-        wstring sD = s2ws(s.getStartDate());
-        wstring eD = s2ws(s.getEndDate());
-        wstring m = s2ws(s.getMemo());
-        wstring rED = s2ws(s.getRptEndDate());
-        wstring cy = s2ws(to_string(s.getCycle()));
-        wstring k = s2ws(to_string(s.getKey()));
-        
-        file << t << L"\t" << c << L"\t" << sD << L"\t" << eD << L"\t" << m << L"\t" << rED << L"\t" << cy << L"\t"<< k << L"\n";
+        wstring output = L"";
+        wstring t = s2ws(s.getTitle()); //제목
+        output += (t + L"\t");
+
+        vector<string> temp = s.getCategory();
+        wstring clen = s2ws(to_string(temp.size())); //카테고리개수
+        output += (clen + L"\t");
+
+        for (int i = 0; i < temp.size(); i++) {
+            wstring c = s2ws(temp.at(i));
+            output += (c + L"\t");
+        } //카테고리
+
+        wstring sD = s2ws(s.getStartDate()); //시작일
+        output += (sD + L"\t");
+
+        wstring eD = s2ws(s.getEndDate()); //종료일
+        output += (eD + L"\t");
+
+        wstring m = s2ws(s.getMemo()); //메모
+        output += (m + L"\t");
+
+        wstring rED = s2ws(s.getRptEndDate()); //반복종료일
+        output += (rED + L"\t");
+
+        wstring cy = s2ws(to_string(s.getCycle())); //주기
+        output += (cy + L"\t");
+
+        wstring k = s2ws(to_string(s.getKey())); //키
+        output += (k + L"\t");
+
+        wstring rptK = s2ws(to_string(s.getRptK())); //서브키
+
+        output += rptK;
+        //제목 카테고리개수 카테고리 시작일 종료일 메모 반복종료일 주기 키 반복날짜구분
+        file << output << L"\n";
     }
 
     file.close();
@@ -230,15 +270,22 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
     try
     {
         if(!checkT(record[0])) return false; //title
-        if(!checkC(record[1], cates)) return false; //category
-        if(!checkD(record[2])) return false; //startDate
-        if(!checkD(record[3])) return false; //endDate
-        if (!checkD2(record[2], record[3])) return false; //startDate <= endDate
-        if(!checkM(record[4])) return false; // memo
-        if (!checkD(record[5])) return false; //repeat end Date
-        if (!checkD2(record[3], record[5])) return false; //endDate <= repeatEndDate
-        if (!checkCy(record[6])) return false; // cycle
-        if (!checkKey(record[7])) return false; //key
+        if (!checkCNum(record[1])) return false; //numOfCategories
+        int nc = stoi(record[1]);
+        vector<string> c;
+        for (int i = 2; i < nc + 2; i++) {
+            c.push_back(record[i]);
+        }
+        if (!checkC(c, cates)) return false; //category
+        if(!checkD(record[nc + 2])) return false; //startDate
+        if(!checkD(record[nc + 3])) return false; //endDate
+        if (!checkD2(record[nc + 2], record[nc + 3])) return false; //startDate <= endDate
+        if(!checkM(record[nc + 4])) return false; // memo
+        if (!checkD(record[nc + 5])) return false; //repeat end Date
+        if (!checkD2(record[nc + 3], record[nc + 5])) return false; //endDate <= repeatEndDate
+        if (!checkCy(record[nc + 6])) return false; // cycle
+        if (!checkKey(record[nc + 7])) return false; //key
+        if (!checkKey(record[nc + 8])) return false; //subKey
     }
     catch (const exception& e)
     {
@@ -260,19 +307,36 @@ bool ScheduleDataManager::checkT(string data)
     return true;
 }
 
-bool ScheduleDataManager::checkC(string data, vector<string>* cates)
+bool ScheduleDataManager::checkCNum(string data)
 {
-    //카테고리 데이터 파일에 해당 카테고리가 존재하는지
-    if (data.compare("기본") != 0 && find(cates->begin(), cates->end(), data) == cates->end())
+    regex r("[0-9]+");
+    if (!regex_match(data.cbegin(), data.cend(), r))
         return false;
-    //문법 형식
-    wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]{1,30})");
-    wsmatch wideMatch;
-    wstring wstr = s2ws(data);
-    if (!regex_match(wstr.cbegin(), wstr.cend(), wideMatch, wrx)) {
+    if (stoi(data) < 1)
         return false;
-    }
+    return true;
+}
 
+bool ScheduleDataManager::checkC(vector<string> data, vector<string>* cates)
+{
+    //중복 카테고리?
+    int n = data.size();
+    sort(data.begin(), data.end());
+    data.erase(unique(data.begin(), data.end()), data.end());
+    if (data.size() != n) return false;
+
+    //카테고리 데이터 파일에 해당 카테고리가 존재하는지
+    for (string c : data) {
+        if (c.compare("기본") != 0 && find(cates->begin(), cates->end(), data) == cates->end())
+            return false;
+        //문법 형식
+        wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]{1,30})");
+        wsmatch wideMatch;
+        wstring wstr = s2ws(c);
+        if (!regex_match(wstr.cbegin(), wstr.cend(), wideMatch, wrx)) {
+            return false;
+        }
+    }
     return true;
 }
 
@@ -365,19 +429,23 @@ bool ScheduleDataManager::checkKey(string data)
 
 bool ScheduleDataManager::checkCont(Schedule s)
 {
-    //key값이 같은 경우 동일해야하는 요소: 제목, 카테고리, 메모, 시작일~종료일 간격
+    //key값이 같은 경우 동일해야하는 요소: 제목, 카테고리 개수, 카테고리, 시작일~종료일 간격
     int key = s.getKey();
+    int rK = s.getRptK();
     if (dupKeySches.find(key) != dupKeySches.end()) {
-        Schedule s2(dupKeySches[key]);
+        Schedule s2(dupKeySches[key][0]);
         if (s2.getTitle().compare(s.getTitle()) != 0)
             return false;
-        if (s2.getCategory().compare(s.getCategory()) != 0)
+        if (s2.getCategory().size() != s.getCategory().size())
             return false;
-        if (s2.getMemo().compare(s.getMemo()) != 0)
-            return false;
+        for (int i = 0; i < s.getCategory().size(); i++) {
+            if (s.getCategory().at(i).compare(s2.getCategory().at(i)) != 0)
+                return false;
+        } //카테고리가 모두 동일?
+
         if (calcPeriod(s.getStartDate(), s.getEndDate()) != calcPeriod(s2.getStartDate(), s2.getEndDate()))
             return false;
-        if (s2.getCycle() > 0 && s.getCycle() > 0) //반복 주기
+        if (s2.getCycle() > 0 && s.getCycle() > 0) //반복 주기 > 0일 때 반복종료일 동일
             if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
                 return false;
         if (s2.getCycle() == 0 && s.getCycle() == 0) {
