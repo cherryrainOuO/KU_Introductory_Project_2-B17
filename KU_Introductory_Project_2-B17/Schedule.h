@@ -10,7 +10,7 @@ private:
 	string title;
 	string startDate;
 	string endDate;
-	string category;
+	vector<string> category;
 	string memo;
 	int key; 
 	int cycle; //0: x, 1: 매년, 2: 매달, 3: 매주
@@ -20,7 +20,7 @@ private:
 
 public:
 	Schedule();
-	Schedule(string t, string sd, string ed, string ca, string me, string rED, int cy, int k);
+	Schedule(string t, string sd, string ed, vector<string> ca, string me, string rED, int cy, int k, int rptK);
 	void print();
 	//getter & setter
 	string getTitle() { return title; };
@@ -29,8 +29,8 @@ public:
 	void setStartDate(string date) { startDate = date; };
 	string getEndDate() { return endDate; };
 	void setEndDate(string date) { endDate = date; };
-	string getCategory() { return category; };
-	void setCategory(string cat) { category = cat; };
+	vector<string> getCategory() { return category; };
+	void setCategory(vector<string> cat) { category = cat; };
 	string getMemo() { return memo; };
 	void setMemo(string mm) { memo = mm; };
 	int getKey() { return key; };
@@ -39,7 +39,7 @@ public:
 	void setCycle(int c) { cycle = c; };
 	string getRptEndDate() { return rptEndDate; };
 	void setRptEndDate(string rd) { rptEndDate = rd; };
-
+	int getRptK() { return rptK; }
 	int getRC() { return rc; }
 	void setRC(int _rc) { rc = _rc; }
 
