@@ -29,7 +29,7 @@ private:
 	void printSchedule();
 	void addSchedule();
 	void mod_or_delSchedule();
-	int isValidDate(string dateStr);
+	// int isValidDate(string dateStr);
 	bool is_digit(string str);
 	int zeller(int year, int month, int day);
 	int getDiffDate(string startDate, string endDate);

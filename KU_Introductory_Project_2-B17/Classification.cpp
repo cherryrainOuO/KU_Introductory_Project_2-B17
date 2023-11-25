@@ -120,7 +120,7 @@ void Classification::CategoryAdd()
 
 		_getch(); // 아무 키나 입력 대기
 
-		
+
 	}
 
 
@@ -174,14 +174,14 @@ class CategoryComponent {
 public:
 	vector<string> cate; // 있어야 되는 카테고리
 	vector<string> block; // 있으면 안되는 카테고리
-	
+
 	CategoryComponent(string str) { // 최초 피연산자 넣기
 		cate.push_back(str);
 	}
 
 	CategoryComponent(CategoryComponent* left, CategoryComponent* right, string oper) { // 계산해서 컴포넌트 합치기
 		if (oper == "~") {
-			for(string s : right->cate) block.push_back(s);
+			for (string s : right->cate) block.push_back(s);
 			for (string s : right->block) cate.push_back(s);
 		}
 		else if (oper == "&") {
@@ -218,9 +218,9 @@ void Classification::PrintSchedule_ByCategory()
 	if (kwd == "^C") { // 취소
 		Prompt_CategoryMenu();
 	}
-	else if (kwd.find('~') == string::npos 
-			&& kwd.find('&') == string::npos 
-			&& kwd.find('|') == string::npos) 
+	else if (kwd.find('~') == string::npos
+		&& kwd.find('&') == string::npos
+		&& kwd.find('|') == string::npos)
 	{ // 단일 번호의 경우
 		try {
 			int ikwd = stoi(kwd);
@@ -269,22 +269,20 @@ void Classification::PrintSchedule_ByCategory()
 			if (res.empty())
 				cout << "\"" << cateKwd << "\" 카테고리를 포함하고 있는 일정이 없습니다." << endl << endl;
 			else {
-				cout << "카테고리 \"" << cateKwd << "\"에 해당되는 일정들입니다." << endl << endl;
-				while (!res.empty()) {
-					res.front().print();
-					res.pop();
-				}
+				// 언제 이후만 이전만 입력 프롬프트
+				// 아직 makeQueueForPrint랑 연동이 덜 돼서 실행 시에 여러 번 호출되면 반복 출력됩니다.
+				Prompt_after_or_before_When(res, cateKwd);
 			}
 
 			cout << "아무 키나 눌러주세요.\n";
 			cout << "-------------------------------------\n";
 			cout << "> ";
 			_getch(); // 아무 키나 입력 대기
-
+			system("cls");
 			Prompt_CategoryMenu();
 		}
 	}
-	else {	
+	else {
 		Caculate_ByOperators(); //? 피연산자와 연산자의 조합 계산 및 출력
 	}
 }
@@ -437,7 +435,7 @@ void Classification::makeQueueForPrint(vector<string> cate, vector<string> block
 	// 1. 1 | ~ 4 이런 입력은 1 or ~4 인 일정 전체라서, 1을 가진 일정 + ~4인 모든 일정을 가져와야함
 	// 중복 체크 필요
 
-
+	
 
 	for (Schedule s : cal->allSchs) {
 		if (s.getRC() > 0) continue; // 이미 res에 추가된 일정인지 중복 체크
@@ -462,10 +460,10 @@ void Classification::makeQueueForPrint(vector<string> cate, vector<string> block
 					res.push(s);
 					s.setRC(1);
 				}
-							
+
 			}
 		}
-		
+
 	}
 }
 
@@ -519,8 +517,8 @@ void Classification::Prompt_CategoryEdit(int _cateNum)
 		Prompt_CategoryEdit(_cateNum);
 	}
 	else {
-		
-		Sleep(100);	
+
+		Sleep(100);
 		system("cls"); // 화면 지우기
 
 		CDM->CategoryEdit(_cateNum - 1, kwd);
@@ -629,7 +627,7 @@ void Classification::Prompt_CategoryEditOrRemove(int _cateNum)
 {
 	system("cls"); // 화면 지우기
 
-	cout << "선택된 카테고리 : \"" << CDM->GetValue(_cateNum-1) << "\"\n\n";
+	cout << "선택된 카테고리 : \"" << CDM->GetValue(_cateNum - 1) << "\"\n\n";
 
 	cout << "1. 수정하기\n";
 	cout << "2. 삭제하기\n\n";
@@ -690,4 +688,107 @@ void Classification::Prompt_CategoryEditOrRemove(int _cateNum)
 	}
 }
 
+vector<string> split_by_space(string str, char del) {
+	istringstream iss(str);
+	string buf;
+	vector<string> result;
 
+	while (getline(iss, buf, del))
+		result.push_back(buf);
+
+	return result;
+}
+
+void Classification::Prompt_after_or_before_When(queue<Schedule> res, string cateKwd) {
+
+	queue<Schedule> r = res;
+
+	cout << "카테고리 \"" << cateKwd << "\"(으)로 검색되는 일정 중\n";
+	cout << "\"언제 이후만\" 과 \"언제 이전만\" 이 출력 되기를 원하신다면\n";
+	cout << "해당하는 날짜를 공백 하나로 구분하여 입력해주세요.\n";
+	cout << "원하지 않으신다면 각각 \'x\'를 입력해주세요.\n\n";
+
+	cout << "입력 형식: yyyy/mm/dd yyyy/mm/dd\n\n";
+
+	cout << "예 : 2010/01/01 2023/12/31  (2010/01/01 ~ 2023/12/31에 해당하는 일정 출력)\n";
+	cout << "     2010/01/01 x           (2010/01/01 이후에 해당하는 일정 출력)\n";
+	cout << "     x 2023/12/31           (2023/12/31 이전에 해당하는 일정 출력) \n";
+	cout << "     x                      (모든 일정 출력)\n\n";
+
+	cout << "(^C 입력 시 이전 화면으로 돌아갑니다.)\n";
+	cout << "----------------------------------------------\n";
+	cout << "> ";
+
+	string whendates;
+	vector<string> dates;
+	string afterDate, beforeDate;
+	getline(cin, whendates);
+	system("cls");
+	if (whendates == "^C")
+		PrintSchedule_ByCategory();
+	else if(whendates.find(' ')!= std::string::npos) {
+		dates = split_by_space(whendates, ' ');
+		afterDate = dates[0];
+		beforeDate = dates[1];
+
+		if (afterDate == "x")
+			afterDate = "2000/01/01";
+		if (beforeDate == "x")
+			beforeDate = "2030/12/31";
+		
+		if ((cal->isValidDate(afterDate)==-1) || (cal->isValidDate(beforeDate)==-1)) {
+			system("cls");
+			cout << "오류: 입력 형식에 맞게 입력해주세요.\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> ";
+			if (_getch()) {
+				system("cls");
+				return;
+				// Prompt_after_or_before_When(res, cateKwd);
+			}
+		}
+		else if ((cal->isValidDate(afterDate) == -2) || (cal->isValidDate(beforeDate) == -2)) {
+			system("cls");
+			cout << "오류: 존재하지 않는 날짜가 포함되어 있습니다.\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> ";
+			if (_getch()) {
+				system("cls");
+				return;
+				// Prompt_after_or_before_When(res, cateKwd);
+			}
+		}
+		else {
+			for (int i = 0; i < res.size(); i++) {
+				if (r.front().getEndDate() >= afterDate
+					&& r.front().getEndDate() <= beforeDate)
+					r.front().print();
+				r.pop();
+			}
+		}
+	}
+	else {
+		system("cls");
+		cout << "오류: 입력 형식에 맞게 입력해주세요.\n";
+		cout << "아무 키나 눌러주세요.\n";
+		cout << "_____________________________\n";
+		cout << "> ";
+		if (_getch()) {
+			system("cls");
+			return;
+			// Prompt_after_or_before_When(res, cateKwd);
+		}
+	}
+	if (r.empty())
+		cout << "\"" << cateKwd << "\" 카테고리에 "<<afterDate << " ~ " << beforeDate << " 날짜에 해당하는 일정이 없습니다.\n\n";
+	else {
+		cout << "카테고리 \"" << cateKwd << "\"에 해당되는 일정들입니다.\n\n";
+		while (!r.empty()) {
+			r.front().print();
+			r.pop();
+		}
+	}
+	return;
+}

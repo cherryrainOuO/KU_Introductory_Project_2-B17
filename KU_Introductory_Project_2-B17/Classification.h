@@ -13,7 +13,7 @@
 class Classification
 {
 private:
-	Calender* cal; 
+	Calender* cal;
 	string kwd; // 키보드 입력 용
 	queue<Schedule> res; // 스케줄
 	CategoryDataManager* CDM; // 카테고리 매니저
@@ -28,14 +28,15 @@ private:
 	void Prompt_CategoryRemove(int _cateNum);
 	void Prompt_PrintCategoryList_ForEditOrRemove();
 	void Prompt_CategoryEditOrRemove(int _cateNum);
+	void Prompt_after_or_before_When(queue<Schedule> res, string cateKwd);
 
 	friend class Management;
 
 public:
 	/*constructor*/
 	Classification() {};
-	Classification(Calender* _caln, CategoryDataManager* _cateManager) { cal = _caln; CDM = _cateManager;};
-	
+	Classification(Calender* _caln, CategoryDataManager* _cateManager) { cal = _caln; CDM = _cateManager; };
+
 	void Prompt_CategoryMenu();
 };
 

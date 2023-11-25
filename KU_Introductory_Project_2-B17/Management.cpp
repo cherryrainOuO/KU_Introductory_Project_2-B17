@@ -19,7 +19,7 @@ void Management::Prompt() {
 		return;
 	}
 	else {
-		if (isValidDate(dateinfo) < 0) {
+		if (cal->isValidDate(dateinfo) < 0) {
 			Sleep(1000);
 			system("cls");
 			cout << "오류: 날짜를 형식에 맞게 입력해주세요.\n\n";
@@ -38,6 +38,8 @@ void Management::Prompt() {
 	}
 }
 
+// Calender.h(.cpp) 로 이동하였습니다.
+/*
 int Management::isValidDate(string dateStr) {
 
 	string y, m, d; // 각각 year, month, date{
@@ -80,6 +82,7 @@ int Management::isValidDate(string dateStr) {
 	}
 	return -1;
 }
+*/ 
 
 bool Management::is_digit(string str) {
 	return atoi(str.c_str()) != 0 || str.compare("0") == 0;
@@ -313,7 +316,7 @@ void Management::addSchedule()
 				return;
 			}
 			else {
-				switch (isValidDate(startDate)) {
+				switch (cal->isValidDate(startDate)) {
 				case 0:
 					flag = 1;
 					break;
@@ -350,7 +353,7 @@ void Management::addSchedule()
 				flag = 0;
 			}
 			else {
-				switch (isValidDate(endDate)) {
+				switch (cal->isValidDate(endDate)) {
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -817,7 +820,7 @@ void Management::addSchedule()
 				flag = 10;
 			}
 			else {
-				switch (isValidDate(rptEndDate)) {
+				switch (cal->isValidDate(rptEndDate)) {
 				case 0:
 					// 종료일보다 반복종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -891,7 +894,7 @@ void Management::addSchedule()
 				endDateYear++;
 			}
 			string anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
-			while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
+			while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 				string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
 				string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
@@ -929,7 +932,7 @@ void Management::addSchedule()
 			string eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
 			string eDDString = (mRptVec[i] < 10) ? "0" + to_string(mRptVec[i]) : to_string(mRptVec[i]);
 			string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
-			while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
+			while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 				string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
 				string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
@@ -1156,7 +1159,7 @@ void Management::mod_or_delSchedule() {
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
-				switch (isValidDate(startDate)) {
+				switch (cal->isValidDate(startDate)) {
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -1231,7 +1234,7 @@ void Management::mod_or_delSchedule() {
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
-				switch (isValidDate(endDate)) {
+				switch (cal->isValidDate(endDate)) {
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -1809,7 +1812,7 @@ void Management::mod_or_delSchedule() {
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 				}
 
-				switch (isValidDate(rptEndDate)) {
+				switch (cal->isValidDate(rptEndDate)) {
 				case 0:
 					// 종료일보다 반복종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -1876,7 +1879,7 @@ void Management::mod_or_delSchedule() {
 									endDateYear++;
 								}
 								string anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
-								while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
+								while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 									string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);   //기존 key 값 유지
@@ -1914,7 +1917,7 @@ void Management::mod_or_delSchedule() {
 								string eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
 								string eDDString = (mRptVec[i] < 10) ? "0" + to_string(mRptVec[i]) : to_string(mRptVec[i]);
 								string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
-								while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
+								while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 									string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);		//왜 cycle 0
