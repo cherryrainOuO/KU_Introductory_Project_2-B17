@@ -107,7 +107,11 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
             c.cycle_per_keys[k] = cy;
         }
 
-        if (dupKeySches[k].find(rptK) != dupKeySches[k].end()) continue; //key가 같고 rptK도 중복이면 무시
+        if (dupKeySches[k].find(rptK) != dupKeySches[k].end()) {
+            if(dupKeySches[k][rptK].getCycle() == s.getCycle())
+                continue;
+        } //key, rptK, 주기 동일하면 무시
+
         dupKeySches[k][rptK] = s; //키가 중복될 때 검사하기 위해
 
         int period = calcPeriod(sd, ed); //일정의 기간
