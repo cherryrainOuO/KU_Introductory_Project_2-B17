@@ -1,4 +1,4 @@
-#include "CategoryDataManager.h"
+﻿#include "CategoryDataManager.h"
 
 bool CategoryDataManager::loadDataFile(Category& _cate)
 {

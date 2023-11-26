@@ -1,4 +1,4 @@
-#include "ScheduleDataManager.h"
+﻿#include "ScheduleDataManager.h"
 
 bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 {
