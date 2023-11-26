@@ -249,6 +249,7 @@ void Classification::PrintSchedule_ByCategory(){
 			_getch(); // 아무 키나 입력 대기
 
 			PrintSchedule_ByCategory();
+			
 		}
 		else {
 			Sleep(100);
@@ -399,11 +400,9 @@ void Classification::Caculate_ByOperators() {
 		if (res.empty())
 			cout << "\"" << kwd << "\" 카테고리를 포함하고 있는 일정이 없습니다." << endl << endl;
 		else {
-			cout << "카테고리 \"" << kwd << "\"에 해당되는 일정들입니다." << endl << endl;
-			while (!res.empty()) {
-				res.front().print();
-				res.pop();
-			}
+			// 언제 이후만 이전만 입력 프롬프트
+			// 아직 makeQueueForPrint랑 연동이 덜 돼서 실행 시에 여러 번 호출되면 반복 출력됩니다.
+			Prompt_after_or_before_When(res, kwd);
 		}
 
 		cout << "아무 키나 눌러주세요.\n";
@@ -429,48 +428,63 @@ void Classification::Caculate_ByOperators() {
 }
 
 void Classification::makeQueueForPrint(vector<string> cate, vector<string> block) {
-	// 좀더 구현필요
 
-	// 1. 1 | ~ 4 이런 입력은 1 or ~4 인 일정 전체라서, 1을 가진 일정 + ~4인 모든 일정을 가져와야함
-	// 중복 체크 필요
+	vector<Schedule> allSchs = cal->allSchs; //! 이거 포인터 사용해야 rc 바꾸는거 적용될지도?
+	vector<int> checkSchs(allSchs.size(), 0);
 
+	int targetSize = cate.size(); // cate가 비어있을경우엔 0
 	
+	for (int i = 0; i < allSchs.size(); i++) {
+		
+					
+		for (string c : cate) { 
+			c = CDM->GetValue(stoi(c) - 1); // 여기서 모든 cate가 정상인지 체크
 
-	for (Schedule s : cal->allSchs) {
-		if (s.getRC() > 0) continue; // 이미 res에 추가된 일정인지 중복 체크
+			for (string origin : allSchs[i].getCategory()) { // 해당 스케줄에는 cate가 전부 들어있어야 함.
 
-		for (string c : cate) {
-			c = CDM->GetValue(stoi(c) - 1);
-
-			if ((s.getCategory().compare(c)) == 0) {
-
-				if (block.size() > 0) {
-					for (string b : block) {
-						b = CDM->GetValue(stoi(b) - 1);
-
-						if ((s.getCategory().compare(b)) != 0) {
-
-							res.push(s);
-							s.setRC(1);
-						}
-					}
+				if (origin.compare(c) == 0) {
+					checkSchs[i]++;
+					break;
 				}
-				else {
-					res.push(s);
-					s.setRC(1);
-				}
-
+				
 			}
 		}
 
+		for (string b : block) {
+			b = CDM->GetValue(stoi(b) - 1); // 여기서 모든 block 정상인지 체크. 따라서 -1 미리 확인해도 break 하면 안됨!
+
+			for (string origin : allSchs[i].getCategory()) {
+
+				if (origin.compare(b) == 0) {
+					checkSchs[i] = -1; // block을 하나라도 포함하고 있는 스케줄은 바로 -1
+					break;
+				}
+			}
+		}
+		
 	}
+
+	for (int i = 0; i < allSchs.size(); i++) {
+		if (checkSchs[i] == targetSize && allSchs[i].getRC() == 0) { // 스케줄에 cate가 다 들어있고, rc가 0인 경우에만 출력! 
+			res.push(allSchs[i]);
+			allSchs[i].setRC(1);
+		}
+	}
+
+	
 }
 
 void Classification::makeQueueForPrint(string str) {
 	for (Schedule s : cal->allSchs) {
-		if (s.getCategory().compare(str) == 0) {
-			res.push(s);
+
+		for (string origin : s.getCategory()) {
+			if (origin.compare(str) == 0) {
+				res.push(s);
+
+				break;
+			}
 		}
+			
 	}
 }
 
