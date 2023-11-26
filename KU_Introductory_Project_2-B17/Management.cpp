@@ -19,7 +19,7 @@ void Management::Prompt() {
 		return;
 	}
 	else {
-		if (isValidDate(dateinfo) < 0) {
+		if (cal->isValidDate(dateinfo) < 0) {
 			Sleep(1000);
 			system("cls");
 			cout << "오류: 날짜를 형식에 맞게 입력해주세요.\n\n";
@@ -38,6 +38,8 @@ void Management::Prompt() {
 	}
 }
 
+// Calender.h(.cpp) 로 이동하였습니다.
+/*
 int Management::isValidDate(string dateStr) {
 
 	string y, m, d; // 각각 year, month, date{
@@ -76,12 +78,11 @@ int Management::isValidDate(string dateStr) {
 				}
 			}
 		}
-		else {
-			return -2;
-		}
+		return -2;
 	}
 	return -1;
 }
+*/ 
 
 bool Management::is_digit(string str) {
 	return atoi(str.c_str()) != 0 || str.compare("0") == 0;
@@ -128,12 +129,12 @@ void Management::printSchedule() {
 				addSchedule();
 			else if (m[0] == '2')
 				mod_or_delSchedule();
-			else {
-				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-				if (_getch()) {
-					system("cls");
-					printSchedule();
-				}
+		}
+		else {
+			cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
+			if (_getch()) {
+				system("cls");
+				printSchedule();
 			}
 		}
 	}
@@ -295,7 +296,7 @@ void Management::addSchedule()
 	string menu;
 
 	int flag = 0;	// 부 프롬프트 간 이동을 위한 변수
-	int backup_flag = 0;
+	// int backup_flag = 0;
 	while (flag < 10) {
 		system("cls");
 		switch (flag) {
@@ -315,7 +316,7 @@ void Management::addSchedule()
 				return;
 			}
 			else {
-				switch (isValidDate(startDate)) {
+				switch (cal->isValidDate(startDate)) {
 				case 0:
 					flag = 1;
 					break;
@@ -352,7 +353,7 @@ void Management::addSchedule()
 				flag = 0;
 			}
 			else {
-				switch (isValidDate(endDate)) {
+				switch (cal->isValidDate(endDate)) {
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -446,33 +447,39 @@ void Management::addSchedule()
 			if (menu == "^C") {
 				system("cls");
 				flag = 2; // 이전 프롬프트(제목 입력 프롬프트)로 이동
+				break;
 			}
 			else if (menu.size() == 1) {
 				if (is_digit(menu) && 0 == stoi(menu)) {
 					category = "기본"; // 기본 카테고리
 					flag = 4; // 메모 입력 프롬프트로 이동
+					break;
 				}
 				else if (is_digit(menu) && 1 <= stoi(menu) && stoi(menu) <= cateCount) {
 					category = CDM->GetCategory()->at(stoi(menu) - 1); // 사용자 지정 카테고리
 					flag = 4; // 메모 입력 프롬프트로 이동
+					break;
 				}
 				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
 					CLS->CategoryAdd(); // 카테고리 추가
 					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
 						category = CDM->GetCategory()->at(CDM->GetSize() - 1); // 새로 추가한 카테고리
 						flag = 4; // 메모 입력 프롬프트로 이동
+						break;
 					}
 					else {
 						flag = 3;//현재 프롬프트 반복
+						break;
 					}
 				}
-				else {
-					cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 3; // 현재 프롬프트 반복
-					}
-				}
+			}
+			cout << "오류: 0 혹은 1~" << cateCount + 1 << "까지의 자연수를 입력해주세요.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> ";
+			if (_getch()) {
+				system("cls");
+				flag = 3; // 현재 프롬프트 반복
 			}
 			break;
 		case 4:
@@ -529,36 +536,42 @@ void Management::addSchedule()
 			getline(cin, menu);
 			if (menu == "^C") {
 				flag = 4;
+				break;
 			}
 			else if (menu.size() == 1) {
 				if (is_digit(menu) && stoi(menu) == 0) {
 					cycle = stoi(menu);
 					flag = 10; // 프롬프트 종료, 일정 추가/저장
+					break;
 				}
 				else if (is_digit(menu) && stoi(menu) == 1) {
 					cycle = stoi(menu);
 					flag = 6; // 년 입력 프롬프트로 이동
+					break;
 				}
 				else if (is_digit(menu) && stoi(menu) == 2) {
 					cycle = stoi(menu);
 					flag = 7; // 월 입력 프롬프트로 이동
+					break;
 				}
 				else if (is_digit(menu) && stoi(menu) == 3) {
 					cycle = stoi(menu);
 					flag = 8; // 주 입력 프롬프트로 이동
+					break;
 				}
-				else {
-					system("cls");
-					cout << "오류: 0,1,2,3 중 하나의 숫자를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 5; // 현재 프롬프트 반복
-					}
-				}
+			}
+			system("cls");
+			cout << "오류: 0,1,2,3 중 하나의 숫자를 입력해주세요.\n\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> ";
+			if (_getch()) {
+				system("cls");
+				flag = 5; // 현재 프롬프트 반복
 			}
 			break;
 		case 6:
-			backup_flag = 6;
+			// backup_flag = 6;
 			cout << "<일정 추가>\n\n";
 			cout << "년 입력\n\n";
 			cout << "반복할 날짜를 형식에 맞게 입력해주세요.\n";
@@ -644,7 +657,7 @@ void Management::addSchedule()
 			}
 			break;
 		case 7:
-			backup_flag = 7;
+			// backup_flag = 7;
 			cout << "<일정 추가>\n\n";
 			cout << "월 입력\n\n";
 			cout << "반복할 날짜를 숫자만 입력해주세요.\n";
@@ -701,7 +714,7 @@ void Management::addSchedule()
 					}
 					if (!hasEndDate) {
 						system("cls");
-						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
+						cout << "오류: 일정의 '종료일'이 반복 날짜에 포함되어야 합니다.\n\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
@@ -712,8 +725,7 @@ void Management::addSchedule()
 				}
 				else {
 					system("cls");
-					cout << "오류: 반복할 날짜를 형식에 맞게 입력해주세요.\n\n";
-					cout << "아무 키나 눌러주세요.\n";
+					cout << "오류: 공백류로 구분되는 \"1부터 31까지의 자연수 숫자\" 1개 이상을 입력해주셔야 합니다.\n\n";					cout << "아무 키나 눌러주세요.\n";
 					cout << "_____________________________\n";
 					cout << "> ";
 					_getch();
@@ -721,7 +733,7 @@ void Management::addSchedule()
 			}
 			break;
 		case 8:
-			backup_flag = 8;
+			// backup_flag = 8;
 			cout << "<일정 추가>\n\n";
 			cout << "주 입력\n\n";
 			cout << "1. 일\n";
@@ -770,7 +782,7 @@ void Management::addSchedule()
 					}
 					if (!hasEndDate) {
 						system("cls");
-						cout << "오류: 일정의“종료일”이 반복 날짜에 포함되어야 합니다.\n\n";
+						cout << "오류: 일정의 '종료일'이 반복 날짜에 포함되어야 합니다.\n\n";
 						cout << "아무 키나 눌러주세요.\n";
 						cout << "_____________________________\n";
 						cout << "> ";
@@ -801,14 +813,14 @@ void Management::addSchedule()
 
 			getline(cin, rptEndDate);
 			if (rptEndDate == "^C") {
-				flag = backup_flag;
+				flag = 5;
 			}
 			else if (rptEndDate == "-1") {
 				rptEndDate = to_string(FINAL_YEAR) + "/12/31";
 				flag = 10;
 			}
 			else {
-				switch (isValidDate(rptEndDate)) {
+				switch (cal->isValidDate(rptEndDate)) {
 				case 0:
 					// 종료일보다 반복종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -882,7 +894,7 @@ void Management::addSchedule()
 				endDateYear++;
 			}
 			string anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
-			while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
+			while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 				string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
 				string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
@@ -920,7 +932,7 @@ void Management::addSchedule()
 			string eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
 			string eDDString = (mRptVec[i] < 10) ? "0" + to_string(mRptVec[i]) : to_string(mRptVec[i]);
 			string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
-			while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
+			while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 				string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
 				string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1);
@@ -1064,17 +1076,20 @@ void Management::mod_or_delSchedule() {
 				system("cls");
 				flag = 0; // 이전 프롬프트 (일정 선택 프롬프트)
 			}
-			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 1)
+			else if (menu.size() == 1 && is_digit(menu) && stoi(menu) >= 1 && stoi(menu) <= 2) {
+				if (stoi(menu) == 1)
 					flag = 2; // 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 2)
+				else if (stoi(menu) == 2)
 					flag = 13; // 삭제 프롬프트로 이동
-				else {
-					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 1; // 현재 프롬프트 반복
-					}
+			}
+			else {
+				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무키나 눌러주세요." << endl;
+				cout << "----------------------------------------------" << endl;
+				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 1; // 현재 프롬프트 반복
 				}
 			}
 			break;
@@ -1103,25 +1118,28 @@ void Management::mod_or_delSchedule() {
 				system("cls");
 				flag = 1; // 이전 프롬프트 (수정/삭제 여부 선택 프롬프트)
 			}
-			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 1)
+			else if (menu.size() == 1 && is_digit(menu) && stoi(menu) >= 1 && stoi(menu) <= 6) {
+				if (stoi(menu) == 1)
 					flag = 3; // 시작일 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 2)
+				else if (stoi(menu) == 2)
 					flag = 4; // 종료일 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 3)
+				else if (stoi(menu) == 3)
 					flag = 5; // 제목 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 4)
+				else if (stoi(menu) == 4)
 					flag = 6; // 카테고리 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 5)
+				else if (stoi(menu) == 5)
 					flag = 7; // 메모 수정 프롬프트로 이동
-				else if (is_digit(menu) && stoi(menu) == 6)
+				else if (stoi(menu) == 6)
 					flag = 8; // 반복 관련 수정 프롬프트로 이동 
-				else {
-					cout << "오류: 1,2,3,4,5,6 중 하나의 숫자를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 2; // 현재 프롬프트 반복
-					}
+			}
+			else {
+				cout << "오류: 1,2,3,4,5,6 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무키나 눌러주세요." << endl;
+				cout << "----------------------------------------------" << endl;
+				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 2; // 현재 프롬프트 반복
 				}
 			}
 			break;
@@ -1141,7 +1159,7 @@ void Management::mod_or_delSchedule() {
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
-				switch (isValidDate(startDate)) {
+				switch (cal->isValidDate(startDate)) {
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -1216,7 +1234,7 @@ void Management::mod_or_delSchedule() {
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
-				switch (isValidDate(endDate)) {
+				switch (cal->isValidDate(endDate)) {
 				case 0:
 					// 시작일보다 종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -1487,8 +1505,8 @@ void Management::mod_or_delSchedule() {
 				system("cls");
 				flag = 2; // 이전 프롬프트 (변경할 요소 선택 프롬프트)
 			}
-			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 0) {
+			else if (menu.size() == 1 && is_digit(menu) && stoi(menu) >= 0 && stoi(menu) <= 3) {
+				if (stoi(menu) == 0) {
 					// stoi(menu) == 0 : 반복되지 않는 일정으로 수정, 혹은 그대로 둠
 					//sche[selectedNum]->setCycle(0);
 					//sche[selectedNum]->setRptEndDate(sche[selectedNum]->getEndDate());
@@ -1516,18 +1534,24 @@ void Management::mod_or_delSchedule() {
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
-				else if (is_digit(menu) && stoi(menu) == 1)
+				else if (stoi(menu) == 1)
 					flag = 9;
-				else if (is_digit(menu) && stoi(menu) == 2)
+				else if (stoi(menu) == 2)
 					flag = 10;
-				else if (is_digit(menu) && stoi(menu) == 3)
+				else if (stoi(menu) == 3)
 					flag = 11;
 			}
 			else {
+				system("cls");
 				cout << "오류: 0, 1, 2, 3 중 하나의 숫자를 입력해주세요.\n\n";
 				cout << "아무 키나 눌러주세요.\n";
-				cout << "——————————————————————————\n";
+				cout << "--------------------------\n";
 				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 8; // 현재 프롬프트 반복
+					break;
+				};
 			}
 			break;
 
@@ -1625,7 +1649,7 @@ void Management::mod_or_delSchedule() {
 			cout << "(여러 날짜의 입력은 공백류로 구분됩니다.)\n";
 			cout << "예 : 1 11 21 (매달 1일, 11일, 21일 반복)\n\n";
 			cout << "(^ C 입력 시 이전 화면으로 돌아갑니다)\n";
-			cout << "——————————————————————————\n";
+			cout << "---------------------------\n";
 			cout << ">";
 
 			getline(cin, mRptStr);
@@ -1635,11 +1659,8 @@ void Management::mod_or_delSchedule() {
 			}
 			else {
 				// 00 입력 불가, 01~09 == 1~9
-				//wregex wrx(L"(([0]?[1-9] | [1-9][0-9]?) ([ ]+[0-9][0-9]?)*)");
-				wregex wrx(L"(([0]?[1-9]|[1-9][0-9])(([ ]|[0]?[1-9]|[1-9][0-9])*))");
-				wsmatch wideMatch;
-				wstring wmRptStr = SDM.s2ws(mRptStr);
-				if (regex_match(wmRptStr.cbegin(), wmRptStr.cend(), wideMatch, wrx)) {
+				regex re("(0?[1-9]|[12][0-9]|3[01])([ ]+(0?[1-9]|[12][0-9]|3[01]))*");
+				if (regex_match(mRptStr, re)) {
 					mRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
 
 					istringstream iss(mRptStr);
@@ -1722,10 +1743,8 @@ void Management::mod_or_delSchedule() {
 				flag = 8;
 			}
 			else {
-				wregex wrx(L"([1-7]([ ][1-7]?)*)");
-				wsmatch wideMatch;
-				wstring wwRptStr = SDM.s2ws(wRptStr);
-				if (regex_match(wwRptStr.cbegin(), wwRptStr.cend(), wideMatch, wrx)) {
+				regex re("[1-7]([ ]+[1-7])*");
+				if (regex_match(wRptStr, re)) {
 					wRptVec.clear();	// 현재 프롬프트가 재시작되는 경우 고려
 
 					istringstream iss(wRptStr);
@@ -1783,7 +1802,7 @@ void Management::mod_or_delSchedule() {
 
 			getline(cin, rptEndDate);
 			if (rptEndDate == "^C") {
-				flag = backup_flag;
+				flag = 8;
 			}
 			else {
 				if (rptEndDate == "-1") {
@@ -1793,7 +1812,7 @@ void Management::mod_or_delSchedule() {
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 				}
 
-				switch (isValidDate(rptEndDate)) {
+				switch (cal->isValidDate(rptEndDate)) {
 				case 0:
 					// 종료일보다 반복종료일이 빠른 경우 
 					int y1, m1, d1, y2, m2, d2;
@@ -1860,7 +1879,7 @@ void Management::mod_or_delSchedule() {
 									endDateYear++;
 								}
 								string anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
-								while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
+								while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 									string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);   //기존 key 값 유지
@@ -1898,7 +1917,7 @@ void Management::mod_or_delSchedule() {
 								string eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
 								string eDDString = (mRptVec[i] < 10) ? "0" + to_string(mRptVec[i]) : to_string(mRptVec[i]);
 								string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
-								while (endDateYear <= FINAL_YEAR && isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
+								while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 									string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key);		//왜 cycle 0
@@ -1996,7 +2015,7 @@ void Management::mod_or_delSchedule() {
 				flag = 0; // 일정 선택 프롬프트로 이동
 				system("cls");
 			}
-			else if (menu.size() == 1) {
+			else if (menu.size() == 1 && is_digit(menu) && stoi(menu) >= 1 && stoi(menu) <= 2) {
 				/*
 				if (is_digit(menu) && stoi(menu) == 1) {
 					cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
@@ -2004,25 +2023,31 @@ void Management::mod_or_delSchedule() {
 					flag = 0; // 일정 선택 프롬프트로 이동
 				}
 				*/
-				if (is_digit(menu) && stoi(menu) == 1) {
+				if (stoi(menu) == 1) {
 					if (cal->cycle_per_keys[sche[selectedNum]->getKey()] == 0) {
 						cal->allSchs.erase(cal->allSchs.begin() + scheNum[selectedNum]);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+						system("cls");
 						flag = 0; // 일정 선택 프롬프트로 이동
 					}
 					else {
+						system("cls");
 						flag = 14;
 					}
 				}
-				else if (is_digit(menu) && stoi(menu) == 2) {
+				else if (stoi(menu) == 2) {
 					flag = 0; // 일정 선택 프롬프트로 이동
 				}
-				else {
-					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 13; // 현재 프롬프트 반복
-					}
+			}
+			else {
+				system("cls");
+				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "--------------------------------------\n";
+				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 13; // 현재 프롬프트 반복
 				}
 			}
 			break;
@@ -2051,8 +2076,8 @@ void Management::mod_or_delSchedule() {
 				flag = 13; // 일정 삭제 확인 프롬프트로 이동
 				system("cls");
 			}
-			else if (menu.size() == 1) {
-				if (is_digit(menu) && stoi(menu) == 1) {
+			else if (menu.size() == 1 && is_digit(menu) && stoi(menu) >= 1 && stoi(menu) <= 2) {
+				if (stoi(menu) == 1) {
 					key = sche[selectedNum]->getKey();
 
 					for (int i = 0; i < cal->allSchs.size();) {
@@ -2066,17 +2091,23 @@ void Management::mod_or_delSchedule() {
 
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					cal->cycle_per_keys.erase(key);
+					system("cls");
 					flag = 0;
 				}
-				else if (is_digit(menu) && stoi(menu) == 2) {
+				else if (stoi(menu) == 2) {
+					system("cls");
 					flag = 0; // 일정 선택 프롬프트로 이동
 				}
-				else {
-					cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n";
-					if (_getch()) {
-						system("cls");
-						flag = 14; // 현재 프롬프트 반복
-					}
+			}
+			else {
+				system("cls");
+				cout << "오류: 1,2 중 하나의 숫자를 입력해주세요.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "--------------------------------------\n";
+				cout << ">";
+				if (_getch()) {
+					system("cls");
+					flag = 14; // 현재 프롬프트 반복
 				}
 			}
 			break;
