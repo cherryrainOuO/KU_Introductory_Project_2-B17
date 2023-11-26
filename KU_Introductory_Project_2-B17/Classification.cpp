@@ -198,8 +198,7 @@ public:
 
 };
 
-void Classification::PrintSchedule_ByCategory()
-{
+void Classification::PrintSchedule_ByCategory(){
 	Sleep(100);
 	system("cls"); // 화면 지우기
 
@@ -274,10 +273,10 @@ void Classification::PrintSchedule_ByCategory()
 				Prompt_after_or_before_When(res, cateKwd);
 			}
 
-			cout << "아무 키나 눌러주세요.\n";
+			/*cout << "아무 키나 눌러주세요.\n";
 			cout << "-------------------------------------\n";
 			cout << "> ";
-			_getch(); // 아무 키나 입력 대기
+			_getch(); // 아무 키나 입력 대기*/
 			system("cls");
 			Prompt_CategoryMenu();
 		}
@@ -726,7 +725,7 @@ void Classification::Prompt_after_or_before_When(queue<Schedule> res, string cat
 	system("cls");
 	if (whendates == "^C")
 		PrintSchedule_ByCategory();
-	else if(whendates.find(' ')!= std::string::npos) {
+	else if (whendates.find(' ') != std::string::npos) {
 		dates = split_by_space(whendates, ' ');
 		afterDate = dates[0];
 		beforeDate = dates[1];
@@ -735,8 +734,21 @@ void Classification::Prompt_after_or_before_When(queue<Schedule> res, string cat
 			afterDate = "2000/01/01";
 		if (beforeDate == "x")
 			beforeDate = "2030/12/31";
-		
-		if ((cal->isValidDate(afterDate)==-1) || (cal->isValidDate(beforeDate)==-1)) {
+
+		int y1, m1, d1, y2, m2, d2;
+		bool b = true; // afterDate < beforeDate
+		y1 = stoi(afterDate.substr(0, 4));
+		m1 = stoi(afterDate.substr(5, 2));
+		d1 = stoi(afterDate.substr(8, 2));
+		y2 = stoi(beforeDate.substr(0, 4));
+		m2 = stoi(beforeDate.substr(5, 2));
+		d2 = stoi(beforeDate.substr(8, 2));
+
+		if ((y1 > y2) || ((y1 == y2) && (m1 > m2))
+			|| ((y1 == y2) && (m1 == m2) && (d1 > d2)))
+			b = false;
+
+		if ((cal->isValidDate(afterDate) == -1) || (cal->isValidDate(beforeDate) == -1) || b == false) {
 			system("cls");
 			cout << "오류: 입력 형식에 맞게 입력해주세요.\n";
 			cout << "아무 키나 눌러주세요.\n";
@@ -764,7 +776,7 @@ void Classification::Prompt_after_or_before_When(queue<Schedule> res, string cat
 			for (int i = 0; i < res.size(); i++) {
 				if (r.front().getEndDate() >= afterDate
 					&& r.front().getEndDate() <= beforeDate)
-					r.front().print();
+					r.push(r.front());
 				r.pop();
 			}
 		}
@@ -790,5 +802,11 @@ void Classification::Prompt_after_or_before_When(queue<Schedule> res, string cat
 			r.pop();
 		}
 	}
-	return;
+	cout << "아무 키나 눌러주세요.\n";
+	cout << "_____________________________\n";
+	cout << "> ";
+	if (_getch()) {
+		system("cls");
+		return;
+	}
 }
