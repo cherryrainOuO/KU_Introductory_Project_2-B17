@@ -32,6 +32,10 @@ private:
 
 	friend class Management;
 
+	vector<string> split(string str, string delims);
+	struct Oper;
+	class CategoryComponent;
+
 public:
 	/*constructor*/
 	Classification() {};

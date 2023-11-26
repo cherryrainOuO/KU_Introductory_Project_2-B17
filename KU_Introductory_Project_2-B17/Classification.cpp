@@ -128,76 +128,6 @@ void Classification::CategoryAdd()
 }
 
 
-
-vector<string> split(string str, string delims)
-{
-	vector<string> result;
-
-	string temp = "";
-	for (int i = 0; i < str.size(); i++) {
-		if (str[i] == '~') {
-			if (temp != "") result.push_back(temp);
-			temp = "";
-			result.push_back("~");
-		}
-		else if (str[i] == '&') {
-			if (temp != "") result.push_back(temp);
-			temp = "";
-			result.push_back("&");
-		}
-		else if (str[i] == '|') {
-			if (temp != "") result.push_back(temp);
-			temp = "";
-			result.push_back("|");
-		}
-		else {
-			temp += str[i];
-		}
-	}
-
-	if (temp != "") result.push_back(temp);
-
-	return result;
-}
-
-struct Oper {
-	int priority;
-	string oper;
-
-	Oper(int _prio, string _oper) {
-		priority = _prio;
-		oper = _oper;
-	}
-};
-
-class CategoryComponent {
-public:
-	vector<string> cate; // 있어야 되는 카테고리
-	vector<string> block; // 있으면 안되는 카테고리
-
-	CategoryComponent(string str) { // 최초 피연산자 넣기
-		cate.push_back(str);
-	}
-
-	CategoryComponent(CategoryComponent* left, CategoryComponent* right, string oper) { // 계산해서 컴포넌트 합치기
-		if (oper == "~") {
-			for (string s : right->cate) block.push_back(s);
-			for (string s : right->block) cate.push_back(s);
-		}
-		else if (oper == "&") {
-			for (string s : left->cate) cate.push_back(s);
-
-			for (string s : left->block) block.push_back(s);
-
-			for (string s : right->cate) cate.push_back(s);
-
-			for (string s : right->block) block.push_back(s);
-		}
-		// 여러개의 컴포넌트 구분짓는 기준을 or 로 할거라서 따로 계산 안함. 
-	}
-
-};
-
 void Classification::PrintSchedule_ByCategory(){
 	Sleep(100);
 	system("cls"); // 화면 지우기
@@ -287,6 +217,77 @@ void Classification::PrintSchedule_ByCategory(){
 	}
 }
 
+
+vector<string> Classification::split(string str, string delims)
+{
+	vector<string> result;
+
+	string temp = "";
+	for (int i = 0; i < str.size(); i++) {
+		if (str[i] == '~') {
+			if (temp != "") result.push_back(temp);
+			temp = "";
+			result.push_back("~");
+		}
+		else if (str[i] == '&') {
+			if (temp != "") result.push_back(temp);
+			temp = "";
+			result.push_back("&");
+		}
+		else if (str[i] == '|') {
+			if (temp != "") result.push_back(temp);
+			temp = "";
+			result.push_back("|");
+		}
+		else {
+			temp += str[i];
+		}
+	}
+
+	if (temp != "") result.push_back(temp);
+
+	return result;
+}
+
+struct Classification::Oper {
+public:
+	int priority;
+	string oper;
+
+	Oper(int _prio, string _oper) {
+		priority = _prio;
+		oper = _oper;
+	}
+};
+
+class Classification::CategoryComponent {
+public:
+	vector<string> cate; // 있어야 되는 카테고리
+	vector<string> block; // 있으면 안되는 카테고리
+
+	CategoryComponent(string str) { // 최초 피연산자 넣기
+		cate.push_back(str);
+	}
+
+	CategoryComponent(CategoryComponent* left, CategoryComponent* right, string oper) { // 계산해서 컴포넌트 합치기
+		if (oper == "~") {
+			for (string s : right->cate) block.push_back(s);
+			for (string s : right->block) cate.push_back(s);
+		}
+		else if (oper == "&") {
+			for (string s : left->cate) cate.push_back(s);
+
+			for (string s : left->block) block.push_back(s);
+
+			for (string s : right->cate) cate.push_back(s);
+
+			for (string s : right->block) block.push_back(s);
+		}
+		// 여러개의 컴포넌트 구분짓는 기준을 or 로 할거라서 따로 계산 안함. 
+	}
+
+};
+
 void Classification::Caculate_ByOperators() {
 	/* 피연산자와 연산자의 조합 */
 	try {
@@ -367,7 +368,7 @@ void Classification::Caculate_ByOperators() {
 				// 어차피 이부분은 마지막에 하므로 아무것도 하지말고 
 				// 그냥 stack에는 여러 컴포넌트들이 생기도록 하기.
 				// = 여러개의 컴포넌트 구분짓는 기준을 or 로 할거라서 따로 계산 안함.
-				// 아 | 몇번나왔는지 계산해서 이거랑 컴포넌트 수랑 다르면 틀린걸로 계산해야함.
+				// '|' 몇번나왔는지 계산해서 이거랑 컴포넌트 수랑 다르면 틀린걸로 계산해야함.
 				componentCount++;
 			}
 			else {
