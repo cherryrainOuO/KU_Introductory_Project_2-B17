@@ -4,7 +4,7 @@ Schedule::Schedule() {
 	// 깡통이 없으면 실행이 안돼요
 }
 
-Schedule::Schedule(string t, string sd, string ed, string ca, string me, string rED, int cy, int k)
+Schedule::Schedule(string t, string sd, string ed, vector<string> ca, string me, string rED, int cy, int k, int rptK)
 {
 	title = t;
 	startDate = sd;
@@ -19,7 +19,11 @@ Schedule::Schedule(string t, string sd, string ed, string ca, string me, string 
 void Schedule::print()
 {
 	cout << "제목: " << title << "\n";
-	cout << "카테고리: " << category << "\n";
+	cout << "카테고리: ";
+	for (int i = 0; i < category.size(); i++) {
+		cout << category[i];
+	}
+	cout << endl;
 	cout << "날짜: " << startDate << " ~ " << endDate << "\n";
 	cout << "메모: " << memo << "\n";
 
