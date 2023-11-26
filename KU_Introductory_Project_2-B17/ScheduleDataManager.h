@@ -13,7 +13,7 @@
 #include "Category.h"
 
 
-#define SIZE 8 //데이터 요소
+#define SIZE 10 //기본 데이터 요소 개수(카테고리가 1개일 때)
 #define CYMAX 3 //주기 0~3
 
 class ScheduleDataManager
@@ -26,7 +26,7 @@ public:
 	friend class CategoryDataManager;
 
 private:
-	map<int, Schedule> dupKeySches;
+	map<int, map<int, Schedule>> dupKeySches;
 
 	wstring s2ws(const string& str);
 	string ws2s(const wstring& wstr);
@@ -34,7 +34,8 @@ private:
 	//검사
 	bool isRight(vector<string> record, vector<string>* cates);
 	bool checkT(string data); //title
-	bool checkC(string data, vector<string>* cates); // category
+	bool checkCNum(string data); //numOfCategories
+	bool checkC(vector<string> data, vector<string>* cates); // category
 	bool checkD(string s); //date
 	bool checkD2(string sd, string ed);
 	bool checkM(string data); //memo
