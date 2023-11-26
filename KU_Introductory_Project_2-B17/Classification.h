@@ -22,7 +22,7 @@ private:
 	void PrintSchedule_ByCategory();
 	void Caculate_ByOperators();
 	void makeQueueForPrint(string str);
-	void makeQueueForPrint(vector<string> cate, vector<string> block);
+	void makeQueueForPrint2(vector<string> cate, vector<string> block);
 
 	void Prompt_CategoryEdit(int _cateNum);
 	void Prompt_CategoryRemove(int _cateNum);

@@ -392,7 +392,7 @@ void Classification::Caculate_ByOperators() {
 			for (string s : stack[i]->block) cout << s << " ";
 			cout << "\n---------or---------\n";
 
-			makeQueueForPrint(stack[i]->cate, stack[i]->block);
+			makeQueueForPrint2(stack[i]->cate, stack[i]->block);
 		}
 
 		for (Schedule s : cal->allSchs) { s.setRC(0); } // 레퍼런스 카운트 초기화
@@ -427,7 +427,7 @@ void Classification::Caculate_ByOperators() {
 	}
 }
 
-void Classification::makeQueueForPrint(vector<string> cate, vector<string> block) {
+void Classification::makeQueueForPrint2(vector<string> cate, vector<string> block) {
 
 	vector<Schedule> allSchs = cal->allSchs; //! 이거 포인터 사용해야 rc 바꾸는거 적용될지도?
 	vector<int> checkSchs(allSchs.size(), 0);
