@@ -430,7 +430,7 @@ void Classification::Caculate_ByOperators() {
 
 void Classification::makeQueueForPrint2(vector<string> cate, vector<string> block) {
 
-	vector<Schedule> allSchs = cal->allSchs; //! 이거 포인터 사용해야 rc 바꾸는거 적용될지도?
+	vector<Schedule> allSchs = cal->allSchs; //! 이거 포인터 사용해야 rc 바꾸는거 적용될지도? => rc 바뀌는지 테스트 필요
 	vector<int> checkSchs(allSchs.size(), 0);
 
 	int targetSize = cate.size(); // cate가 비어있을경우엔 0
@@ -439,7 +439,7 @@ void Classification::makeQueueForPrint2(vector<string> cate, vector<string> bloc
 		
 					
 		for (string c : cate) { 
-			c = CDM->GetValue(stoi(c) - 1); // 여기서 모든 cate가 정상인지 체크
+			c = CDM->GetValue(stoi(c) - 1); // 여기서 모든 cate가 정상인지 체크 => 숫자가 아닌 다른 이상한 거 들어있을 때 catch 되는지 테스트 필요
 
 			for (string origin : allSchs[i].getCategory()) { // 해당 스케줄에는 cate가 전부 들어있어야 함.
 
