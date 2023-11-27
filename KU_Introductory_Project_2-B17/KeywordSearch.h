@@ -5,6 +5,7 @@
 #include <conio.h>
 #include <queue>
 #include <regex>
+#include <sstream>
 
 class KeywordSearch
 {
@@ -16,6 +17,8 @@ private:
 	void search();
 	void print();
 	void removeSpace(string& s);
+	vector<string> split_by_space(string str, char del);
+	void Prompt_after_or_before_When(queue<Schedule> res, string cateKwd);
 
 public:
 	/*constructor*/

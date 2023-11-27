@@ -1,4 +1,4 @@
-﻿#include "Classification.h"
+#include "Classification.h"
 
 
 void Classification::Prompt_CategoryMenu()
@@ -406,10 +406,10 @@ void Classification::Caculate_ByOperators() {
 			Prompt_after_or_before_When(res, kwd);
 		}
 
-		cout << "아무 키나 눌러주세요.\n";
+		/*cout << "아무 키나 눌러주세요.\n";
 		cout << "-------------------------------------\n";
 		cout << "> ";
-		_getch(); // 아무 키나 입력 대기
+		_getch(); // 아무 키나 입력 대기*/
 
 		Prompt_CategoryMenu();
 	}
@@ -703,7 +703,7 @@ void Classification::Prompt_CategoryEditOrRemove(int _cateNum)
 	}
 }
 
-vector<string> split_by_space(string str, char del) {
+vector<string> Classification::split_by_space(string str, char del) {
 	istringstream iss(str);
 	string buf;
 	vector<string> result;

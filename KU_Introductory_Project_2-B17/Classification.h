@@ -33,6 +33,8 @@ private:
 	friend class Management;
 
 	vector<string> split(string str, string delims);
+	vector<string> split_by_space(string str, char del);
+
 	struct Oper;
 	class CategoryComponent;
 
