@@ -50,7 +50,6 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
     while (getline(file, line)) {
         wstringstream ss(line);
         wstring token;
-        vector<string> cates; //한 일정 여러 개의 카테고리
 
         while (getline(ss, token, L'\t')) {
             string temptkn;
@@ -77,7 +76,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         //title, sd, ed, cate(여러 개), memo, rED, cy, k, rk순서
         string ti = record[0];
         int catecnt = stoi(record[1]);
-        vector<string> cates;
+        vector<string> cates; //한 일정 여러개
         for (int i = 2; i < catecnt + 2; i++) {
             cates.push_back(record[i]);
         }
@@ -108,7 +107,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         }
 
         if (dupKeySches[k].find(rptK) != dupKeySches[k].end()) {
-            if(dupKeySches[k][rptK].getCycle() == s.getCycle())
+            if (dupKeySches[k][rptK].getCycle() == s.getCycle())
                 continue;
         } //key, rptK, 주기 동일하면 무시
 
@@ -142,7 +141,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 bool ScheduleDataManager::saveDataFile(Calender& c)
 {
     //이 함수를 호출하기 전 일정 추가 프롬프트에서 모든 문법 검사를 마치기 때문에 따로 검사를 하지 않습니다
-    
+
     sort(c.allSchs.begin(), c.allSchs.end());//일정 시작일 순으로 정렬 필요
 
     string fileName = "Calendar-schedule.txt";
@@ -273,7 +272,7 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
     //파일 순서: 제목 카테고리 시작일 종료일 메모 반복종료일 반복주기 키
     try
     {
-        if(!checkT(record[0])) return false; //title
+        if (!checkT(record[0])) return false; //title
         if (!checkCNum(record[1])) return false; //numOfCategories
         int nc = stoi(record[1]);
         vector<string> c;
@@ -281,10 +280,10 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
             c.push_back(record[i]);
         }
         if (!checkC(c, cates)) return false; //category
-        if(!checkD(record[nc + 2])) return false; //startDate
-        if(!checkD(record[nc + 3])) return false; //endDate
+        if (!checkD(record[nc + 2])) return false; //startDate
+        if (!checkD(record[nc + 3])) return false; //endDate
         if (!checkD2(record[nc + 2], record[nc + 3])) return false; //startDate <= endDate
-        if(!checkM(record[nc + 4])) return false; // memo
+        if (!checkM(record[nc + 4])) return false; // memo
         if (!checkD(record[nc + 5])) return false; //repeat end Date
         if (!checkD2(record[nc + 3], record[nc + 5])) return false; //endDate <= repeatEndDate
         if (!checkCy(record[nc + 6])) return false; // cycle
@@ -331,7 +330,7 @@ bool ScheduleDataManager::checkC(vector<string> data, vector<string>* cates)
 
     //카테고리 데이터 파일에 해당 카테고리가 존재하는지
     for (string c : data) {
-        if (c.compare("기본") != 0 && find(cates->begin(), cates->end(), data) == cates->end())
+        if (c.compare("기본") != 0 && find(cates->begin(), cates->end(), c) == cates->end())
             return false;
         //문법 형식
         wregex wrx(L"([ㄱ-ㅣ가-힣a-zA-Z0-9 ]{1,30})");
