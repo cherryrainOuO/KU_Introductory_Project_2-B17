@@ -177,10 +177,21 @@ bool CategoryDataManager::UpdateCategoryToCalender(int _cateNum, string _newStr)
 
 
 	for (int i = 0; i < cale->allSchs.size(); i++) {
+		vector<string> c = cale->allSchs.at(i).getCategory();
+		for (int i = 0; i < c.size(); i++) {
+			if (c[i].compare(oldCate) == 0) {
+				c[i] = _newStr;
+			}
+		}
+		cale->allSchs.at(i).setCategory(c);
+
+		/*
 		if (cale->allSchs.at(i).getCategory().compare(oldCate) == 0) {
 			cale->allSchs.at(i).setCategory(_newStr);
 			//cale->allSchs.at(i).print();
 		}
+		*/
+
 	}
 	SDM.saveDataFile(*cale);
 
