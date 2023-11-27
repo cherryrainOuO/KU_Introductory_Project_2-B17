@@ -476,14 +476,19 @@ void Management::addSchedule()
 					}
 				}
 
+				sort(cateTemp.begin(), cateTemp.end());
+				wRptVec.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
+
 				while (!cateTemp.empty()) {
-					if (0 == stoi(menu)) {
+					int cateTT = cateTemp.back();
+					cateTemp.pop_back();
+					if (0 == cateTT) {
 						category.push_back("기본"); // 기본 카테고리
 						flag = 4; // 메모 입력 프롬프트로 이동
 						break;
 					}
-					else if (1 <= stoi(menu) && stoi(menu) <= cateCount) {
-						category.push_back(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
+					else if (1 <= cateTT && cateTT <= cateCount) {
+						category.push_back(CDM->GetCategory()->at(cateTT - 1)); // 사용자 지정 카테고리
 						flag = 4; // 메모 입력 프롬프트로 이동
 						break;
 					}
@@ -1431,8 +1436,13 @@ void Management::mod_or_delSchedule() {
 						break;
 					}
 				}
+				sort(cateTemp.begin(), cateTemp.end());
+				wRptVec.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
+
 				while (!cateTemp.empty()) {
-					if (0 == stoi(menu)) {
+					int cateTT = cateTemp.back();
+					cateTemp.pop_back();
+					if (0 == cateTT) {
 						key = sche[selectedNum]->getKey();
 						/*
 						for (int i = 0; i < cal->allSchs.size(); i++) {
@@ -1450,7 +1460,7 @@ void Management::mod_or_delSchedule() {
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 						*/
 					}
-					else if (1 <= stoi(menu) && stoi(menu) <= cateCount) {
+					else if (1 <= cateTT && cateTT <= cateCount) {
 						key = sche[selectedNum]->getKey();
 						/*
 						for (int i = 0; i < cal->allSchs.size(); i++) {
@@ -1459,7 +1469,7 @@ void Management::mod_or_delSchedule() {
 							}
 						}
 						*/
-						category.push_back(CDM->GetCategory()->at(stoi(menu) - 1));
+						category.push_back(CDM->GetCategory()->at(cateTT - 1));
 						/*
 						sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
