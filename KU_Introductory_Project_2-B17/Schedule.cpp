@@ -14,6 +14,7 @@ Schedule::Schedule(string t, string sd, string ed, vector<string> ca, string me,
 	rptEndDate = rED;
 	cycle = cy;
 	key = k;
+	rptK = rptK;
 }
 
 void Schedule::print()
