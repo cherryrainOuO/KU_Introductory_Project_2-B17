@@ -439,7 +439,8 @@ void Classification::makeQueueForPrint2(vector<string> cate, vector<string> bloc
 		
 					
 		for (string c : cate) { 
-			c = CDM->GetValue(stoi(c) - 1); // 여기서 모든 cate가 정상인지 체크 => 숫자가 아닌 다른 이상한 거 들어있을 때 catch 되는지 테스트 필요
+
+			c = (c == "0") ? "기본" : CDM->GetValue(stoi(c) - 1); // 여기서 모든 cate가 정상인지 체크 => 숫자가 아닌 다른 이상한 거 들어있을 때 catch 되는지 테스트 필요
 
 			for (string origin : allSchs[i].getCategory()) { // 해당 스케줄에는 cate가 전부 들어있어야 함.
 
@@ -452,7 +453,7 @@ void Classification::makeQueueForPrint2(vector<string> cate, vector<string> bloc
 		}
 
 		for (string b : block) {
-			b = CDM->GetValue(stoi(b) - 1); // 여기서 모든 block 정상인지 체크. 따라서 -1 미리 확인해도 break 하면 안됨!
+			b = (b == "0") ? "기본" : CDM->GetValue(stoi(b) - 1); // 여기서 모든 block 정상인지 체크. 따라서 -1 미리 확인해도 break 하면 안됨!
 
 			for (string origin : allSchs[i].getCategory()) {
 
