@@ -17,6 +17,7 @@ private:
 	string kwd; // 키보드 입력 용
 	vector<Schedule> res; // 스케줄
 	CategoryDataManager* CDM; // 카테고리 매니저
+	vector<int> dupCheck; // 연산 조합 출력에서 중복 체크용 
 
 	void CategoryAdd();
 	void PrintSchedule_ByCategory();

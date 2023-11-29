@@ -313,7 +313,8 @@ void Classification::Caculate_ByOperators() {
 		//for (string s : splitedKwd) cout << s << " ";
 		//cout << "\n";
 
-		if(splitedKwd.back() == "~") throw out_of_range("잘못함"); // 마지막 글자가 ~ 연산이면 잘못된 연산
+		if(splitedKwd.front() == "&" || splitedKwd.front() == "|") throw out_of_range("잘못함"); // 첫번째 글자가 ~ 를 제외한 연산자면 잘못된 연산
+		if(splitedKwd.back() == "~" || splitedKwd.back() == "&" || splitedKwd.back() == "|") throw out_of_range("잘못함"); // 마지막 글자가 연산자면 잘못된 연산
 
 		for (int i = 0; i < splitedKwd.size(); i++) {
 			if (splitedKwd[i] == "~") {
@@ -399,6 +400,7 @@ void Classification::Caculate_ByOperators() {
 			throw out_of_range("잘못함");
 		}
 
+		dupCheck.assign(cal->allSchs.size(), 0);
 
 		for (int i = 0; i < stack.size(); i++) {
 			/* test */
@@ -411,8 +413,6 @@ void Classification::Caculate_ByOperators() {
 
 			makeQueueForPrint2(stack[i]->cate, stack[i]->block);
 		}
-
-		for (Schedule s : cal->allSchs) { s.setRC(0); } // 레퍼런스 카운트 초기화
 
 		if (res.empty()) {
 			system("cls");
@@ -496,9 +496,9 @@ void Classification::makeQueueForPrint2(vector<string> cate, vector<string> bloc
 	}
 
 	for (int i = 0; i < allSchs.size(); i++) {
-		if (checkSchs[i] == targetSize && allSchs[i].getRC() == 0) { // 스케줄에 cate가 다 들어있고, rc가 0인 경우에만 출력! 
+		if (checkSchs[i] == targetSize && dupCheck[i] == 0) { // 스케줄에 cate가 다 들어있고, 해당 일정 res에 없는경우만 출력! 
 			res.push_back(allSchs[i]);
-			allSchs[i].setRC(1);
+			dupCheck[i] = 1; // 해당 일정 res에 넣기 완료
 		}
 	}
 
