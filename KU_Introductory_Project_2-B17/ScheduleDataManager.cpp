@@ -118,6 +118,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 
         if (dupKeySches[k].find(rptK) != dupKeySches[k].end()) {
             if (dupKeySches[k][rptK].getCycle() == s.getCycle())
+                record.clear();
                 continue;
         } //key, rptK, 주기 동일하면 무시
 
