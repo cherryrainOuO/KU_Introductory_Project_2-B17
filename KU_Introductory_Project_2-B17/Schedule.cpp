@@ -1,4 +1,4 @@
-﻿#include "Schedule.h"
+#include "Schedule.h"
 
 Schedule::Schedule() {
 	// 깡통이 없으면 실행이 안돼요
@@ -22,7 +22,7 @@ void Schedule::print()
 	cout << "제목: " << title << "\n";
 	cout << "카테고리: ";
 	for (int i = 0; i < category.size(); i++) {
-		cout << category[i];
+		cout << category[i] << " ";
 	}
 	cout << endl;
 	cout << "날짜: " << startDate << " ~ " << endDate << "\n";

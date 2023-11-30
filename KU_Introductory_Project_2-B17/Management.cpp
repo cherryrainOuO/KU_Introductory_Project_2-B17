@@ -1,4 +1,4 @@
-﻿#include "Management.h"
+#include "Management.h"
 
 void Management::Prompt() {
 	system("cls");
@@ -461,7 +461,12 @@ void Management::addSchedule()
 				string cword;
 				while (ciss >> cword) {
 					if (is_digit(cword) && stoi(cword) >= 0 && stoi(cword) <= cateCount) {
-						cateTemp.push_back(stoi(cword));
+						try {
+							cateTemp.push_back(stoi(cword));
+						}
+						catch (exception e) {
+							cout << "1" << e.what();
+						}
 					}
 					else {
 						cout << "오류: 0 혹은 1~" << cateCount << "까지의 자연수를 입력해주세요.\n\n";
@@ -475,24 +480,25 @@ void Management::addSchedule()
 						break;
 					}
 				}
-
-				sort(cateTemp.begin(), cateTemp.end());
-				wRptVec.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
+				try {
+					sort(cateTemp.begin(), cateTemp.end());
+					cateTemp.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
+				}
+				catch (exception e) {
+					cout << "2" << e.what();
+				}
 
 				while (!cateTemp.empty()) {
 					int cateTT = cateTemp.back();
 					cateTemp.pop_back();
 					if (0 == cateTT) {
 						category.push_back("기본"); // 기본 카테고리
-						flag = 4; // 메모 입력 프롬프트로 이동
-						break;
 					}
 					else if (1 <= cateTT && cateTT <= cateCount) {
 						category.push_back(CDM->GetCategory()->at(cateTT - 1)); // 사용자 지정 카테고리
-						flag = 4; // 메모 입력 프롬프트로 이동
-						break;
 					}
 				}
+				
 				/*
 				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
 					CLS->CategoryAdd(); // 카테고리 추가
@@ -508,14 +514,18 @@ void Management::addSchedule()
 				}
 				*/
 			}
-			cout << "오류: 0 혹은 1~" << cateCount << "까지의 자연수를 입력해주세요.\n\n";
-			cout << "아무 키나 눌러주세요.\n";
-			cout << "_____________________________\n";
-			cout << "> ";
-			if (_getch()) {
-				system("cls");
-				flag = 3; // 현재 프롬프트 반복
+			else {
+				cout << "오류: 0 혹은 1~" << cateCount << "까지의 자연수를 입력해주세요.\n\n";
+				cout << "아무 키나 눌러주세요.\n";
+				cout << "_____________________________\n";
+				cout << "> ";
+				if (_getch()) {
+					system("cls");
+					flag = 3; // 현재 프롬프트 반복
+				}
+				break;
 			}
+			flag = 4; // 메모 입력 프롬프트로 이동
 			break;
 		case 4:
 			cout << "<일정 추가>\n\n";
@@ -1437,7 +1447,7 @@ void Management::mod_or_delSchedule() {
 					}
 				}
 				sort(cateTemp.begin(), cateTemp.end());
-				wRptVec.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
+				cateTemp.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
 
 				while (!cateTemp.empty()) {
 					int cateTT = cateTemp.back();
