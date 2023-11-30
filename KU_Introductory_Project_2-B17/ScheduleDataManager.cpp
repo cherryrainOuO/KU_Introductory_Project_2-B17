@@ -1,4 +1,4 @@
-﻿#include "ScheduleDataManager.h"
+#include "ScheduleDataManager.h"
 
 bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
 {
@@ -61,11 +61,21 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
             }
         }
 
-        //메모가 비워진 경우 (카테고리 개수 - 1) + 5번 인덱스에 빈 문자열 삽입
-        if (record.size() == (SIZE + stoi(record[1]) - 1) - 1) record.insert(record.begin() + stoi(record[1]) - 1 + 5, "");
+        if (checkCNum(record[1])) {
+            //메모가 비워진 경우 (카테고리 개수 - 1) + 5번 인덱스에 빈 문자열 삽입
+            if (record.size() == (SIZE + stoi(record[1]) - 1) - 1) record.insert(record.begin() + stoi(record[1]) - 1 + 5, "");
 
-        //레코드 사이즈가 안 맞는 경우
-        if (record.size() != (SIZE + stoi(record[1]) - 1)) {
+            //레코드 사이즈가 안 맞는 경우
+            if (record.size() != (SIZE + stoi(record[1]) - 1)) {
+                cerr << "오류: 데이터 파일의 형식이 잘못되었습니다.\n";
+                cout << "---------------------------------------------------------------------------------------\n";
+                cout << ws2s(line) << "\n";
+                cout << "---------------------------------------------------------------------------------------\n프로그램을 종료합니다.\n";
+                return false;
+            }
+        
+        }//레코드 사이즈 계산이 되어야 함
+        else {
             cerr << "오류: 데이터 파일의 형식이 잘못되었습니다.\n";
             cout << "---------------------------------------------------------------------------------------\n";
             cout << ws2s(line) << "\n";
@@ -273,7 +283,6 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
     try
     {
         if (!checkT(record[0])) return false; //title
-        if (!checkCNum(record[1])) return false; //numOfCategories
         int nc = stoi(record[1]);
         vector<string> c;
         for (int i = 2; i < nc + 2; i++) {
@@ -315,7 +324,7 @@ bool ScheduleDataManager::checkCNum(string data)
     regex r("[0-9]+");
     if (!regex_match(data.cbegin(), data.cend(), r))
         return false;
-    if (stoi(data) < 1)
+    else if (stoi(data) < 1)
         return false;
     return true;
 }
