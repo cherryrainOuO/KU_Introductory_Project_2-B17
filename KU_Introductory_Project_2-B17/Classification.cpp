@@ -135,6 +135,8 @@ void Classification::PrintSchedule_ByCategory(){
 	cout << "카테고리 일정 보기" << endl << endl;
 	cout << "0. 기본" << endl;
 	CDM->CategoryPrint();
+
+	cout << "\n";
 	cout << "원하는 카테고리를 선택하세요." << endl;
 	cout << "카테고리는 & | ~ 연산 기호를 조합하여 여러개 입력할 수도 있습니다.\n";
 	cout << "연산의 우선순위 : not(~) > and(&) > or(|)\n";
