@@ -41,6 +41,7 @@ private:
 	bool checkM(string data); //memo
 	bool checkCy(string data); //cycle
 	bool checkKey(string data); //key
+	bool checkRptK(string data, string data2);
 	bool checkCont(Schedule s);
 	
 	//날짜 관련 연산
