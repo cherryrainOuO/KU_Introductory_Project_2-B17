@@ -1,4 +1,4 @@
-﻿#include "Classification.h"
+#include "Classification.h"
 
 
 void Classification::Prompt_CategoryMenu()
@@ -135,6 +135,8 @@ void Classification::PrintSchedule_ByCategory(){
 	cout << "카테고리 일정 보기" << endl << endl;
 	cout << "0. 기본" << endl;
 	CDM->CategoryPrint();
+
+	cout << "\n";
 	cout << "원하는 카테고리를 선택하세요." << endl;
 	cout << "카테고리는 & | ~ 연산 기호를 조합하여 여러개 입력할 수도 있습니다.\n";
 	cout << "연산의 우선순위 : not(~) > and(&) > or(|)\n";
@@ -152,6 +154,9 @@ void Classification::PrintSchedule_ByCategory(){
 		&& kwd.find('|') == string::npos)
 	{ // 단일 번호의 경우
 		try {
+			for (int i = 0; i < kwd.size(); i++) {
+				if(isdigit(kwd[i]) == 0) throw out_of_range("잘못함"); // 입력이 숫자인지 체크 (stoi 만으로는 체크를 못하더라구요)
+			}
 			int ikwd = stoi(kwd);
 		}
 		catch (exception e) {
@@ -196,8 +201,16 @@ void Classification::PrintSchedule_ByCategory(){
 
 			makeQueueForPrint(cateKwd);
 
-			if (res.empty())
-				cout << "\"" << cateKwd << "\" 카테고리를 포함하고 있는 일정이 없습니다." << endl << endl;
+			if (res.empty()) {
+				system("cls");
+
+				cout << "\"" << cateKwd << "\" 카테고리를 포함하고 있는 일정이 없습니다." << endl << endl; 
+				// 이거 밑 부분 없으면 그냥 넘어가져서 추가했어요!!
+				cout << "아무 키나 눌러주세요.\n"; 
+				cout << "-------------------------------------\n";
+				cout << "> ";
+				_getch(); // 아무 키나 입력 대기
+			}
 			else {
 				// 언제 이후만 이전만 입력 프롬프트
 				// 아직 makeQueueForPrint랑 연동이 덜 돼서 실행 시에 여러 번 호출되면 반복 출력됩니다.
@@ -239,8 +252,11 @@ vector<string> Classification::split(string str, string delims)
 			temp = "";
 			result.push_back("|");
 		}
-		else {
+		else if(isdigit(str[i]) != 0) { // 피연산자가 정수인지 체크
 			temp += str[i];
+		}
+		else {
+			throw out_of_range("잘못함");
 		}
 	}
 
@@ -296,8 +312,11 @@ void Classification::Caculate_ByOperators() {
 
 		vector<string> splitedKwd = split(kwd, "~&|");
 
-		for (string s : splitedKwd) cout << s << " ";
-		cout << "\n";
+		//for (string s : splitedKwd) cout << s << " ";
+		//cout << "\n";
+
+		if(splitedKwd.front() == "&" || splitedKwd.front() == "|") throw out_of_range("잘못함"); // 첫번째 글자가 ~ 를 제외한 연산자면 잘못된 연산
+		if(splitedKwd.back() == "~" || splitedKwd.back() == "&" || splitedKwd.back() == "|") throw out_of_range("잘못함"); // 마지막 글자가 연산자면 잘못된 연산
 
 		for (int i = 0; i < splitedKwd.size(); i++) {
 			if (splitedKwd[i] == "~") {
@@ -333,8 +352,8 @@ void Classification::Caculate_ByOperators() {
 			userOperators.pop_back();
 		}
 
-		for (string s : postfix) cout << s << " ";
-		cout << "\n";
+		//for (string s : postfix) cout << s << " ";
+		//cout << "\n";
 
 		vector<CategoryComponent*> stack;
 		CategoryComponent* tempLeft;
@@ -383,33 +402,45 @@ void Classification::Caculate_ByOperators() {
 			throw out_of_range("잘못함");
 		}
 
+		dupCheck.assign(cal->allSchs.size(), 0);
 
 		for (int i = 0; i < stack.size(); i++) {
 			/* test */
-			cout << "test ok : ";
-			for (string s : stack[i]->cate) cout << s << " ";
-			cout << "\n";
-			cout << "test block : ";
-			for (string s : stack[i]->block) cout << s << " ";
-			cout << "\n---------or---------\n";
+			//cout << "test ok : ";
+			//for (string s : stack[i]->cate) cout << s << " ";
+			//cout << "\n";
+			//cout << "test block : ";
+			//for (string s : stack[i]->block) cout << s << " ";
+			//cout << "\n---------or---------\n";
 
 			makeQueueForPrint2(stack[i]->cate, stack[i]->block);
 		}
 
-		for (Schedule s : cal->allSchs) { s.setRC(0); } // 레퍼런스 카운트 초기화
+		if (res.empty()) {
+			system("cls");
 
-		if (res.empty())
 			cout << "\"" << kwd << "\" 카테고리를 포함하고 있는 일정이 없습니다." << endl << endl;
+
+			// 이거 밑 부분 없으면 그냥 넘어가져서 추가했어요!!
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "-------------------------------------\n";
+			cout << "> ";
+			_getch(); // 아무 키나 입력 대기
+		}
 		else {
+			system("cls");
+
 			// 언제 이후만 이전만 입력 프롬프트
 			// 아직 makeQueueForPrint랑 연동이 덜 돼서 실행 시에 여러 번 호출되면 반복 출력됩니다.
 			Prompt_after_or_before_When(res, kwd);
 		}
 
-		cout << "아무 키나 눌러주세요.\n";
+		
+
+		/*cout << "아무 키나 눌러주세요.\n";
 		cout << "-------------------------------------\n";
 		cout << "> ";
-		_getch(); // 아무 키나 입력 대기
+		_getch(); // 아무 키나 입력 대기*/
 
 		Prompt_CategoryMenu();
 	}
@@ -440,7 +471,7 @@ void Classification::makeQueueForPrint2(vector<string> cate, vector<string> bloc
 					
 		for (string c : cate) { 
 
-			c = (c == "0") ? "기본" : CDM->GetValue(stoi(c) - 1); // 여기서 모든 cate가 정상인지 체크 => 숫자가 아닌 다른 이상한 거 들어있을 때 catch 되는지 테스트 필요
+			c = (c == "0") ? "기본" : CDM->GetValue(stoi(c) - 1); // 여기서 모든 cate가 정상인지 체크 
 
 			for (string origin : allSchs[i].getCategory()) { // 해당 스케줄에는 cate가 전부 들어있어야 함.
 
@@ -453,7 +484,7 @@ void Classification::makeQueueForPrint2(vector<string> cate, vector<string> bloc
 		}
 
 		for (string b : block) {
-			b = (b == "0") ? "기본" : CDM->GetValue(stoi(b) - 1); // 여기서 모든 block 정상인지 체크. 따라서 -1 미리 확인해도 break 하면 안됨!
+			b = (b == "0") ? "기본" : CDM->GetValue(stoi(b) - 1); // 여기서 모든 block 정상인지 체크. 따라서 잘못된 거 미리 확인해도 break 하면 안됨!
 
 			for (string origin : allSchs[i].getCategory()) {
 
@@ -467,9 +498,9 @@ void Classification::makeQueueForPrint2(vector<string> cate, vector<string> bloc
 	}
 
 	for (int i = 0; i < allSchs.size(); i++) {
-		if (checkSchs[i] == targetSize && allSchs[i].getRC() == 0) { // 스케줄에 cate가 다 들어있고, rc가 0인 경우에만 출력! 
-			res.push(allSchs[i]);
-			allSchs[i].setRC(1);
+		if (checkSchs[i] == targetSize && dupCheck[i] == 0) { // 스케줄에 cate가 다 들어있고, 해당 일정 res에 없는경우만 출력! 
+			res.push_back(allSchs[i]);
+			dupCheck[i] = 1; // 해당 일정 res에 넣기 완료
 		}
 	}
 
@@ -481,7 +512,7 @@ void Classification::makeQueueForPrint(string str) {
 
 		for (string origin : s.getCategory()) {
 			if (origin.compare(str) == 0) {
-				res.push(s);
+				res.push_back(s);
 
 				break;
 			}
@@ -703,7 +734,7 @@ void Classification::Prompt_CategoryEditOrRemove(int _cateNum)
 	}
 }
 
-vector<string> split_by_space(string str, char del) {
+vector<string> Classification::split_by_space(string str, char del) {
 	istringstream iss(str);
 	string buf;
 	vector<string> result;
@@ -714,9 +745,10 @@ vector<string> split_by_space(string str, char del) {
 	return result;
 }
 
-void Classification::Prompt_after_or_before_When(queue<Schedule> res, string cateKwd) {
+void Classification::Prompt_after_or_before_When(vector<Schedule> res, string cateKwd) {
 
-	queue<Schedule> r = res;
+	vector<Schedule> r = res;
+	this->res.clear(); // clear해서 다음번에 다시왔을 때 옛날에 검색했던게 또 안뜨도록 했습니당
 
 	cout << "카테고리 \"" << cateKwd << "\"(으)로 검색되는 일정 중\n";
 	cout << "\"언제 이후만\" 과 \"언제 이전만\" 이 출력 되기를 원하신다면\n";
@@ -792,8 +824,8 @@ void Classification::Prompt_after_or_before_When(queue<Schedule> res, string cat
 			for (int i = 0; i < res.size(); i++) {
 				if (r.front().getEndDate() >= afterDate
 					&& r.front().getEndDate() <= beforeDate)
-					r.push(r.front());
-				r.pop();
+					r.push_back(r.front());
+				r.erase(r.begin()); 
 			}
 		}
 	}
@@ -815,7 +847,7 @@ void Classification::Prompt_after_or_before_When(queue<Schedule> res, string cat
 		cout << "카테고리 \"" << cateKwd << "\"에 해당되는 일정들입니다.\n\n";
 		while (!r.empty()) {
 			r.front().print();
-			r.pop();
+			r.erase(r.begin());
 		}
 	}
 	cout << "아무 키나 눌러주세요.\n";
