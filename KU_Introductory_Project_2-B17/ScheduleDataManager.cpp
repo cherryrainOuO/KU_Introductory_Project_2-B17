@@ -443,7 +443,7 @@ bool ScheduleDataManager::checkKey(string data)
 bool ScheduleDataManager::checkRptK(string rk, string cy)
 {
     regex r("[0-9]+");
-    if (!regex_match(rk.cbegin(), cy.cend(), r))
+    if (!regex_match(rk.cbegin(), rk.cend(), r))
         return false;
     if (stoi(cy) == 0 && stoi(rk) != 0)
         return false;
