@@ -2046,14 +2046,14 @@ void Management::mod_or_delSchedule() {
 								while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 									string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
-									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key, i);   //기존 key 값 유지
+									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key, i + 1);   //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 									endDateYear++;
 									anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 								}
 								if (endDateYear <= FINAL_YEAR) {	// 2월 29일이 있는 연도인 경우
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key, i);   //기존 key 값 유지
+									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key, i + 1);   //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 								}
 							}
@@ -2091,7 +2091,7 @@ void Management::mod_or_delSchedule() {
 								while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 									string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
-									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key, i);		//왜 cycle 0
+									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key, i + 1);		//왜 cycle 0
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 									if (++endDateMonth > 12) {
 										endDateYear++;
@@ -2102,7 +2102,7 @@ void Management::mod_or_delSchedule() {
 								}
 								if (endDateYear <= FINAL_YEAR) {	// 해당 날짜가 있는 달인 경우
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key, i);   //기존 key 값 유지
+									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key, i + 1);   //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 								}
 							}
@@ -2140,7 +2140,7 @@ void Management::mod_or_delSchedule() {
 								string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
 								if (endDateYear <= FINAL_YEAR) {
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
-									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key, i); //기존 key 값 유지
+									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key, i + 1); //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 								}
 							}
