@@ -456,6 +456,7 @@ void Management::addSchedule()
 			/******************************************************
 			*******************************************************/
 			else if (menu.size() >= 1) {
+				int winput = 0;
 				vector<int> cateTemp;
 				istringstream ciss(menu);
 				string cword;
@@ -475,44 +476,35 @@ void Management::addSchedule()
 						cout << "> ";
 						if (_getch()) {
 							system("cls");
-							flag = 3; // 현재 프롬프트 반복
+							winput = 1; // 현재 프롬프트 반복
 						}
 						break;
 					}
 				}
-				try {
-					sort(cateTemp.begin(), cateTemp.end());
-					cateTemp.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
+				if (winput == 1) {
+					flag = 3;
+					break;
 				}
-				catch (exception e) {
-					cout << "2" << e.what();
-				}
+				else {
+					try {
+						sort(cateTemp.begin(), cateTemp.end());
+						cateTemp.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
+					}
+					catch (exception e) {
+						cout << "2" << e.what();
+					}
 
-				while (!cateTemp.empty()) {
-					int cateTT = cateTemp.back();
-					cateTemp.pop_back();
-					if (0 == cateTT) {
-						category.push_back("기본"); // 기본 카테고리
-					}
-					else if (1 <= cateTT && cateTT <= cateCount) {
-						category.push_back(CDM->GetCategory()->at(cateTT - 1)); // 사용자 지정 카테고리
-					}
-				}
-				
-				/*
-				else if (is_digit(menu) && stoi(menu) == cateCount + 1) {
-					CLS->CategoryAdd(); // 카테고리 추가
-					if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
-						category = CDM->GetCategory()->at(CDM->GetSize() - 1); // 새로 추가한 카테고리
-						flag = 4; // 메모 입력 프롬프트로 이동
-						break;
-					}
-					else {
-						flag = 3;//현재 프롬프트 반복
-						break;
+					while (!cateTemp.empty()) {
+						int cateTT = cateTemp.back();
+						cateTemp.pop_back();
+						if (0 == cateTT) {
+							category.push_back("기본"); // 기본 카테고리
+						}
+						else if (1 <= cateTT && cateTT <= cateCount) {
+							category.push_back(CDM->GetCategory()->at(cateTT - 1)); // 사용자 지정 카테고리
+						}
 					}
 				}
-				*/
 			}
 			else {
 				cout << "오류: 0 혹은 1~" << cateCount << "까지의 자연수를 입력해주세요.\n\n";
@@ -1427,6 +1419,7 @@ void Management::mod_or_delSchedule() {
 				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else if (menu.size() >= 1) {
+				int winput = 0;
 				vector<int> cateTemp;
 				istringstream ciss(menu);
 				string cword;
@@ -1441,10 +1434,14 @@ void Management::mod_or_delSchedule() {
 						cout << "> ";
 						if (_getch()) {
 							system("cls");
-							flag = 3; // 현재 프롬프트 반복
+							winput = 1;
 						}
 						break;
 					}
+				}
+				if (winput == 1) {
+					flag = 3;
+					break;
 				}
 				sort(cateTemp.begin(), cateTemp.end());
 				cateTemp.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
