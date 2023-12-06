@@ -35,6 +35,7 @@ private:
 	int getDiffDate(string startDate, string endDate);
 	string calcStartDate(string endDate, int diffDate);
 	int findLastDayofMonth(int endDateYear, int endDateMonth);
+	bool isPreviousDate(string date1, string date2);
 
 public:
 	Management(Calender* c, CategoryDataManager* _cateManager, Classification* _class, Category* _cate) { cal = c; CDM = _cateManager; CLS = _class; cate = _cate; };
