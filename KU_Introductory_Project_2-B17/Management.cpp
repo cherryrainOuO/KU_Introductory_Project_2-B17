@@ -82,7 +82,7 @@ int Management::isValidDate(string dateStr) {
 	}
 	return -1;
 }
-*/ 
+*/
 
 bool Management::is_digit(string str) {
 	return atoi(str.c_str()) != 0 || str.compare("0") == 0;
@@ -923,8 +923,6 @@ void Management::addSchedule()
 		}
 	}
 
-	printf("rptEndDate : %s\n", rptEndDate);
-
 	int diffDate = 0;
 	Schedule* newDate = nullptr;
 	switch (cycle) {
@@ -962,7 +960,7 @@ void Management::addSchedule()
 				endDateYear++;
 				anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 			}
-			
+
 			if (endDateYear <= FINAL_YEAR && isPreviousDate(anotherEndDate, rptEndDate)) {	// 2월 29일이 있는 연도인 경우
 				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
 				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1, i + 1);
@@ -1333,7 +1331,7 @@ void Management::mod_or_delSchedule() {
 					}
 					else {
 
-						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate)>0) {
+						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate) > 0) {
 							system("cls");
 							cout << "오류: 종료일은 반복종료일과 같거나, 그 이전이여야 합니다.\n\n";
 							cout << "아무 키나 눌러주세요.\n";
@@ -1616,7 +1614,7 @@ void Management::mod_or_delSchedule() {
 					memo[0] != ' ' && memo.back() != ' ') || memo.size() == 0) {
 					//if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
 					//	memo[0] != ' ' && memo.back() != ' ') {
-					
+
 					key = sche[selectedNum]->getKey();
 					rptK = sche[selectedNum]->getRptK();
 
@@ -1636,7 +1634,7 @@ void Management::mod_or_delSchedule() {
 					}
 
 
-					
+
 					sche[selectedNum]->setMemo(memo);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					SDM.loadDataFile(*cal, *cate);
