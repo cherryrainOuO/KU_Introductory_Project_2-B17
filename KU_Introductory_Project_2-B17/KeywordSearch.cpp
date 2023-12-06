@@ -112,12 +112,14 @@ void KeywordSearch::Prompt_after_or_before_When(queue<Schedule> res, string kwd)
 	string whendates;
 	vector<string> dates;
 	string afterDate, beforeDate;
+	regex datesform(R"(\S+\s+\S+)");
+
 	getline(cin, whendates);
 	system("cls");
 	if (whendates == "^C")
 		search();
 
-	else if (whendates.find(' ') != std::string::npos) {
+	else if (regex_match(whendates, datesform)) {
 		dates = split_by_space(whendates, ' ');
 		afterDate = dates[0];
 		beforeDate = dates[1];
@@ -129,16 +131,18 @@ void KeywordSearch::Prompt_after_or_before_When(queue<Schedule> res, string kwd)
 
 		int y1, m1, d1, y2, m2, d2;
 		bool b = true; // afterDate < beforeDate
-		y1 = stoi(afterDate.substr(0, 4));
-		m1 = stoi(afterDate.substr(5, 2));
-		d1 = stoi(afterDate.substr(8, 2));
-		y2 = stoi(beforeDate.substr(0, 4));
-		m2 = stoi(beforeDate.substr(5, 2));
-		d2 = stoi(beforeDate.substr(8, 2));
+		if (afterDate.length() == 10 && beforeDate.length() == 10) {
+			y1 = stoi(afterDate.substr(0, 4));
+			m1 = stoi(afterDate.substr(5, 2));
+			d1 = stoi(afterDate.substr(8, 2));
+			y2 = stoi(beforeDate.substr(0, 4));
+			m2 = stoi(beforeDate.substr(5, 2));
+			d2 = stoi(beforeDate.substr(8, 2));
 
-		if ((y1 > y2) || ((y1 == y2) && (m1 > m2))
-			|| ((y1 == y2) && (m1 == m2) && (d1 > d2)))
-			b = false;
+			if ((y1 > y2) || ((y1 == y2) && (m1 > m2))
+				|| ((y1 == y2) && (m1 == m2) && (d1 > d2)))
+				b = false;
+		}
 
 		if ((cal->isValidDate(afterDate) == -1) || (cal->isValidDate(beforeDate) == -1) || b == false) {
 			system("cls");
@@ -162,6 +166,18 @@ void KeywordSearch::Prompt_after_or_before_When(queue<Schedule> res, string kwd)
 				system("cls");
 				Prompt_after_or_before_When(res, kwd);
 				//return;
+			}
+		}
+		else if (b == false) {
+			system("cls");
+			cout << "오류: \"언제 이전만\"의 날짜가 \"언제 이후만\"의 날짜보다 앞서,\n      기간이 존재하지 않습니다.\n";
+			cout << "아무 키나 눌러주세요.\n";
+			cout << "_____________________________\n";
+			cout << "> ";
+			if (_getch()) {
+				system("cls");
+				return;
+				// Prompt_after_or_before_When(res, cateKwd);
 			}
 		}
 		else {
@@ -188,7 +204,9 @@ void KeywordSearch::Prompt_after_or_before_When(queue<Schedule> res, string kwd)
 	if (r.empty())
 		cout << "\"" << kwd << "\" 키워드로 검색되는 일정 중 " << afterDate << " ~ " << beforeDate << " 날짜에 해당하는 일정이 없습니다.\n\n";
 	else {
-		cout << "키워드 \"" << kwd << "\"에 해당되는 일정들입니다.\n\n";
+		cout << "키워드 \"" << kwd << "\"에 해당되는 일정들입니다.\n";
+		cout << afterDate << " ~ " << beforeDate << "\n\n";
+
 		while (!r.empty()) {
 			r.front().print();
 			r.pop();
