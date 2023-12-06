@@ -111,9 +111,11 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         }
         if (dupKeySches.find(k) != dupKeySches.end()) {
             c.cycle_per_keys[k] = max(c.cycle_per_keys[k], cy);
+            max_cy_k[k] = max(c.cycle_per_keys[k], cy);
         }
         else {
             c.cycle_per_keys[k] = cy;
+            max_cy_k[k] = cy;
         }
 
         if (dupKeySches[k].find(rptK) != dupKeySches[k].end()) {
@@ -145,6 +147,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         record.clear();
     }
     dupKeySches.clear();
+    max_cy_k.clear();
     file.close();
     return true;
 }
@@ -298,7 +301,7 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         if (!checkD2(record[nc + 3], record[nc + 5])) return false; //endDate <= repeatEndDate
         if (!checkCy(record[nc + 6])) return false; // cycle
         if (!checkKey(record[nc + 7])) return false; //key
-        if (!checkRptK(record[nc + 8], record[nc + 6])) return false; //subKey
+        if (!checkRptK(record[nc + 7], record[nc + 8], record[nc + 6])) return false; //subKey
     }
     catch (const exception& e)
     {
@@ -446,7 +449,7 @@ bool ScheduleDataManager::checkRptK(string k, string rk, string cy)
     regex r("[0-9]+");
     if (!regex_match(rk.cbegin(), rk.cend(), r))
         return false;
-    if (stoi(cy) == 0 && stoi(rk) != 0)
+    if (stoi(cy) == 0 && max_cy_k.find(stoi(k)) == max_cy_k.end() && stoi(rk) != 0)
         return false;
     else {
         if (stoi(rk) < 0)
