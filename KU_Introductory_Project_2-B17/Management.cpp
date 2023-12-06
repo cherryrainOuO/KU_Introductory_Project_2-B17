@@ -1431,7 +1431,6 @@ void Management::mod_or_delSchedule() {
 			cout << "0. 기본\n";
 			CDM->CategoryPrint();
 			cateCount = CDM->GetSize();
-			//cout << cateCount + 1 << ". 새 카테고리 추가\n\n";
 			cout << "(여러 카테고리의 입력은 공백류로 구분합니다.)" << endl;
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
 			cout << "일정의 새로운 카테고리를 선택하세요.\n";
@@ -1466,82 +1465,36 @@ void Management::mod_or_delSchedule() {
 					}
 				}
 				if (winput == 1) {
-					flag = 3;
+					flag = 6;
 					break;
 				}
 				sort(cateTemp.begin(), cateTemp.end());
 				cateTemp.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
-
+				category.clear();
 				while (!cateTemp.empty()) {
 					int cateTT = cateTemp.back();
 					cateTemp.pop_back();
+
 					if (0 == cateTT) {
 						key = sche[selectedNum]->getKey();
-						/*
-						for (int i = 0; i < cal->allSchs.size(); i++) {
-							if (cal->allSchs[i].getKey() == key) {
-								cal->allSchs[i].setCategory("기본");
-							}
-						}
-						*/
 						category.push_back("기본");
-						/*
-						sche[selectedNum]->setCategory("기본"); // 기본 카테고리
-						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						SDM.loadDataFile(*cal, *cate);
-						CDM->loadDataFile(*cate);
-						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-						*/
 					}
+
 					else if (1 <= cateTT && cateTT <= cateCount) {
 						key = sche[selectedNum]->getKey();
-						/*
-						for (int i = 0; i < cal->allSchs.size(); i++) {
-							if (cal->allSchs[i].getKey() == key) {
-								cal->allSchs[i].setCategory(CDM->GetCategory()->at(stoi(menu) - 1));
-							}
-						}
-						*/
 						category.push_back(CDM->GetCategory()->at(cateTT - 1));
-						/*
-						sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
-						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						SDM.loadDataFile(*cal, *cate);
-						CDM->loadDataFile(*cate);
-						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-						*/
 					}
 					for (int i = 0; i < cal->allSchs.size(); i++) {
 						if (cal->allSchs[i].getKey() == key) {
 							cal->allSchs[i].setCategory(category);
 						}
 					}
+
 					sche[selectedNum]->setCategory(category); // 사용자 지정 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					SDM.loadDataFile(*cal, *cate);
 					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-					/*
-					else if (stoi(menu) == cateCount + 1) {
-						CLS->CategoryAdd(); // 카테고리 추가
-						if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
-							key = sche[selectedNum]->getKey();
-							for (int i = 0; i < cal->allSchs.size(); i++) {
-								if (cal->allSchs[i].getKey() == key) {
-									cal->allSchs[i].setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1));
-								}
-							}
-							sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
-							SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-							SDM.loadDataFile(*cal, *cate);
-							CDM->loadDataFile(*cate);
-							flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-						}
-						else {
-							flag = 6; // 현재 프롬프트 반복
-						}
-					}
-					*/
 				}
 			}
 			else {
@@ -1550,7 +1503,7 @@ void Management::mod_or_delSchedule() {
 				cout << "_____________________________\n";
 				cout << "> ";
 				if (_getch()) {
-					system("cls");
+					//system("cls");
 					flag = 6; // 현재 프롬프트 반복
 				}
 			}
