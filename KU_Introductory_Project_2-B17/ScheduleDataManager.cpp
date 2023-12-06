@@ -119,9 +119,11 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         }
 
         if (dupKeySches[k].find(rptK) != dupKeySches[k].end()) {
-            if (dupKeySches[k][rptK].getCycle() == s.getCycle() && s.getCycle() != 0)
+            if (dupKeySches[k][rptK].getCycle() == cy && cy != 0) {
                 record.clear();
                 continue;
+            }
+
         } //key, rptK, 주기 동일하면 무시
 
         dupKeySches[k][rptK] = s; //키가 중복될 때 검사하기 위해
@@ -293,7 +295,7 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
             c.push_back(record[i]);
         }
         if (!checkC(c, cates)) return false; //category
-        if (!checkD(record[nc + 2])) return false; //startDate
+        if (!checkD(record[nc + 2])) return false; //startdate
         if (!checkD(record[nc + 3])) return false; //endDate
         if (!checkD2(record[nc + 2], record[nc + 3])) return false; //startDate <= endDate
         if (!checkM(record[nc + 4])) return false; // memo
@@ -308,7 +310,6 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         //nullpointerException
         return false;
     }
-    cout << "이것이 뜬다면 맞는 일정이다앙";
     return true;
 }
 
@@ -449,12 +450,12 @@ bool ScheduleDataManager::checkRptK(string k, string rk, string cy)
     regex r("[0-9]+");
     if (!regex_match(rk.cbegin(), rk.cend(), r))
         return false;
-    if (stoi(cy) == 0 && max_cy_k.find(stoi(k)) == max_cy_k.end() && stoi(rk) != 0)
-        return false;
-    else {
-        if (stoi(rk) < 0)
+    if (stoi(cy) == 0 && stoi(rk) != 0) {
+        if (max_cy_k.find(stoi(k)) == max_cy_k.end() || max_cy_k[stoi(k)] == 0)
             return false;
     }
+    if (stoi(rk) < 0)
+        return false;
     return true;
 }
 
