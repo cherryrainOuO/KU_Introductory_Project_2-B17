@@ -117,7 +117,7 @@ bool ScheduleDataManager::loadDataFile(Calender& c, Category& cat)
         }
 
         if (dupKeySches[k].find(rptK) != dupKeySches[k].end()) {
-            if (dupKeySches[k][rptK].getCycle() == s.getCycle())
+            if (dupKeySches[k][rptK].getCycle() == s.getCycle() && s.getCycle() != 0)
                 record.clear();
                 continue;
         } //key, rptK, 주기 동일하면 무시
@@ -305,6 +305,7 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         //nullpointerException
         return false;
     }
+    cout << "이것이 뜬다면 맞는 일정이다앙";
     return true;
 }
 
@@ -440,7 +441,7 @@ bool ScheduleDataManager::checkKey(string data)
     return true;
 }
 
-bool ScheduleDataManager::checkRptK(string rk, string cy)
+bool ScheduleDataManager::checkRptK(string k, string rk, string cy)
 {
     regex r("[0-9]+");
     if (!regex_match(rk.cbegin(), rk.cend(), r))
@@ -458,11 +459,18 @@ bool ScheduleDataManager::checkCont(Schedule s)
 {
     //key값이 같은 경우 동일해야하는 요소: 제목, 카테고리 개수, 카테고리, 시작일~종료일 간격
     int key = s.getKey();
-    int rK = s.getRptK();
     if (dupKeySches.find(key) != dupKeySches.end()) {
-        Schedule s2(dupKeySches[key][0]);
-        if (s2.getTitle().compare(s.getTitle()) != 0)
+        int rk;
+        for (int i = 0; i < 367; i++) {
+            if (dupKeySches[key].find(i) != dupKeySches[key].end()) {
+                rk = i;
+                break;
+            }
+        }
+        Schedule s2 = dupKeySches[key][rk];
+        if (s2.getTitle().compare(s.getTitle()) != 0) {
             return false;
+        }
         if (s2.getCategory().size() != s.getCategory().size())
             return false;
         for (int i = 0; i < s.getCategory().size(); i++) {
@@ -475,11 +483,6 @@ bool ScheduleDataManager::checkCont(Schedule s)
         if (s2.getCycle() > 0 && s.getCycle() > 0) //반복 주기 > 0일 때 반복종료일 동일
             if (s2.getRptEndDate().compare(s.getRptEndDate()) != 0)
                 return false;
-        if (s2.getCycle() == 0 && s.getCycle() == 0) {
-            if (s2.getStartDate().substr(5, 5).compare(s.getStartDate().substr(5, 5)) != 0
-                || s2.getEndDate().substr(5, 5).compare(s.getEndDate().substr(5, 5)) != 0)
-                return false;
-        }
     }
     return true;
 }

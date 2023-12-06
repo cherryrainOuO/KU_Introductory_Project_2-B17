@@ -27,6 +27,7 @@ public:
 
 private:
 	map<int, map<int, Schedule>> dupKeySches;
+	map<int, int> max_cy_k;
 
 	wstring s2ws(const string& str);
 	string ws2s(const wstring& wstr);
@@ -41,7 +42,7 @@ private:
 	bool checkM(string data); //memo
 	bool checkCy(string data); //cycle
 	bool checkKey(string data); //key
-	bool checkRptK(string data, string data2);
+	bool checkRptK(string data, string data2, string data3);
 	bool checkCont(Schedule s);
 	
 	//날짜 관련 연산
