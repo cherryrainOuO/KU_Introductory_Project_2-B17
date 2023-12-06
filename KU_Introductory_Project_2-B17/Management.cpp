@@ -1503,7 +1503,7 @@ void Management::mod_or_delSchedule() {
 				cout << "_____________________________\n";
 				cout << "> ";
 				if (_getch()) {
-					//system("cls");
+					system("cls");
 					flag = 6; // 현재 프롬프트 반복
 				}
 			}
