@@ -1484,18 +1484,19 @@ void Management::mod_or_delSchedule() {
 						key = sche[selectedNum]->getKey();
 						category.push_back(CDM->GetCategory()->at(cateTT - 1));
 					}
-					for (int i = 0; i < cal->allSchs.size(); i++) {
-						if (cal->allSchs[i].getKey() == key) {
-							cal->allSchs[i].setCategory(category);
-						}
-					}
-
-					sche[selectedNum]->setCategory(category); // 사용자 지정 카테고리
-					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					SDM.loadDataFile(*cal, *cate);
-					CDM->loadDataFile(*cate);
-					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
+					
 				}
+				for (int i = 0; i < cal->allSchs.size(); i++) {
+					if (cal->allSchs[i].getKey() == key) {
+						cal->allSchs[i].setCategory(category);
+					}
+				}
+
+				sche[selectedNum]->setCategory(category); // 사용자 지정 카테고리
+				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+				SDM.loadDataFile(*cal, *cate);
+				CDM->loadDataFile(*cate);
+				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
 				cout << "오류: 0 혹은 1~" << cateCount << "까지의 자연수를 입력해주세요.\n\n";
