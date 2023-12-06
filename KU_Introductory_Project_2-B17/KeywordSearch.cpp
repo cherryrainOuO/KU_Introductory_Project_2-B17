@@ -75,7 +75,7 @@ void KeywordSearch::print()
 		}
 		cout << "---------------------------------------------\n";
 	}*/
-	Prompt_after_or_before_When(res, kwd);
+	Prompt_after_or_before_When(kwd);
 	cout << "(*메인 화면으로 돌아가려면 아무 키나 입력하세요.)\n";
 	Sleep(100);
 	_getch();
@@ -89,9 +89,7 @@ void KeywordSearch::removeSpace(string& s)
 }
 
 
-void KeywordSearch::Prompt_after_or_before_When(queue<Schedule> res, string kwd) {
-
-	queue<Schedule> r = res;
+void KeywordSearch::Prompt_after_or_before_When(string kwd) {
 
 	cout << "키워드 \"" << kwd << "\"(으)로 검색되는 일정 중\n";
 	cout << "\"언제 이후만\" 과 \"언제 이전만\" 이 출력 되기를 원하신다면\n";
@@ -152,7 +150,7 @@ void KeywordSearch::Prompt_after_or_before_When(queue<Schedule> res, string kwd)
 			cout << "> ";
 			if (_getch()) {
 				system("cls");
-				Prompt_after_or_before_When(res, kwd);
+				Prompt_after_or_before_When(kwd);
 				//return;
 			}
 		}
@@ -164,7 +162,7 @@ void KeywordSearch::Prompt_after_or_before_When(queue<Schedule> res, string kwd)
 			cout << "> ";
 			if (_getch()) {
 				system("cls");
-				Prompt_after_or_before_When(res, kwd);
+				Prompt_after_or_before_When(kwd);
 				//return;
 			}
 		}
@@ -182,10 +180,10 @@ void KeywordSearch::Prompt_after_or_before_When(queue<Schedule> res, string kwd)
 		}
 		else {
 			for (int i = 0; i < res.size(); i++) {
-				if (r.front().getEndDate() >= afterDate
-					&& r.front().getEndDate() <= beforeDate)
-					r.push(r.front());
-				r.pop();
+				if (res.front().getEndDate() >= afterDate
+					&& res.front().getEndDate() <= beforeDate)
+					res.push(res.front());
+				res.pop();
 			}
 		}
 	}
@@ -197,19 +195,19 @@ void KeywordSearch::Prompt_after_or_before_When(queue<Schedule> res, string kwd)
 		cout << "> ";
 		if (_getch()) {
 			system("cls");
-			Prompt_after_or_before_When(res, kwd);
+			Prompt_after_or_before_When(kwd);
 			//return;
 		}
 	}
-	if (r.empty())
+	if (res.empty())
 		cout << "\"" << kwd << "\" 키워드로 검색되는 일정 중 " << afterDate << " ~ " << beforeDate << " 날짜에 해당하는 일정이 없습니다.\n\n";
 	else {
 		cout << "키워드 \"" << kwd << "\"에 해당되는 일정들입니다.\n";
 		cout << afterDate << " ~ " << beforeDate << "\n\n";
 
-		while (!r.empty()) {
-			r.front().print();
-			r.pop();
+		while (!res.empty()) {
+			res.front().print();
+			res.pop();
 		}
 	}
 	cout << "아무 키나 눌러주세요.\n";

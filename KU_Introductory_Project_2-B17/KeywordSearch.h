@@ -18,7 +18,7 @@ private:
 	void print();
 	void removeSpace(string& s);
 	vector<string> split_by_space(string str, char del);
-	void Prompt_after_or_before_When(queue<Schedule> res, string cateKwd);
+	void Prompt_after_or_before_When(string cateKwd);
 
 public:
 	/*constructor*/
