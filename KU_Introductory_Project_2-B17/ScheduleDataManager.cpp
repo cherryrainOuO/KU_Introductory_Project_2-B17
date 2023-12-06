@@ -298,7 +298,7 @@ bool ScheduleDataManager::isRight(vector<string> record, vector<string>* cates)
         if (!checkD2(record[nc + 3], record[nc + 5])) return false; //endDate <= repeatEndDate
         if (!checkCy(record[nc + 6])) return false; // cycle
         if (!checkKey(record[nc + 7])) return false; //key
-        if (!checkKey(record[nc + 8])) return false; //subKey
+        if (!checkRptK(record[nc + 8], record[nc + 6])) return false; //subKey
     }
     catch (const exception& e)
     {
@@ -437,6 +437,20 @@ bool ScheduleDataManager::checkKey(string data)
         return false;
     if (stoi(data) < 0)
         return false;
+    return true;
+}
+
+bool ScheduleDataManager::checkRptK(string rk, string cy)
+{
+    regex r("[0-9]+");
+    if (!regex_match(rk.cbegin(), rk.cend(), r))
+        return false;
+    if (stoi(cy) == 0 && stoi(rk) != 0)
+        return false;
+    else {
+        if (stoi(rk) < 0)
+            return false;
+    }
     return true;
 }
 

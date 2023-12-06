@@ -40,6 +40,7 @@ public:
 	string getRptEndDate() { return rptEndDate; };
 	void setRptEndDate(string rd) { rptEndDate = rd; };
 	int getRptK() { return rptK; }
+	void setRptK(int _rptK) { rptK = _rptK; }
 
 	bool operator < (Schedule& schedule) {
 		return this->startDate < schedule.startDate;
