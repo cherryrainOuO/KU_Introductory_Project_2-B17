@@ -1041,7 +1041,7 @@ void Management::addSchedule()
 			string eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
 			string eDDString = (anotherEndDateDay < 10) ? "0" + to_string(anotherEndDateDay) : to_string(anotherEndDateDay);
 			string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
-			if (endDateYear <= FINAL_YEAR) {
+			if (endDateYear <= FINAL_YEAR && isPreviousDate(anotherEndDate, rptEndDate)) {
 				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
 				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1, i + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
