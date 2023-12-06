@@ -1,4 +1,4 @@
-﻿#include "Calender.h"
+#include "Calender.h"
 
 Calender::Calender()
 {
@@ -19,6 +19,7 @@ int Calender::getHighestKey()
 	return highestKey;
 }
 
+// 유효한 날짜면 0 반환
 int Calender::isValidDate(string dateStr) {
 
 	string y, m, d; // 각각 year, month, date{

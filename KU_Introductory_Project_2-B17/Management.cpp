@@ -284,6 +284,23 @@ int Management::findLastDayofMonth(int endDateYear, int endDateMonth)
 	}
 }
 
+// date1이 date2보다 빠르면(이전이면) true를 반환
+bool Management::isPreviousDate(string date1, string date2) {
+	// 시작일보다 종료일이 빠른 경우 
+	int y1, m1, d1, y2, m2, d2;
+
+	y1 = stoi(date1.substr(0, 4));
+	m1 = stoi(date1.substr(5, 2));
+	d1 = stoi(date1.substr(8, 2));
+	y2 = stoi(date2.substr(0, 4));
+	m2 = stoi(date2.substr(5, 2));
+	d2 = stoi(date2.substr(8, 2));
+
+	if ((y1 > y2) || ((y1 == y2) && (m1 > m2)) || ((y1 == y2) && (m1 == m2) && (d1 > d2)))
+		return false;
+	return true;
+}
+
 void Management::addSchedule()
 {
 	string startDate, endDate, title, memo, rptEndDate;
@@ -906,6 +923,8 @@ void Management::addSchedule()
 		}
 	}
 
+	printf("rptEndDate : %s\n", rptEndDate);
+
 	int diffDate = 0;
 	Schedule* newDate = nullptr;
 	switch (cycle) {
@@ -933,13 +952,18 @@ void Management::addSchedule()
 			string anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 			while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 				string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
+				if (!isPreviousDate(possibleEndDate, rptEndDate)) {
+					anotherEndDate = possibleEndDate;
+					break;
+				}
 				string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1, i + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 				endDateYear++;
 				anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 			}
-			if (endDateYear <= FINAL_YEAR) {	// 2월 29일이 있는 연도인 경우
+			
+			if (endDateYear <= FINAL_YEAR && isPreviousDate(anotherEndDate, rptEndDate)) {	// 2월 29일이 있는 연도인 경우
 				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
 				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1, i + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
@@ -971,6 +995,10 @@ void Management::addSchedule()
 			string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
 			while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 				string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
+				if (!isPreviousDate(possibleEndDate, rptEndDate)) {
+					anotherEndDate = possibleEndDate;
+					break;
+				}
 				string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 				newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, cal->getHighestKey() + 1, i + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
@@ -981,7 +1009,7 @@ void Management::addSchedule()
 				eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
 				anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
 			}
-			if (endDateYear <= FINAL_YEAR) {	// 해당 날짜가 있는 달인 경우
+			if (endDateYear <= FINAL_YEAR && isPreviousDate(anotherEndDate, rptEndDate)) {	// 해당 날짜가 있는 달인 경우
 				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
 				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1, i + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
