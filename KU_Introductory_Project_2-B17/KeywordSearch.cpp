@@ -76,6 +76,11 @@ void KeywordSearch::print()
 		cout << "---------------------------------------------\n";
 	}*/
 	Prompt_after_or_before_When(kwd);
+
+	while (!res.empty()) {
+		res.front().print();
+		res.pop();
+	}
 	cout << "(*메인 화면으로 돌아가려면 아무 키나 입력하세요.)\n";
 	Sleep(100);
 	_getch();
@@ -210,21 +215,6 @@ void KeywordSearch::Prompt_after_or_before_When(string kwd) {
 	else {
 		cout << "키워드 \"" << kwd << "\"에 해당되는 일정들입니다.\n";
 		cout << afterDate << " ~ " << beforeDate << "\n\n";
-
-		while (!res.empty()) {
-			res.front().print();
-			res.pop();
-		}
-	}
-	while (!res.empty()) {
-		res.pop();
-	}
-	cout << "아무 키나 눌러주세요.\n";
-	cout << "_____________________________\n";
-	cout << "> ";
-	if (_getch()) {
-		system("cls");
-		return;
 	}
 }
 
