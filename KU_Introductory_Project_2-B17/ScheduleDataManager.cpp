@@ -454,6 +454,10 @@ bool ScheduleDataManager::checkRptK(string k, string rk, string cy)
         if (max_cy_k.find(stoi(k)) == max_cy_k.end() || max_cy_k[stoi(k)] == 0)
             return false;
     }
+    else if (stoi(cy) >= 1) {
+        if (stoi(rk) < 1)
+            return false;
+    }
     if (stoi(rk) < 0)
         return false;
     return true;
