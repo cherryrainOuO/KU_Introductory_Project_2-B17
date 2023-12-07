@@ -89,8 +89,8 @@ bool Management::is_digit(string str) {
 }
 
 void Management::printSchedule() {
-	string sd, ed;  // startDate, endDate
 	vector<Schedule*> sche; // 현재 날짜에 해당하는 스케줄
+	string sd, ed;  // startDate, endDate
 
 	// 현재 날짜의 스케줄을 캘린더에서 하나씩 추가
 	for (int i = 0; i < cal->allSchs.size(); i++) {
@@ -1264,7 +1264,7 @@ void Management::mod_or_delSchedule() {
 						}
 						sche[selectedNum]->setStartDate(startDate);
 						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						SDM.loadDataFile(*cal, *cate);
+						//SDM.loadDataFile(*cal, *cate);
 						CDM->loadDataFile(*cate);
 						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					}
@@ -1351,7 +1351,7 @@ void Management::mod_or_delSchedule() {
 							}
 							sche[selectedNum]->setEndDate(endDate);
 							SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-							SDM.loadDataFile(*cal, *cate);
+							//SDM.loadDataFile(*cal, *cate);
 							CDM->loadDataFile(*cate);
 
 							flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
@@ -1410,7 +1410,7 @@ void Management::mod_or_delSchedule() {
 					}
 					sche[selectedNum]->setTitle(title);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					SDM.loadDataFile(*cal, *cate);
+					//SDM.loadDataFile(*cal, *cate);
 					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 				}
@@ -1518,7 +1518,7 @@ void Management::mod_or_delSchedule() {
 					}
 					sche[selectedNum]->setCategory(category); // 사용자 지정 카테고리
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					SDM.loadDataFile(*cal, *cate);
+					//SDM.loadDataFile(*cal, *cate);
 					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					/*
@@ -1637,7 +1637,7 @@ void Management::mod_or_delSchedule() {
 
 					sche[selectedNum]->setMemo(memo);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					SDM.loadDataFile(*cal, *cate);
+					//SDM.loadDataFile(*cal, *cate);
 					CDM->loadDataFile(*cate);
 					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 					//}
@@ -2321,4 +2321,5 @@ void Management::mod_or_delSchedule() {
 			break;
 		}
 	}
+	SDM.loadDataFile(*cal, *cate);
 }
