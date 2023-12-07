@@ -1,4 +1,4 @@
-﻿#include "CategoryDataManager.h"
+#include "CategoryDataManager.h"
 
 bool CategoryDataManager::loadDataFile(Category& _cate)
 {
@@ -181,6 +181,12 @@ bool CategoryDataManager::UpdateCategoryToCalender(int _cateNum, string _newStr)
 		for (int i = 0; i < c.size(); i++) {
 			if (c[i].compare(oldCate) == 0) {
 				c[i] = _newStr;
+				if (_newStr.compare("") == 0) {
+					if (c.size() == 1)
+						c[i] = "기본";
+					else
+						c.erase(c.begin() + i);
+				}
 			}
 		}
 		cale->allSchs.at(i).setCategory(c);
@@ -227,7 +233,7 @@ void CategoryDataManager::CategoryRemove(int _cateNum)
 
 		
 	//	/* 스케줄에도 바뀐 카테고리 명으로 업데이트 필요 */
-	UpdateCategoryToCalender(_cateNum - 1, "기본");
+	UpdateCategoryToCalender(_cateNum - 1, "");
 	cate->GetCategories()->erase(cate->GetCategories()->begin() + _cateNum - 1); // 삭제
 
 	/* 카테고리 파일에도 업데이트 필요 */
