@@ -113,9 +113,12 @@ void KeywordSearch::Prompt_after_or_before_When(string kwd) {
 	regex datesform(R"(\S+\s+\S+)");
 
 	getline(cin, whendates);
+
 	system("cls");
-	if (whendates == "^C")
-		search();
+	if (whendates == "^C") {
+		system("cls");
+		prompt();
+	}
 
 	else if (regex_match(whendates, datesform)) {
 		dates = split_by_space(whendates, ' ');
@@ -142,7 +145,7 @@ void KeywordSearch::Prompt_after_or_before_When(string kwd) {
 				b = false;
 		}
 
-		if ((cal->isValidDate(afterDate) == -1) || (cal->isValidDate(beforeDate) == -1) || b == false) {
+		if ((cal->isValidDate(afterDate) == -1) || (cal->isValidDate(beforeDate) == -1)) {
 			system("cls");
 			cout << "오류: 입력 형식에 맞게 입력해주세요.\n";
 			cout << "아무 키나 눌러주세요.\n";
@@ -150,8 +153,8 @@ void KeywordSearch::Prompt_after_or_before_When(string kwd) {
 			cout << "> ";
 			if (_getch()) {
 				system("cls");
-				Prompt_after_or_before_When(kwd);
-				//return;
+				return;
+				// Prompt_after_or_before_When(res, cateKwd);
 			}
 		}
 		else if ((cal->isValidDate(afterDate) == -2) || (cal->isValidDate(beforeDate) == -2)) {
@@ -162,8 +165,8 @@ void KeywordSearch::Prompt_after_or_before_When(string kwd) {
 			cout << "> ";
 			if (_getch()) {
 				system("cls");
-				Prompt_after_or_before_When(kwd);
-				//return;
+				return;
+				// Prompt_after_or_before_When(res, cateKwd);
 			}
 		}
 		else if (b == false) {
@@ -179,10 +182,13 @@ void KeywordSearch::Prompt_after_or_before_When(string kwd) {
 			}
 		}
 		else {
-			for (int i = 0; i < res.size(); i++) {
+			// res는 size가 계속 변동됨
+			int s = res.size();		
+			for (int i = 0; i < s; i++) {
 				if (res.front().getEndDate() >= afterDate
-					&& res.front().getEndDate() <= beforeDate)
+					&& res.front().getEndDate() <= beforeDate) {
 					res.push(res.front());
+				}
 				res.pop();
 			}
 		}
@@ -209,6 +215,9 @@ void KeywordSearch::Prompt_after_or_before_When(string kwd) {
 			res.front().print();
 			res.pop();
 		}
+	}
+	while (!res.empty()) {
+		res.pop();
 	}
 	cout << "아무 키나 눌러주세요.\n";
 	cout << "_____________________________\n";

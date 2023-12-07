@@ -82,7 +82,7 @@ int Management::isValidDate(string dateStr) {
 	}
 	return -1;
 }
-*/ 
+*/
 
 bool Management::is_digit(string str) {
 	return atoi(str.c_str()) != 0 || str.compare("0") == 0;
@@ -923,8 +923,6 @@ void Management::addSchedule()
 		}
 	}
 
-	printf("rptEndDate : %s\n", rptEndDate);
-
 	int diffDate = 0;
 	Schedule* newDate = nullptr;
 	switch (cycle) {
@@ -962,7 +960,7 @@ void Management::addSchedule()
 				endDateYear++;
 				anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 			}
-			
+
 			if (endDateYear <= FINAL_YEAR && isPreviousDate(anotherEndDate, rptEndDate)) {	// 2월 29일이 있는 연도인 경우
 				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
 				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1, i + 1);
@@ -1041,7 +1039,7 @@ void Management::addSchedule()
 			string eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
 			string eDDString = (anotherEndDateDay < 10) ? "0" + to_string(anotherEndDateDay) : to_string(anotherEndDateDay);
 			string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
-			if (endDateYear <= FINAL_YEAR) {
+			if (endDateYear <= FINAL_YEAR && isPreviousDate(anotherEndDate, rptEndDate)) {
 				string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
 				newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, cal->getHighestKey() + 1, i + 1);
 				cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
@@ -1333,7 +1331,7 @@ void Management::mod_or_delSchedule() {
 					}
 					else {
 
-						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate)>0) {
+						if (getDiffDate(sche[selectedNum]->getRptEndDate(), endDate) > 0) {
 							system("cls");
 							cout << "오류: 종료일은 반복종료일과 같거나, 그 이전이여야 합니다.\n\n";
 							cout << "아무 키나 눌러주세요.\n";
@@ -1433,7 +1431,6 @@ void Management::mod_or_delSchedule() {
 			cout << "0. 기본\n";
 			CDM->CategoryPrint();
 			cateCount = CDM->GetSize();
-			//cout << cateCount + 1 << ". 새 카테고리 추가\n\n";
 			cout << "(여러 카테고리의 입력은 공백류로 구분합니다.)" << endl;
 			cout << "(^C 입력 시 이전 화면으로 돌아갑니다)\n\n";
 			cout << "일정의 새로운 카테고리를 선택하세요.\n";
@@ -1468,83 +1465,38 @@ void Management::mod_or_delSchedule() {
 					}
 				}
 				if (winput == 1) {
-					flag = 3;
+					flag = 6;
 					break;
 				}
 				sort(cateTemp.begin(), cateTemp.end());
 				cateTemp.erase(unique(cateTemp.begin(), cateTemp.end()), cateTemp.end());
-
+				category.clear();
 				while (!cateTemp.empty()) {
 					int cateTT = cateTemp.back();
 					cateTemp.pop_back();
+
 					if (0 == cateTT) {
 						key = sche[selectedNum]->getKey();
-						/*
-						for (int i = 0; i < cal->allSchs.size(); i++) {
-							if (cal->allSchs[i].getKey() == key) {
-								cal->allSchs[i].setCategory("기본");
-							}
-						}
-						*/
 						category.push_back("기본");
-						/*
-						sche[selectedNum]->setCategory("기본"); // 기본 카테고리
-						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						SDM.loadDataFile(*cal, *cate);
-						CDM->loadDataFile(*cate);
-						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-						*/
 					}
+
 					else if (1 <= cateTT && cateTT <= cateCount) {
 						key = sche[selectedNum]->getKey();
-						/*
-						for (int i = 0; i < cal->allSchs.size(); i++) {
-							if (cal->allSchs[i].getKey() == key) {
-								cal->allSchs[i].setCategory(CDM->GetCategory()->at(stoi(menu) - 1));
-							}
-						}
-						*/
 						category.push_back(CDM->GetCategory()->at(cateTT - 1));
-						/*
-						sche[selectedNum]->setCategory(CDM->GetCategory()->at(stoi(menu) - 1)); // 사용자 지정 카테고리
-						SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-						SDM.loadDataFile(*cal, *cate);
-						CDM->loadDataFile(*cate);
-						flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-						*/
 					}
-					for (int i = 0; i < cal->allSchs.size(); i++) {
-						if (cal->allSchs[i].getKey() == key) {
-							cal->allSchs[i].setCategory(category);
-						}
-					}
-					sche[selectedNum]->setCategory(category); // 사용자 지정 카테고리
-					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-					SDM.loadDataFile(*cal, *cate);
-					CDM->loadDataFile(*cate);
-					flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-					/*
-					else if (stoi(menu) == cateCount + 1) {
-						CLS->CategoryAdd(); // 카테고리 추가
-						if (cateCount != CDM->GetSize()) { // 카데고리가 정상적으로 추가된 경우
-							key = sche[selectedNum]->getKey();
-							for (int i = 0; i < cal->allSchs.size(); i++) {
-								if (cal->allSchs[i].getKey() == key) {
-									cal->allSchs[i].setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1));
-								}
-							}
-							sche[selectedNum]->setCategory(CDM->GetCategory()->at(CDM->GetSize() - 1)); // 새로 추가한 카테고리
-							SDM.saveDataFile(*cal);	// 데이터 파일에 저장
-							SDM.loadDataFile(*cal, *cate);
-							CDM->loadDataFile(*cate);
-							flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
-						}
-						else {
-							flag = 6; // 현재 프롬프트 반복
-						}
-					}
-					*/
+					
 				}
+				for (int i = 0; i < cal->allSchs.size(); i++) {
+					if (cal->allSchs[i].getKey() == key) {
+						cal->allSchs[i].setCategory(category);
+					}
+				}
+
+				sche[selectedNum]->setCategory(category); // 사용자 지정 카테고리
+				SDM.saveDataFile(*cal);	// 데이터 파일에 저장
+				SDM.loadDataFile(*cal, *cate);
+				CDM->loadDataFile(*cate);
+				flag = 2; // 이전 프롬프트(수정할 요소 선택 프롬프트)로 이동
 			}
 			else {
 				cout << "오류: 0 혹은 1~" << cateCount << "까지의 자연수를 입력해주세요.\n\n";
@@ -1616,7 +1568,7 @@ void Management::mod_or_delSchedule() {
 					memo[0] != ' ' && memo.back() != ' ') || memo.size() == 0) {
 					//if (regex_match(wmemo.cbegin(), wmemo.cend(), wideMatch, wrx) &&
 					//	memo[0] != ' ' && memo.back() != ' ') {
-					
+
 					key = sche[selectedNum]->getKey();
 					rptK = sche[selectedNum]->getRptK();
 
@@ -1636,7 +1588,7 @@ void Management::mod_or_delSchedule() {
 					}
 
 
-					
+
 					sche[selectedNum]->setMemo(memo);
 					SDM.saveDataFile(*cal);	// 데이터 파일에 저장
 					SDM.loadDataFile(*cal, *cate);
@@ -2070,13 +2022,17 @@ void Management::mod_or_delSchedule() {
 								string anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 								while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 2월 29일이 있는 연도까지 반복
 									string possibleEndDate = anotherEndDate.substr(0, 8) + "28";
+									if (!isPreviousDate(possibleEndDate, rptEndDate)) {
+										anotherEndDate = possibleEndDate;
+										break;
+									}
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key, i + 1);   //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
 									endDateYear++;
 									anotherEndDate = to_string(endDateYear) + "/" + yRptVec[i];
 								}
-								if (endDateYear <= FINAL_YEAR) {	// 2월 29일이 있는 연도인 경우
+								if (endDateYear <= FINAL_YEAR && isPreviousDate(anotherEndDate, rptEndDate)) {	// 2월 29일이 있는 연도인 경우
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
 									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key, i + 1);   //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
@@ -2115,6 +2071,10 @@ void Management::mod_or_delSchedule() {
 								string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
 								while (endDateYear <= FINAL_YEAR && cal->isValidDate(anotherEndDate)) {	// 해당 날짜가 있는 달이 나오기 전까지
 									string possibleEndDate = anotherEndDate.substr(0, 8) + to_string(findLastDayofMonth(endDateYear, endDateMonth));
+									if (!isPreviousDate(possibleEndDate, rptEndDate)) {
+										anotherEndDate = possibleEndDate;
+										break;
+									}
 									string possibleStartDate = calcStartDate(possibleEndDate, diffDate);
 									newDate = new Schedule(title, possibleStartDate, possibleEndDate, category, memo, possibleEndDate, 0, key, i + 1);		//왜 cycle 0
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
@@ -2125,7 +2085,7 @@ void Management::mod_or_delSchedule() {
 									eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
 									anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
 								}
-								if (endDateYear <= FINAL_YEAR) {	// 해당 날짜가 있는 달인 경우
+								if (endDateYear <= FINAL_YEAR && isPreviousDate(anotherEndDate, rptEndDate)) {	// 해당 날짜가 있는 달인 경우
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
 									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key, i + 1);   //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
@@ -2163,7 +2123,7 @@ void Management::mod_or_delSchedule() {
 								string eDMString = (endDateMonth < 10) ? "0" + to_string(endDateMonth) : to_string(endDateMonth);
 								string eDDString = (anotherEndDateDay < 10) ? "0" + to_string(anotherEndDateDay) : to_string(anotherEndDateDay);
 								string anotherEndDate = to_string(endDateYear) + "/" + eDMString + "/" + eDDString;
-								if (endDateYear <= FINAL_YEAR) {
+								if (endDateYear <= FINAL_YEAR && isPreviousDate(anotherEndDate, rptEndDate)) {
 									string anotherStartDate = calcStartDate(anotherEndDate, diffDate);
 									newDate = new Schedule(title, anotherStartDate, anotherEndDate, category, memo, rptEndDate, cycle, key, i + 1); //기존 key 값 유지
 									cal->allSchs.push_back(*newDate);	// 데이터 파일에 해당 스케줄 추가
